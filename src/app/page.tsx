@@ -10,20 +10,50 @@ export default function Home() {
 
   const [results, setResults] = useState<string[]>([]);
 
-  function generateNames() {
-    if (!archetypeA || !archetypeB) return;
+const fantasySyllables = [
+  "ae", "al", "ar", "bal", "bel", "cor", "dra", "el", "fae", "gal", "hal",
+  "ian", "jor", "kal", "lor", "mir", "nar", "or", "quel", "rin", "sar",
+  "thal", "ur", "val", "wyn", "yor", "zel"
+];
 
-    const output = [];
-    for (let i = 0; i < count; i++) {
-      const name =
-        archetypeA.slice(0, Math.floor(archetypeA.length / 2)) +
-        archetypeB.slice(Math.floor(archetypeB.length / 2));
+function randomItem<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
-      output.push(name);
-    }
+function makeFantasyName(a: string, b: string): string {
+  const cleanA = a.trim().toLowerCase();
+  const cleanB = b.trim().toLowerCase();
 
-    setResults(output);
+  // seed syllables from archetype words
+  const seeds = [
+    cleanA.slice(0, 2),
+    cleanA.slice(-2),
+    cleanB.slice(0, 2),
+    cleanB.slice(-2),
+  ].filter((s) => s.length === 2);
+
+  const base = [...fantasySyllables, ...seeds];
+
+  const parts = [
+    randomItem(base),
+    randomItem(base),
+    Math.random() > 0.6 ? randomItem(base) : ""
+  ].join("");
+
+  // Capitalize nicely
+  return parts.charAt(0).toUpperCase() + parts.slice(1);
+}
+
+function generateNames() {
+  if (!archetypeA || !archetypeB) return;
+
+  const output: string[] = [];
+  for (let i = 0; i < count; i++) {
+    output.push(makeFantasyName(archetypeA, archetypeB));
   }
+  setResults(output);
+}
+
 
   return (
     <main className="min-h-screen p-8 bg-gray-900 text-white">
