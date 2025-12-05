@@ -2830,8 +2830,11 @@ export default function Home() {
                 >
                   <div className="font-semibold text-lg">{entry.name}</div>
                   {entry.lore && (
-                    <p className="text-sm text-gray-300 mt-1">{entry.lore}</p>
-                  )}
+                <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
+                {entry.lore}
+                </p>
+                )}
+
                 </li>
               ))}
             </ul>
