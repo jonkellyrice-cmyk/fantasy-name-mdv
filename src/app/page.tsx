@@ -2590,8 +2590,574 @@ function makeLore(name: string, a: string, b: string): string {
   // Return as bullet list text
   return bullets.map((line) => `• ${line}`).join("\n");
 }
+/* ===========================
+   EPITHETS & NICKNAMES (Premium)
+   =========================== */
+
+type EpithetMode = "none" | "epithet" | "nickname" | "either";
+
+type LoreProfile = {
+  role: string;
+  tone: LoreTone;
+  element: Element | null;
+  dialect: Dialect;
+  concepts: string[];
+};
+
+// Expanded pools for epithets & nicknames
+
+const ROLE_EPITHETS: Record<string, string[]> = {
+  warrior: [
+    "the Ironbound",
+    "the Red Oath",
+    "the Shieldbreaker",
+    "the Storm-Edge",
+    "the Line-Holder",
+    "the Blade Unbent",
+    "the War-Worn",
+    "the Frontline Vow",
+    "the Banner-Bearer",
+    "the Steel Tempest",
+    "the Duel-Sworn",
+    "the Clash-Born",
+    "the Blooded Sentinel",
+    "the Last to Fall",
+    "the Wall of Spears",
+  ],
+  hunter: [
+    "the Silent Arrow",
+    "the Trail-Seer",
+    "Beastfriend",
+    "the Thorn-Tracker",
+    "the Moon-Stalker",
+    "the Ghost in the Brush",
+    "the Briar-Step",
+    "the Farshot",
+    "the Beast-Watcher",
+    "the Wolf-Whisper",
+    "the Leaf-Shadow",
+    "the Snarewise",
+    "the Path-Finder",
+    "the Wild-Eyed",
+    "the Green-Sentinel",
+  ],
+  seer: [
+    "the Star-Sighted",
+    "the Veilreader",
+    "the Dream-Bound",
+    "the Thread-Touched",
+    "the Omen-Keeper",
+    "the Fate-Watcher",
+    "the Moon-Gazer",
+    "the Rune-Woven",
+    "the Twilight Oracle",
+    "the Echo-Seer",
+    "the Vision-Bearer",
+    "the Night-Listener",
+    "the Prophecy-Scarred",
+    "the Veil-Torn",
+    "the Future-Mark",
+  ],
+  healer: [
+    "the Gentle Hand",
+    "Lifebinder",
+    "Dawn-Mender",
+    "the Wound-Weaver",
+    "the Quiet Mercy",
+    "the Battle-Mender",
+    "the Blood-Stiller",
+    "the Herb-Wise",
+    "the Soul-Suturer",
+    "the Light-of-Rest",
+    "the Pain-Drinker",
+    "the Fever-Breaker",
+    "the Lantern of Sickbeds",
+    "the Last Comfort",
+    "the White-Leaf",
+  ],
+  bard: [
+    "the Songcarver",
+    "Lore-Keeper",
+    "Whisper-Voice",
+    "the Tale-Walker",
+    "the Chord-Warden",
+    "the Laugh-Binder",
+    "the Story-Tempered",
+    "the Verse-Whisper",
+    "the Hearth-Singer",
+    "the Echo-Tongue",
+    "the Last Minstrel",
+    "the Melody-Bearer",
+    "the Wordsmith",
+    "the Rhythm-Caller",
+    "the Legend-Maker",
+  ],
+  shadow: [
+    "the Night-Step",
+    "Shade-Touched",
+    "the Quiet Knife",
+    "the Door-in-the-Dark",
+    "the Candle-Killer",
+    "the Alley-Wraith",
+    "the Soft-Foot",
+    "the Unseen Blade",
+    "the Crow-in-Corners",
+    "the Vein-of-Smoke",
+    "the Whispered Threat",
+    "the Mask-Bound",
+    "the Hooded Silence",
+    "the Last Shadow",
+    "the Dusk-Slip",
+  ],
+  noble: [
+    "Highborne",
+    "Moon-Crowned",
+    "the Last Scion",
+    "the Silver Line",
+    "the Star-Wreathed",
+    "the Court-Kept",
+    "the Crest-Bearer",
+    "the Oath of House",
+    "the Ring-Warden",
+    "the Velvet Hand",
+    "the Banner-Crowned",
+    "the Gilded Heir",
+    "the Blue-Blooded",
+    "the House-Unbroken",
+    "the Quiet Regent",
+  ],
+  smith: [
+    "Forge-Sworn",
+    "the Emberwright",
+    "Anvil-Singer",
+    "the Steel-Weaver",
+    "the Coal-Eyed",
+    "the Spark-Binder",
+    "the Blade-Shaper",
+    "the Hammer-Caller",
+    "the Ember-Gifted",
+    "the Rune-Brand",
+    "the Fire-Forger",
+    "the Iron-Hand",
+    "the Furnace-Watcher",
+    "the Tempered Maker",
+    "the Smoke-Crowned",
+  ],
+  wanderer: [
+    "the Far-Walked",
+    "Road-Kept",
+    "Dust-Born",
+    "the Crossroads Soul",
+    "the Sky-Road",
+    "the Horizon-Chaser",
+    "the Pack-on-Back",
+    "the Border-Walker",
+    "the Way-Worn",
+    "the Coin-Tosser",
+    "the Firelight Guest",
+    "the Path-Unending",
+    "the Mapless",
+    "the Mile-Drinker",
+    "the Long-Stride",
+  ],
+};
+
+const ELEMENT_EPITHETS: Partial<Record<Element, string[]>> = {
+  [ELEMENTS.FIRE]: [
+    "the Emberborn",
+    "Flame-Touched",
+    "Ashwalker",
+    "the Pyre-Heart",
+    "the Blaze-Called",
+    "the Cinder-Kin",
+    "the Hearth-Flame",
+    "the Brand-Bearer",
+    "the Coal-Souled",
+    "the Wildspark",
+    "the Scorch-Blooded",
+    "the Torch-in-Storm",
+  ],
+  [ELEMENTS.WATER]: [
+    "the Tidesworn",
+    "Stormbound",
+    "River-Heart",
+    "the Tide-Walker",
+    "the Deep-Caller",
+    "the Mist-Cloaked",
+    "the Wave-Rider",
+    "the Rain-Favored",
+    "the Drift-Soul",
+    "the Foam-Born",
+    "the Harbor-Warden",
+    "the Flood-Marked",
+  ],
+  [ELEMENTS.EARTH]: [
+    "Stonewarden",
+    "Oak-Blooded",
+    "Rootwalker",
+    "the Stone-Sung",
+    "the Earth-Held",
+    "the Iron-Rooted",
+    "the Boulder-Back",
+    "the Grove-Guard",
+    "the Flint-Heart",
+    "the Barrow-Kin",
+    "the Hill-Keeper",
+    "the Soil-Bound",
+  ],
+  [ELEMENTS.AIR]: [
+    "Wind-Touched",
+    "Sky-Wanderer",
+    "Stormcaller",
+    "the Gale-Bound",
+    "the Feather-Step",
+    "the Cloud-Strider",
+    "the Sky-Whisper",
+    "the Storm-Blessed",
+    "the White-Winged",
+    "the High-Current",
+    "the Thunder-Taken",
+    "the Horizon-Eyed",
+  ],
+  [ELEMENTS.DARK]: [
+    "the Dreadmarked",
+    "Nightwhisper",
+    "the Pallid Shade",
+    "the Grave-Bound",
+    "the Umbral-Taken",
+    "the Starless Oath",
+    "the Black-Sigiled",
+    "the Tomb-Caller",
+    "the Lantern-Dimmer",
+    "the Cold-Gaze",
+    "the Last Gloaming",
+    "the Veil-Torn Soul",
+  ],
+};
+
+const DIALECT_EPITHETS: Record<Dialect, string[]> = {
+  [DIALECTS.HIGH]: [
+    "the Starborne",
+    "Silver-Tongue",
+    "the Moon-Wise",
+    "the Court-Sworn",
+    "the Crystal-Crowned",
+    "the Dawn-Scribe",
+    "the Sky-Herald",
+    "the Song-of-Years",
+    "the Radiant Line",
+    "the Starlace",
+    "the High Speaker",
+    "the Argent Veil",
+  ],
+  [DIALECTS.FOREST]: [
+    "Greenwalker",
+    "Leafcloak",
+    "Grovekin",
+    "the Briar-Cloak",
+    "the Fern-Hid",
+    "the Thicket-Wise",
+    "the Root-Friend",
+    "the Branch-Runner",
+    "the Sap-Soul",
+    "the Fox-Shadow",
+    "the Dew-Warden",
+    "the Thorn-Bound",
+  ],
+  [DIALECTS.SEA]: [
+    "Wave-Turned",
+    "Salt-Singer",
+    "Stormsail",
+    "the Tide-Bitten",
+    "the Rope-Scarred",
+    "the Deck-Dancer",
+    "the Gull-Cried",
+    "the Brine-Eyed",
+    "the Reef-Walker",
+    "the Seafoam Step",
+    "the Lantern-at-Port",
+    "the Keel-Friend",
+  ],
+  [DIALECTS.MOUNTAIN]: [
+    "Stonefoot",
+    "Peak-Guardian",
+    "Hammer-Echo",
+    "the Cliff-Held",
+    "the Frost-Breath",
+    "the Ridge-Warden",
+    "the Cavern-Voice",
+    "the Anvil-Echo",
+    "the Crag-Keeper",
+    "the Ice-Ridge",
+    "the Granite-Souled",
+    "the Thunder-Downhill",
+  ],
+  [DIALECTS.SHADOW]: [
+    "the Veil-Bound",
+    "Gloomwalker",
+    "the Lantern-Eater",
+    "the Alley-Murk",
+    "the Dusk-Watcher",
+    "the Fog-Halo",
+    "the Quiet Step",
+    "the Door-in-Mist",
+    "the Candle-Shade",
+    "the Night-Breath",
+    "the Ashen Silhouette",
+    "the Hollow-Eyed",
+  ],
+};
+
+// Nicknames are more casual and shorter, keyed by tone
+const NICKNAMES_BY_TONE: Record<LoreTone, string[]> = {
+bright: [
+  "Sunny",
+  "Starlet",
+  "Bright-Eyes",
+  "Ray",
+  "Glint",
+  "Halo",
+  "Spark",
+  "Goldie",
+  "Lumi",
+  "Sky",
+  // new from last batch
+  "Dawn",
+  "Gleam",
+  "Prism",
+  "Flare",
+  "Nova",
+  "Comet",
+  "Twinkle",
+  "Shine",
+  "Aurie",
+  "Beacon",
+  "Sunbeam",
+  "Daystar",
+  "Glow",
+  "Jewel",
+  "Blaze",
+  "Starfall",
+  "Glory",
+  "Flit",
+  "Halo-Heart",
+  "Brightwing",
+
+  // NEW to reach 40 – cheerful/twee/friendly/cute
+  "Bubbles",
+  "Peach",
+  "Pip",
+  "Poppy",
+  "Button",
+  "Merry",
+  "Giggles",
+  "Breezy",
+  "Sprout",
+  "Petal",
+  "Wink",
+  "Cherry",
+  "Fizz",
+  "Mirth",
+  "Skippy",
+  "Tinsel",
+  "Bunny",
+  "Sweetleaf",
+  "Honeydrop",
+  "Puddle",
+],
+  balanced: [
+  "Ash",
+  "Lark",
+  "Wren",
+  "Rowan",
+  "Briar",
+  "Rook",
+  "Finch",
+  "Reed",
+  "Pine",
+  "Vale",
+  // existing new ones
+  "Cinder",
+  "Moss",
+  "Fable",
+  "Rune",
+  "Sage",
+  "Thorn",
+  "Keel",
+  "Cove",
+  "Bran",
+  "Kestrel",
+  "Tansy",
+  "Flint",
+  "Oak",
+  "Bracken",
+  "Loam",
+  "Drift",
+  "Pebble",
+  "Patch",
+  "Hazel",
+  "Quill",
+  "Sparrow",
+  "Ivy",
+  "Fenn",
+  "Talon",
+  "Marsh",
+  "Cairn",
+  "Fern",
+
+  // NEW to reach 40 — practical, grounded, catchy, non-nature specific
+  "Brook",
+  "Wade",
+  "Tarn",
+  "Marl",
+  "Grit",
+  "Burl",
+  "Whit",
+  "Bridle",
+  "Latch",
+  "Knoll",
+  "Sheaf",
+  "Thimble",
+  "Banner",
+  "Trip",
+  "Dell",
+  "Wright",
+  "Hollow",
+  "Patchwork",
+],
+
+shadowed: [
+  "Shade",
+  "Whisper",
+  "Gloom",
+  "Crow",
+  "Grim",
+  "Moth",
+  "Sable",
+  "Vex",
+  "Ruin",
+  "Rift",
+  // your new ones
+  "Dusk",
+  "Raven",
+  "Woe",
+  "Hush",
+  "Pale",
+  "Grave",
+  "Hollow",
+  "Nightjar",
+  "Mor",
+  "Knell",
+  "Bleak",
+  "Fog",
+  "Rookshade",
+  "Void",
+  "Duskwing",
+  "Ashen",
+  "Wraith",
+  "Murk",
+  "Tatter",
+  "Noir",
+  "Stitch",
+  "Crowfeather",
+  "Bane",
+  "Null",
+  "Gash",
+  "Drab",
+  "Sigh",
+
+  // NEW additions to reach 40: tough, criminal, intimidating, scarred
+  "Cutlass",
+  "Bruise",
+  "Blackhand",
+  "Razor",
+  "Latchkey",
+  "Scathe",
+  "Smudge",
+  "Hex",
+  "Blight",
+  "Scrap",
+],
+
+};
 
 
+/**
+ * Pick a fantasy epithet based on role, element, and dialect.
+ * Epithets are things like: "the Emberborn", "Ashwalker", "Greenwalker".
+ */
+function makeEpithet(profile: LoreProfile): string | null {
+  const { role, element, dialect } = profile;
+
+  const rolePool = ROLE_EPITHETS[role] ?? ROLE_EPITHETS["wanderer"];
+  const elementPool = element ? ELEMENT_EPITHETS[element] ?? [] : [];
+  const dialectPool = DIALECT_EPITHETS[dialect] ?? [];
+
+  // Build a small mixed pool; we only need a few options.
+  const mixed: string[] = [];
+
+  if (rolePool.length) mixed.push(randomItem(rolePool));
+  if (elementPool.length) mixed.push(randomItem(elementPool));
+  if (dialectPool.length) mixed.push(randomItem(dialectPool));
+
+  if (!mixed.length) return null;
+
+  return randomItem(mixed);
+}
+
+/**
+ * Pick a nickname based on tone, e.g. "Ash", "Shade", "Sunny".
+ */
+function makeNickname(profile: LoreProfile): string | null {
+  const { tone } = profile;
+  const pool = NICKNAMES_BY_TONE[tone] ?? NICKNAMES_BY_TONE["balanced"];
+  if (!pool.length) return null;
+  return randomItem(pool);
+}
+
+/**
+ * Apply an epithet or nickname to the full name.
+ * - "epithet":  Elarion Vaeth, the Emberborn
+ * - "nickname": Elarion "Ash" Vaeth
+ */
+function applyEpithetOrNickname(
+  fullName: string,
+  profile: LoreProfile,
+  mode: EpithetMode
+): string {
+  if (mode === "none") return fullName;
+
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length === 0) return fullName;
+
+  const firstName = parts[0];
+  const surname = parts.slice(1).join(" ");
+
+  // Handle "either" by converting it into a random mode
+  if (mode === "either") {
+    mode = Math.random() < 0.5 ? "epithet" : "nickname";
+  }
+
+  if (mode === "epithet") {
+    const epithet = makeEpithet(profile);
+    if (!epithet) return fullName;
+
+    return surname
+      ? `${fullName}, ${epithet}`
+      : `${firstName}, ${epithet}`;
+  }
+
+  if (mode === "nickname") {
+    const nickname = makeNickname(profile);
+    if (!nickname) return fullName;
+
+    return surname
+      ? `${firstName} "${nickname}" ${surname}`
+      : `${firstName} "${nickname}"`;
+  }
+
+  return fullName;
+}
 
 /* ===========================
    UI COMPONENT
@@ -2607,6 +3173,8 @@ export default function Home() {
   const [isPremium, setIsPremium] = useState(false);
   const [includeLore, setIncludeLore] = useState(true);
   const [count, setCount] = useState(5);
+
+  const [epithetMode, setEpithetMode] = useState<EpithetMode>("none");
 
   const [results, setResults] = useState<GeneratedEntry[]>([]);
 
@@ -2630,7 +3198,15 @@ export default function Home() {
 
       // Surname: complements first name, no gender
       const last = makeSurname(archetypeA, archetypeB, first);
-      const fullName = `${first} ${last}`;
+      let fullName = `${first} ${last}`;
+
+      // Lore profile (used for both lore & epithet/nickname)
+      const profile = deriveLoreProfile(archetypeA, archetypeB);
+
+      // Apply epithet / nickname only in Premium mode
+      if (isPremium && epithetMode !== "none") {
+        fullName = applyEpithetOrNickname(fullName, profile, epithetMode);
+      }
 
       output.push({
         name: fullName,
@@ -2652,8 +3228,9 @@ export default function Home() {
             Elven Name Generator
           </h1>
           <p className="text-gray-300 text-sm md:text-base">
-            Mix two archetypes to generate evocative Elven names with Tolkien-inspired flair. 
-            Free mode gives you quick lists; Premium mode unlocks bulk names and mini-lore.
+            Mix two archetypes to generate evocative elven names with Tolkien-inspired
+            flair. Free mode gives you quick lists; Premium mode unlocks bulk names,
+            rich lore hooks, and optional epithets or nicknames.
           </p>
         </header>
 
@@ -2662,8 +3239,7 @@ export default function Home() {
           <div>
             <h2 className="font-semibold text-lg">Mode</h2>
             <p className="text-sm text-gray-300">
-              Free: up to 5 names, no lore. Premium: up to 50 names + optional
-              lore.
+              Free: up to 5 names, no lore. Premium: up to 50 names, lore, and extra flavor.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -2767,6 +3343,44 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Premium-only extra flavor controls */}
+          {isPremium && (
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-1 text-sm font-medium">
+                  Epithets / nicknames
+                </label>
+                <select
+                  value={epithetMode}
+                  onChange={(e) => setEpithetMode(e.target.value as EpithetMode)}
+                  className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="either">Either (random blend)</option>
+                  <option value="none">None</option>
+                  <option value="epithet">Epic epithet (e.g. the Emberborn)</option>
+                  <option value="nickname">Nickname (e.g. "Ash")</option>
+                  
+                </select>
+                <p className="mt-1 text-xs text-gray-400">
+                  Epithets feel legendary; nicknames feel more casual and grounded.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 mt-6 md:mt-8">
+                <input
+                  id="includeLore"
+                  type="checkbox"
+                  checked={includeLore}
+                  onChange={(e) => setIncludeLore(e.target.checked)}
+                  className="w-4 h-4"
+                />
+                <label htmlFor="includeLore" className="text-sm">
+                  Include bullet-point lore hooks for each name
+                </label>
+              </div>
+            </div>
+          )}
+
           <div className="grid md:grid-cols-2 gap-4 items-end">
             <div>
               <label className="block mb-1 text-sm font-medium">
@@ -2793,21 +3407,6 @@ export default function Home() {
                   : "Free: capped at 5 names per batch."}
               </p>
             </div>
-
-            {isPremium && (
-              <div className="flex items-center gap-2">
-                <input
-                  id="includeLore"
-                  type="checkbox"
-                  checked={includeLore}
-                  onChange={(e) => setIncludeLore(e.target.checked)}
-                  className="w-4 h-4"
-                />
-                <label htmlFor="includeLore" className="text-sm">
-                  Include 1–2 sentence micro-lore for each name
-                </label>
-              </div>
-            )}
           </div>
 
           <button
@@ -2830,11 +3429,10 @@ export default function Home() {
                 >
                   <div className="font-semibold text-lg">{entry.name}</div>
                   {entry.lore && (
-                <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
-                {entry.lore}
-                </p>
-                )}
-
+                    <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
+                      {entry.lore}
+                    </p>
+                  )}
                 </li>
               ))}
             </ul>
