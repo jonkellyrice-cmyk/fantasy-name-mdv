@@ -798,12 +798,17 @@ function clampNameLength(name: string, maxLen = 10): string {
   if (name.length <= maxLen) return name;
   return name.slice(0, maxLen);
 }
+// Global name length constraints
+const MAX_SYLLABLES = 4; // Vir-ien-i-on style upper bound on "sound units"
+const MAX_CHARS = 10;    // Hard cap on total characters
 
 function makeFantasyName(
   archetypeA: string,
   archetypeB: string,
   gender: Gender
 ): string {
+
+  // (1) Combine archetypes to decide dialect + element
   const combined = `${archetypeA} ${archetypeB}`.trim();
   const dialect = pickDialectFromArchetypes(archetypeA, archetypeB);
 
@@ -820,17 +825,50 @@ function makeFantasyName(
   const elementA = pickElementFromText(archetypeA) ?? elementMain;
   const elementB = pickElementFromText(archetypeB) ?? elementMain;
 
-  const result = generateVariedName({
-    dialect,
-    type: "personal",
-    element: elementMain,
-    elementA,
-    elementB,
-  });
+  let lastGendered = "";
 
-  // Apply gender shaping at the very end, THEN clamp length
-  const gendered = applyGenderToName(result.name, gender);
-  return clampNameLength(gendered, 10);
+  // -------------------------------------------------------------
+  // (2) BEGIN REROLL LOOP — tries up to 10 times to get a valid name
+  // -------------------------------------------------------------
+  for (let attempt = 0; attempt < 10; attempt++) {
+
+    // (2a) Generate a base name from the language engine
+    const result = generateVariedName({
+      dialect,
+      type: "personal",
+      element: elementMain,
+      elementA,
+      elementB,
+    });
+
+    // (2b) Apply gender endings at the end of the name
+    const gendered = applyGenderToName(result.name, gender);
+
+    // (2c) Save the last generated name in case we need a fallback
+    lastGendered = gendered;
+
+    // -------------------------------------------------------------
+    // (3) CHECK SYLLABLE + CHARACTER LIMITS
+    // -------------------------------------------------------------
+    const syllables = syllableCount(gendered.toLowerCase());
+    const chars = gendered.length;
+
+    // -------------------------------------------------------------
+    // (4) THIS IS THE ACCEPTANCE CONDITION:
+    //     If BOTH limits are satisfied, return the name immediately
+    // -------------------------------------------------------------
+    if (syllables <= MAX_SYLLABLES && chars <= MAX_CHARS) {
+      return gendered;
+    }
+
+    // If not accepted, the loop continues → the name is RE-ROLLED
+  }
+
+  // -------------------------------------------------------------
+  // (5) FALLBACK:
+  //     If all 10 attempts failed, clamp the last generated name
+  // -------------------------------------------------------------
+  return clampNameLength(lastGendered, MAX_CHARS);
 }
 
 
