@@ -1949,11 +1949,11 @@ export default function Home() {
       <div className="w-full max-w-3xl space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl md:text-4xl font-bold">
-            Fantasy Name MDV Generator
+            Elven Name Generator
           </h1>
           <p className="text-gray-300 text-sm md:text-base">
-            Mix two archetypes to generate evocative fantasy names. Free mode
-            gives you quick lists; Premium mode unlocks bulk names and mini-lore.
+            Mix two archetypes to generate evocative Elven names with Tolkien-inspired flair. 
+            Free mode gives you quick lists; Premium mode unlocks bulk names and mini-lore.
           </p>
         </header>
 
