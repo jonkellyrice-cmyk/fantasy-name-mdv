@@ -1873,25 +1873,213 @@ function makeSurname(
 }
 
 /* ===========================
-   LORE STUB
+   LORE SYSTEM (Elven-flavored)
    =========================== */
 
 function randomItem<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+type LoreTone = "bright" | "shadowed" | "balanced";
+
+function deriveLoreProfile(archetypeA: string, archetypeB: string): {
+  role: string;
+  tone: LoreTone;
+  element: Element | null;
+  dialect: Dialect;
+} {
+  const raw = `${archetypeA} ${archetypeB}`.trim();
+  const t = raw.toLowerCase();
+
+  // Re-use your existing element & dialect logic
+  const element = pickElementFromText(raw);
+  const dialect = pickDialectFromArchetypes(archetypeA, archetypeB);
+
+  // --- Role classification (very soft, but flavorful) ---
+  let role = "wanderer";
+
+  if (/(knight|warrior|fighter|soldier|champion|paladin|berserker)/.test(t)) {
+    role = "warrior";
+  } else if (/(ranger|hunter|tracker|scout|archer)/.test(t)) {
+    role = "hunter";
+  } else if (/(mage|wizard|sorcer|warlock|witch|seer|oracle|prophet)/.test(t)) {
+    role = "seer";
+  } else if (/(healer|priest|cleric|druid)/.test(t)) {
+    role = "healer";
+  } else if (/(bard|singer|minstrel|storyteller|skald)/.test(t)) {
+    role = "bard";
+  } else if (/(thief|rogue|assassin|spy|shadow)/.test(t)) {
+    role = "shadow";
+  } else if (/(king|queen|prince|princess|lord|lady|noble|duke|duchess)/.test(t)) {
+    role = "noble";
+  } else if (/(smith|forge|artisan|craft|maker)/.test(t)) {
+    role = "smith";
+  }
+
+  // --- Tone classification (bright vs shadowed vs in-between) ---
+  let tone: LoreTone = "balanced";
+
+  if (
+    /(shadow|night|grave|death|void|abyss|nether|wraith|ghost|crypt|tomb)/.test(t) ||
+    element === ELEMENTS.DARK
+  ) {
+    tone = "shadowed";
+  } else if (
+    /(sun|light|radiant|dawn|star|sky|angel|seraph)/.test(t) ||
+    element === ELEMENTS.FIRE ||
+    element === ELEMENTS.AIR
+  ) {
+    tone = "bright";
+  }
+
+  return { role, tone, element, dialect };
+}
+
 function makeLore(name: string, a: string, b: string): string {
   const arcA = a || "mysterious";
   const arcB = b || "forgotten";
 
-  const templates = [
-    `${name} is a ${arcA.toLowerCase()} soul tied to ${arcB.toLowerCase()} powers.`,
-    `${name} once served as a ${arcA.toLowerCase()}, but carries a trace of ${arcB.toLowerCase()} destiny.`,
-    `Legends say ${name} walks the line between ${arcA.toLowerCase()} honor and ${arcB.toLowerCase()} chaos.`,
+  const { role, tone, element, dialect } = deriveLoreProfile(arcA, arcB);
+
+  // Dialect-flavored Elven places
+  const placesByDialect: Record<Dialect, string[]> = {
+    [DIALECTS.HIGH]: [
+      "the starlit courts",
+      "the silver halls of the highborn",
+      "the radiant spires of the First City",
+    ],
+    [DIALECTS.FOREST]: [
+      "the deep greenwood",
+      "the whispering boughs of the elder forest",
+      "the moss-lit glades of the old ways",
+    ],
+    [DIALECTS.SEA]: [
+      "the moon-touched coasts",
+      "the pearl harbors of the western sea",
+      "the tide-sung isles",
+    ],
+    [DIALECTS.MOUNTAIN]: [
+      "the high mountain vales",
+      "the hidden passes of the stone-walkers",
+      "the echoing halls beneath the peaks",
+    ],
+    [DIALECTS.SHADOW]: [
+      "the veiled borderlands",
+      "the twilight roads between worlds",
+      "the hush of starless groves",
+    ],
+  };
+
+  const fallbackPlaces = [
+    "the old realms",
+    "lands long-forgotten",
+    "paths between memory and myth",
   ];
 
-  return randomItem(templates);
+  const places = placesByDialect[dialect] ?? fallbackPlaces;
+  const place = randomItem(places);
+
+  // Element-flavored motifs
+  const elementMotifs: string[] =
+    element === ELEMENTS.FIRE
+      ? ["ember-oaths", "flamebound destinies", "sunlit steel"]
+      : element === ELEMENTS.WATER
+      ? ["tidelocked secrets", "river-borne omens", "sea-mist whispers"]
+      : element === ELEMENTS.EARTH
+      ? ["stone-deep memories", "roots older than kingdoms", "mountain vows"]
+      : element === ELEMENTS.AIR
+      ? ["wind-carried songs", "storm-lit visions", "skyward wanderings"]
+      : element === ELEMENTS.DARK
+      ? ["moonless pacts", "shadows that answer by name", "whispers from the void"]
+      : ["half-remembered songs", "forgotten promises", "unquiet dreams"];
+
+  const elementMotif = randomItem(elementMotifs);
+
+  // Role-flavored titles
+  const roleTitles: Record<string, string[]> = {
+    warrior: [
+      "blade-warden",
+      "shield-bearer",
+      "oathbound knight",
+      "spear-singer",
+    ],
+    hunter: [
+      "wayfinder",
+      "shadow-tracker",
+      "warden of the wilds",
+      "arrow-kin",
+    ],
+    seer: ["star-reader", "dreambound oracle", "keeper of omens", "veil-touched"],
+    healer: [
+      "leaf-mender",
+      "soul-stitcher",
+      "keeper of gentle hands",
+      "herb-sage",
+    ],
+    bard: ["songweaver", "tale-bearer", "keeper of old lays", "harp-kin"],
+    shadow: ["veil-dancer", "knife in the dusk", "stepper-between", "silent hand"],
+    noble: [
+      "scion of ancient houses",
+      "heir of moonlit courts",
+      "lordling of the old blood",
+    ],
+    smith: [
+      "forge-singer",
+      "binder of steel and starfire",
+      "hammerwise artisan",
+    ],
+    wanderer: [
+      "road-worn pilgrim",
+      "restless wayfarer",
+      "child of the long roads",
+    ],
+  };
+
+  const titles = roleTitles[role] ?? roleTitles["wanderer"];
+  const title = randomItem(titles);
+
+  // Tone-flavored tensions / hooks
+  const brightHooks = [
+    `${name} walks in light but bears ${elementMotif} as a quiet burden.`,
+    `${name}'s laughter hides the weight of ancient vows.`,
+    `${name} is cherished in ${place}, yet their heart is never fully at rest.`,
+  ];
+
+  const shadowHooks = [
+    `${name} treads the borders of ${place}, where even spirits whisper in fear.`,
+    `${name} wears their sins like jewelry, each one a story no song will tell.`,
+    `${name} serves in darkness, hoping one day to buy back a single dawn.`,
+  ];
+
+  const balancedHooks = [
+    `${name} drifts between honor and necessity, guided by ${elementMotif}.`,
+    `${name} knows that every choice in ${place} casts both light and shadow.`,
+    `${name} bears quiet scars and gentler mercies in equal measure.`,
+  ];
+
+  const hooksByTone: Record<LoreTone, string[]> = {
+    bright: brightHooks,
+    shadowed: shadowHooks,
+    balanced: balancedHooks,
+  };
+
+  const firstSentenceTemplates = [
+    `${name} is a ${title} hailing from ${place}.`,
+    `In ${place}, the name ${name} is spoken with a mix of awe and warning.`,
+    `${name} of ${place} walks a path few dare to follow.`,
+  ];
+
+  const first = randomItem(firstSentenceTemplates);
+  const second = randomItem(hooksByTone[tone]);
+
+  // 40% of the time, keep it tight with just one sentence (still flavorful).
+  if (Math.random() < 0.4) {
+    return first;
+  }
+
+  return `${first} ${second}`;
 }
+
 
 /* ===========================
    UI COMPONENT
