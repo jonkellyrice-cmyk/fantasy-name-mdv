@@ -987,8 +987,8 @@ function clampNameLength(name: string, maxLen = 10): string {
   return name.slice(0, maxLen);
 }
 // Global name length constraints
-const MAX_SYLLABLES = 4; // Vir-ien-i-on style upper bound on "sound units"
-const MAX_CHARS = 10;    // Hard cap on total characters
+const MAX_SYLLABLES = 3; // Vir-ien-i-on style upper bound on "sound units"
+const MAX_CHARS = 8;    // Hard cap on total characters
 
 function makeFantasyName(
   archetypeA: string,
