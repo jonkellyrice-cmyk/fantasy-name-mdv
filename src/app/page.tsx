@@ -337,7 +337,7 @@ const AFFIX_PATTERNS: Record<
     ],
     clan: [
       "Mac{root}", "Ui{root}", "{root}dhel", "Cen{root}",
-      "Bro{root}ach", "Sil{root}", "Or{root}gwyn"
+      "Brul{root}ach", "Sil{root}", "Or{root}gwyn"
     ],
   },
 
