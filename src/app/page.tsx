@@ -2,120 +2,1074 @@
 
 import { useState } from "react";
 
-export default function Home() {
-  const [genre, setGenre] = useState("fantasy");
-  const [archetypeA, setArchetypeA] = useState("");
-  const [archetypeB, setArchetypeB] = useState("");
-  const [count, setCount] = useState(5);
+type GeneratedEntry = {
+  name: string;
+  lore?: string;
+};
+type Gender = "neutral" | "male" | "female";
+/* ===========================
+   ELVISH LANGUAGE ENGINE
+   (Integrated, no external imports)
+   =========================== */
 
-  const [results, setResults] = useState<string[]>([]);
+const ELEMENTS = {
+  FIRE: "fire",
+  WATER: "water",
+  EARTH: "earth",
+  AIR: "air",
+  DARK: "darkness",
+} as const;
 
-const fantasySyllables = [
-  "ae", "al", "ar", "bal", "bel", "cor", "dra", "el", "fae", "gal", "hal",
-  "ian", "jor", "kal", "lor", "mir", "nar", "or", "quel", "rin", "sar",
-  "thal", "ur", "val", "wyn", "yor", "zel"
+type Element = (typeof ELEMENTS)[keyof typeof ELEMENTS];
+
+const DIALECTS = {
+  HIGH: "high",
+  FOREST: "forest",
+  SEA: "sea",
+  MOUNTAIN: "mountain",
+  SHADOW: "shadow",
+} as const;
+
+type Dialect = (typeof DIALECTS)[keyof typeof DIALECTS];
+
+type ProtoRoot = {
+  key: string;
+  proto: string;
+  elements: Element[];
+};
+
+const PROTO_ROOTS: ProtoRoot[] = [
+  // A. ELEMENTAL ROOTS (20)
+  { key: "fire", proto: "pyran", elements: [ELEMENTS.FIRE] },
+  { key: "flame", proto: "sira", elements: [ELEMENTS.FIRE] },
+  { key: "ember", proto: "kaleth", elements: [ELEMENTS.FIRE] },
+  { key: "light", proto: "alir", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "star", proto: "selun", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "sun", proto: "tavor", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "heat", proto: "urmar", elements: [ELEMENTS.FIRE] },
+  { key: "forge", proto: "braeg", elements: [ELEMENTS.FIRE] },
+  { key: "breath", proto: "aevor", elements: [ELEMENTS.AIR] },
+  { key: "wind", proto: "suith", elements: [ELEMENTS.AIR] },
+  { key: "storm", proto: "aerkan", elements: [ELEMENTS.AIR] },
+  { key: "sky", proto: "vion", elements: [ELEMENTS.AIR] },
+  { key: "water", proto: "mirea", elements: [ELEMENTS.WATER] },
+  { key: "river", proto: "gleno", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+  { key: "ocean", proto: "thalor", elements: [ELEMENTS.WATER] },
+  { key: "wave", proto: "ulai", elements: [ELEMENTS.WATER] },
+  { key: "earth", proto: "moril", elements: [ELEMENTS.EARTH] },
+  { key: "stone", proto: "garon", elements: [ELEMENTS.EARTH] },
+  { key: "mountain", proto: "drunag", elements: [ELEMENTS.EARTH] },
+  { key: "void", proto: "ekhar", elements: [ELEMENTS.DARK] },
+
+  // B. NATURE & LANDSCAPE (20)
+  { key: "forest", proto: "drial", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+  { key: "leaf", proto: "althe", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "branch", proto: "toril", elements: [ELEMENTS.EARTH] },
+  { key: "root", proto: "thalun", elements: [ELEMENTS.EARTH] },
+  { key: "bark", proto: "koren", elements: [ELEMENTS.EARTH] },
+  { key: "meadow", proto: "lainor", elements: [ELEMENTS.EARTH] },
+  { key: "valley", proto: "norim", elements: [ELEMENTS.EARTH] },
+  { key: "cliff", proto: "skarim", elements: [ELEMENTS.EARTH] },
+  { key: "peak", proto: "krenor", elements: [ELEMENTS.EARTH] },
+  { key: "cave", proto: "holun", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+  { key: "snow", proto: "mithae", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "ice", proto: "keral", elements: [ELEMENTS.WATER] },
+  { key: "mist", proto: "nephal", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "rain", proto: "lorien", elements: [ELEMENTS.WATER] },
+  { key: "night", proto: "nuel", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "moon", proto: "lua", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "dawn", proto: "arail", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "dusk", proto: "ombran", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+  { key: "starfall", proto: "selkan", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "desert", proto: "tharuk", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+
+  // C. MOTION / DANCE (20)
+  { key: "step", proto: "tiren", elements: [ELEMENTS.AIR] },
+  { key: "leap", proto: "kaelu", elements: [ELEMENTS.AIR] },
+  { key: "spin", proto: "viror", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "glide", proto: "suilen", elements: [ELEMENTS.AIR] },
+  { key: "sway", proto: "neril", elements: [ELEMENTS.WATER] },
+  { key: "twist", proto: "kairum", elements: [ELEMENTS.AIR] },
+  { key: "flow", proto: "merai", elements: [ELEMENTS.WATER] },
+  { key: "fall", proto: "douren", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+  { key: "rise", proto: "aran", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "whirl", proto: "toruin", elements: [ELEMENTS.AIR] },
+  { key: "circle", proto: "orian", elements: [ELEMENTS.AIR] },
+  { key: "bend", proto: "thurin", elements: [ELEMENTS.EARTH] },
+  { key: "break", proto: "kradan", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+  { key: "strike", proto: "baruk", elements: [ELEMENTS.FIRE] },
+  { key: "cut", proto: "karesh", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "pulse", proto: "thiren", elements: [ELEMENTS.FIRE] },
+  { key: "echo", proto: "drunel", elements: [ELEMENTS.EARTH] },
+  { key: "drift", proto: "aelun", elements: [ELEMENTS.AIR] },
+  { key: "scatter", proto: "velor", elements: [ELEMENTS.AIR] },
+  { key: "gather", proto: "hiran", elements: [ELEMENTS.EARTH] },
+
+  // D. EMOTION & SPIRIT (20)
+  { key: "love", proto: "amriel", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+  { key: "sorrow", proto: "melkun", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "joy", proto: "talia", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "anger", proto: "urvak", elements: [ELEMENTS.FIRE] },
+  { key: "courage", proto: "varun", elements: [ELEMENTS.FIRE] },
+  { key: "fear", proto: "shuvan", elements: [ELEMENTS.DARK] },
+  { key: "hope", proto: "aeriel", elements: [ELEMENTS.AIR] },
+  { key: "memory", proto: "ernei", elements: [ELEMENTS.WATER] },
+  { key: "dream", proto: "oneir", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "wisdom", proto: "saren", elements: [ELEMENTS.AIR] },
+  { key: "rage", proto: "krovun", elements: [ELEMENTS.FIRE] },
+  { key: "grief", proto: "dhoiral", elements: [ELEMENTS.DARK] },
+  { key: "rest", proto: "lumen", elements: [ELEMENTS.AIR] },
+  { key: "desire", proto: "siren", elements: [ELEMENTS.FIRE] },
+  { key: "longing", proto: "meriel", elements: [ELEMENTS.WATER] },
+  { key: "honor", proto: "thalorun", elements: [ELEMENTS.EARTH] },
+  { key: "oath", proto: "brekan", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "fate", proto: "miron", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+  { key: "secret", proto: "kephal", elements: [ELEMENTS.DARK] },
+  { key: "will", proto: "aranir", elements: [ELEMENTS.FIRE] },
+
+  // E. ANIMALS & CREATURES (20)
+  { key: "wolf", proto: "garuin", elements: [ELEMENTS.EARTH] },
+  { key: "hawk", proto: "aerik", elements: [ELEMENTS.AIR] },
+  { key: "eagle", proto: "tharun", elements: [ELEMENTS.AIR] },
+  { key: "serpent", proto: "zulai", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
+  { key: "bear", proto: "drunak", elements: [ELEMENTS.EARTH] },
+  { key: "deer", proto: "lyonel", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "fox", proto: "verin", elements: [ELEMENTS.AIR] },
+  { key: "owl", proto: "thurel", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+  { key: "lion", proto: "karum", elements: [ELEMENTS.FIRE] },
+  { key: "horse", proto: "mirendal", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+  { key: "hound", proto: "barun", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+  { key: "raven", proto: "orvul", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+  { key: "boar", proto: "gralen", elements: [ELEMENTS.EARTH] },
+  { key: "fish", proto: "siru", elements: [ELEMENTS.WATER] },
+  { key: "whale", proto: "ovamar", elements: [ELEMENTS.WATER] },
+  { key: "spider", proto: "kelreth", elements: [ELEMENTS.DARK] },
+  { key: "insect", proto: "shiril", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+  { key: "dragon", proto: "kalduin", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "lizard", proto: "meruk", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+  { key: "bat", proto: "dhuair", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+
+  // F. CRAFT / ROLE / CULTURE (20)
+  { key: "smith", proto: "brakor", elements: [ELEMENTS.FIRE] },
+  { key: "hunter", proto: "torvak", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "seer", proto: "omriel", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "dancer", proto: "tirial", elements: [ELEMENTS.AIR] },
+  { key: "singer", proto: "lirien", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "keeper", proto: "draven", elements: [ELEMENTS.EARTH] },
+  { key: "wanderer", proto: "aevun", elements: [ELEMENTS.AIR] },
+  { key: "shaper", proto: "koral", elements: [ELEMENTS.EARTH] },
+  { key: "judge", proto: "sirvak", elements: [ELEMENTS.AIR] },
+  { key: "priest", proto: "thulen", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "witch", proto: "zelai", elements: [ELEMENTS.DARK] },
+  { key: "storyteller", proto: "meranor", elements: [ELEMENTS.AIR] },
+  { key: "warrior", proto: "kargun", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+  { key: "scout", proto: "aevrik", elements: [ELEMENTS.AIR] },
+  { key: "healer", proto: "solien", elements: [ELEMENTS.WATER] },
+  { key: "trader", proto: "baril", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+  { key: "farmer", proto: "dhranor", elements: [ELEMENTS.EARTH] },
+  { key: "sailor", proto: "merak", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "noble", proto: "elunor", elements: [ELEMENTS.AIR] },
+  { key: "guardian_spirit", proto: "dhuverin", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
 ];
+
+const AFFIX_PATTERNS: Record<
+  Dialect,
+  { personal: string[]; place: string[]; clan: string[] }
+> = {
+  [DIALECTS.HIGH]: {
+    personal: ["{root}ia", "{root}ea", "{root}iel", "{root}ion", "Ael{root}", "El{root}ar"],
+    place: ["{root}ara", "{root}orë", "{root}ilion", "{root}arë"],
+    clan: ["An{root}", "Tel{root}", "{root}ain", "Calen{root}"],
+  },
+  [DIALECTS.FOREST]: {
+    personal: ["{root}an", "{root}eth", "{root}orn", "{root}ach"],
+    place: ["{root}thir", "{root}ron", "{root}dun"],
+    clan: ["Mac{root}", "Ui{root}", "{root}dhel", "Cen{root}"],
+  },
+  [DIALECTS.SEA]: {
+    personal: ["{root}ae", "{root}ao", "{root}uin", "{root}ia"],
+    place: ["{root}aë", "{root}oae", "{root}eluin", "{root}orae"],
+    clan: ["Sel{root}", "Mar{root}ae", "Pel{root}uin"],
+  },
+  [DIALECTS.MOUNTAIN]: {
+    personal: ["{root}rak", "{root}in", "{root}or", "{root}grin"],
+    place: ["{root}kar", "{root}drum", "{root}gorn", "{root}dûm"],
+    clan: ["Kar{root}", "Dur{root}un", "Khaz{root}"],
+  },
+  [DIALECTS.SHADOW]: {
+    personal: ["{root}úth", "{root}ghal", "{root}shai", "{root}mur"],
+    place: ["{root}gúl", "{root}mor", "{root}naúr", "{root}dûr"],
+    clan: ["Mor{root}", "Dhul{root}", "Ghul{root}"],
+  },
+};
+
+function randomChoice<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+function randChance(p: number) {
+  return Math.random() < p;
+}
+function isVowel(ch: string) {
+  return /[aeiouáéíóú]/i.test(ch);
+}
+function syllableCount(s: string) {
+  return s.split(/[^aeiouáéíóú]+/).filter(Boolean).length;
+}
+
+/* --- Global phonology rules --- */
+
+function applyTwoGRule(s: string): string {
+  const chars = s.toLowerCase().split("");
+  let firstG = false;
+  for (let i = 0; i < chars.length; i++) {
+    if (chars[i] === "g") {
+      if (!firstG) firstG = true;
+      else chars[i] = "k";
+    }
+  }
+  return chars.join("");
+}
+
+function applyOneRRule(s: string, dialect: Dialect): string {
+  const chars = s.split("");
+  let firstR = false;
+
+  for (let i = 0; i < chars.length; i++) {
+    if (chars[i] === "r") {
+      if (!firstR) {
+        firstR = true;
+      } else {
+        switch (dialect) {
+          case DIALECTS.HIGH:
+            chars[i] = "l";
+            break;
+          case DIALECTS.FOREST:
+            chars[i] = "d";
+            chars.splice(i + 1, 0, "h");
+            break;
+          case DIALECTS.SEA:
+            chars[i] = "l";
+            break;
+          case DIALECTS.MOUNTAIN:
+            chars[i] = "r";
+            chars.splice(i + 1, 0, "k");
+            break;
+          case DIALECTS.SHADOW:
+            chars[i] = "g";
+            chars.splice(i + 1, 0, "h");
+            break;
+        }
+      }
+    }
+  }
+
+  return chars.join("");
+}
+
+function collapseDoubleVowels(s: string) {
+  return s
+    .replace(/aa/g, "a")
+    .replace(/ee/g, "e")
+    .replace(/ii/g, "i")
+    .replace(/oo/g, "o")
+    .replace(/uu/g, "u");
+}
+
+// Global vowel-run rule
+function fixVowelRuns(s: string, dialect: Dialect) {
+  const chars = s.split("");
+  let out = "";
+  let i = 0;
+
+  while (i < chars.length) {
+    const ch = chars[i];
+    if (!isVowel(ch)) {
+      out += ch;
+      i++;
+      continue;
+    }
+    let run = "";
+    while (i < chars.length && isVowel(chars[i])) {
+      run += chars[i];
+      i++;
+    }
+
+    if (run.length <= 2) {
+      out += run;
+    } else {
+      const v1 = run[0];
+      const v2 = run[run.length - 1];
+      let replacement;
+      if (dialect === DIALECTS.SEA && randChance(0.3)) {
+        replacement = v1 + "l" + v2;
+      } else {
+        replacement = v1 + v2;
+      }
+      out += replacement;
+    }
+  }
+  return out;
+}
+
+function trimTripleConsonants(s: string) {
+  return s.replace(/([^aeiou])([^aeiou])([^aeiou])/g, "$1$2");
+}
+
+function cleanupForm(s: string, dialect: Dialect) {
+  s = collapseDoubleVowels(s);
+  s = fixVowelRuns(s, dialect);
+  s = trimTripleConsonants(s);
+
+  if (dialect === DIALECTS.HIGH) {
+    if (/[tgkdbp]$/.test(s)) s = s + "a";
+  } else if (dialect === DIALECTS.SEA) {
+    if (!isVowel(s[s.length - 1])) s = s + "aë";
+  }
+  return s;
+}
+
+/* --- Dialect sound changes --- */
+
+function applyHighSoundChanges(proto: string) {
+  let s = proto.toLowerCase();
+
+  s = s
+    .replace(/ai/g, "ae")
+    .replace(/au/g, "ao")
+    .replace(/oi/g, "oe")
+    .replace(/ue/g, "ui");
+
+  s = s
+    .replace(/([aeiou])t([aeiou])/g, "$1th$2")
+    .replace(/([aeiou])d([aeiou])/g, "$1dh$2")
+    .replace(/([aeiou])g([aeiou])/g, "$1gh$2")
+    .replace(/([aeiou])b([aeiou])/g, "$1v$2");
+
+  s = s.replace(/a([bcdfghjklmnpqrstvwxyz])([aeiou])/g, "á$1$2");
+
+  if (randChance(0.12)) {
+    const lastVowelIndex = s.search(/[aeiou][^aeiou]*$/);
+    if (lastVowelIndex > 0) {
+      const ins = randomChoice(["il", "el", "ar"]);
+      s = s.slice(0, lastVowelIndex) + ins + s.slice(lastVowelIndex);
+    }
+  }
+
+  return s;
+}
+
+function applyForestSoundChanges(proto: string) {
+  let s = proto.toLowerCase();
+
+  s = s
+    .replace(/ai/g, "e")
+    .replace(/au/g, "o")
+    .replace(/ei/g, "e")
+    .replace(/oa/g, "o")
+    .replace(/ue/g, "u");
+
+  s = s
+    .replace(/b/g, "bh")
+    .replace(/d/g, "dh")
+    .replace(/g/g, "gh")
+    .replace(/m/g, "mh")
+    .replace(/s/g, "sh");
+
+  s = s.replace(/i([rln])/g, "e$1");
+  s = s.replace(/u$/g, "o");
+
+  if (isVowel(s[s.length - 1])) {
+    s = s.slice(0, -1);
+  }
+
+  if (randChance(0.1)) {
+    s = s.replace(/a([bcdfghjklmnpqrstvwxyz])a/g, "e$1a");
+  }
+
+  return s;
+}
+
+function applySeaSoundChanges(proto: string) {
+  let s = proto.toLowerCase();
+
+  s = s
+    .replace(/a/g, "ae")
+    .replace(/e/g, "eo")
+    .replace(/i/g, "ia");
+
+  s = s
+    .replace(/([aeiou])t([aeiou])/g, "$1l$2")
+    .replace(/([aeiou])d([aeiou])/g, "$1$2");
+
+  s = s
+    .replace(/dr/g, "dora")
+    .replace(/tr/g, "tera")
+    .replace(/gl/g, "gelo");
+
+  if (randChance(0.15)) {
+    s = s.replace(/([aeiou])([aeiou])/g, (_m, v1, v2) =>
+      v1 + randomChoice(["l", "r"]) + v2
+    );
+  }
+
+  if (!isVowel(s[s.length - 1])) {
+    s = s + "ao";
+  }
+
+  return s;
+}
+
+function applyMountainSoundChanges(proto: string) {
+  let s = proto.toLowerCase();
+
+  s = s
+    .replace(/^g([aeiou])/, "gr$1")
+    .replace(/^k([aeiou])/, "kr$1")
+    .replace(/^t([aeiou])/, "tr$1");
+
+  s = s
+    .replace(/dh/g, "d")
+    .replace(/th/g, "t")
+    .replace(/sh/g, "sk");
+
+  s = s.replace(/a([^aeiou]{1,2})$/g, "o$1");
+
+  if (!isVowel(s[s.length - 1]) && randChance(0.1)) {
+    s = s.replace(/([^aeiou])$/, "um$1");
+  }
+
+  const syllables = s.split(/[^aeiou]+/).filter(Boolean).length;
+  if (syllables < 2) {
+    s = s + "un";
+  }
+
+  return s;
+}
+
+function applyShadowSoundChanges(proto: string) {
+  let s = proto.toLowerCase();
+
+  s = s
+    .replace(/a/g, "u")
+    .replace(/e/g, "o");
+
+  s = s
+    .replace(/ai/g, "ia")
+    .replace(/au/g, "ua")
+    .replace(/eo/g, "oe");
+
+  s = s
+    .replace(/t/g, "th")
+    .replace(/d/g, "dh")
+    .replace(/g/g, "gh");
+
+  s = s.replace(/^b/, "v").replace(/^d/, "sh");
+
+  if (randChance(0.15)) {
+    s = s.replace(/([aeiou])([^aeiou])([aeiou])/g, "$1gh$2$3");
+  }
+
+  return s;
+}
+
+/* --- Dialect pipeline --- */
+
+function transformRootForDialect(proto: string, dialect: Dialect) {
+  let s = applyTwoGRule(proto);
+
+  switch (dialect) {
+    case DIALECTS.HIGH:
+      s = applyHighSoundChanges(s);
+      break;
+    case DIALECTS.FOREST:
+      s = applyForestSoundChanges(s);
+      break;
+    case DIALECTS.SEA:
+      s = applySeaSoundChanges(s);
+      break;
+    case DIALECTS.MOUNTAIN:
+      s = applyMountainSoundChanges(s);
+      break;
+    case DIALECTS.SHADOW:
+      s = applyShadowSoundChanges(s);
+      break;
+  }
+
+  s = applyOneRRule(s, dialect);
+  s = cleanupForm(s, dialect);
+
+  return s;
+}
+
+function applyPattern(pattern: string, rootForm: string) {
+  return pattern.replace("{root}", rootForm);
+}
+
+/* --- Root selection + compounding --- */
+
+function pickRootByElement(element: Element | null): ProtoRoot {
+  if (element == null) return randomChoice(PROTO_ROOTS);
+
+  if (element === ELEMENTS.DARK) {
+    const darkRoots = PROTO_ROOTS.filter((r) =>
+      r.elements.includes(ELEMENTS.DARK)
+    );
+    if (darkRoots.length) return randomChoice(darkRoots);
+  }
+
+  const matches = PROTO_ROOTS.filter((r) => r.elements.includes(element));
+  if (matches.length) return randomChoice(matches);
+
+  return randomChoice(PROTO_ROOTS);
+}
+
+function compressHead(rootProto: string) {
+  const r = rootProto.toLowerCase();
+  const lastVowel = r.search(/[aeiouáéíóú][^aeiouáéíóú]*$/);
+  if (lastVowel === -1) return r.slice(0, 4);
+  const cut = Math.min(r.length, lastVowel + 2);
+  return r.slice(0, cut);
+}
+
+function compressTail(rootProto: string) {
+  const r = rootProto.toLowerCase();
+  const firstVowel = r.search(/[aeiouáéíóú]/);
+  if (firstVowel === -1) return r.slice(-3);
+  return r.slice(firstVowel);
+}
+
+function makeCompoundProto(
+  root1: ProtoRoot,
+  root2: ProtoRoot
+) {
+  const r1 = root1.proto.toLowerCase();
+  const r2 = root2.proto.toLowerCase();
+
+  let head = compressHead(r1);
+  let tail = compressTail(r2);
+
+  let compound = head + tail;
+
+  if (syllableCount(compound) > 4 || compound.length > 9) {
+    const shortHead = r1.slice(0, Math.min(3, r1.length));
+    const shortTail = r2.slice(Math.max(0, r2.length - 3));
+    compound = shortHead + shortTail;
+  }
+
+  return compound;
+}
+
+function pickTwoRoots(
+  elementA: Element | null,
+  elementB: Element | null
+): [ProtoRoot, ProtoRoot] {
+  const r1 = elementA ? pickRootByElement(elementA) : randomChoice(PROTO_ROOTS);
+
+  let r2: ProtoRoot;
+  let attempts = 0;
+  do {
+    r2 = elementB ? pickRootByElement(elementB) : pickRootByElement(elementA);
+    attempts++;
+  } while (r2.proto === r1.proto && attempts < 10);
+
+  return [r1, r2];
+}
+
+/* --- Public generators --- */
+
+type NameType = "personal" | "place" | "clan";
+
+function generateName(opts: {
+  dialect: Dialect;
+  type: NameType;
+  element: Element | null;
+}) {
+  const { dialect, type, element } = opts;
+  const root = pickRootByElement(element);
+  const transformedRoot = transformRootForDialect(root.proto, dialect);
+
+  const patterns = AFFIX_PATTERNS[dialect][type];
+  const pattern = randomChoice(patterns);
+  let name = applyPattern(pattern, transformedRoot);
+  name = cleanupForm(name, dialect);
+  name = name.charAt(0).toUpperCase() + name.slice(1);
+
+  return {
+    name,
+    dialect,
+    type,
+    element,
+    protoRoot: root.proto,
+    meaning: root.key,
+  };
+}
+
+function generateCompoundName(opts: {
+  dialect: Dialect;
+  type: NameType;
+  elementA: Element | null;
+  elementB: Element | null;
+}) {
+  const { dialect, type, elementA, elementB } = opts;
+
+  const [root1, root2] = pickTwoRoots(elementA, elementB);
+  const fusedProto = makeCompoundProto(root1, root2);
+  const transformedRoot = transformRootForDialect(fusedProto, dialect);
+
+  const patterns = AFFIX_PATTERNS[dialect][type];
+  const pattern = randomChoice(patterns);
+  let name = applyPattern(pattern, transformedRoot);
+  name = cleanupForm(name, dialect);
+  name = name.charAt(0).toUpperCase() + name.slice(1);
+
+  return {
+    name,
+    dialect,
+    type,
+    elements: [elementA, elementB],
+    protoRoots: [root1.proto, root2.proto],
+    meanings: [root1.key, root2.key],
+  };
+}
+
+function generateArchaicName(baseOptions: {
+  dialect: Dialect;
+  type: NameType;
+  element: Element | null;
+  elementA: Element | null;
+  elementB: Element | null;
+}) {
+  const { dialect, type, element, elementA, elementB } = baseOptions;
+
+  const base =
+    Math.random() < 0.5
+      ? generateName({ dialect, type, element })
+      : generateCompoundName({ dialect, type, elementA, elementB });
+
+  let { name } = base;
+
+  const transforms: ((s: string) => string)[] = [
+    (s) => s.replace(/([^aeiou])$/, "$1a"),
+    (s) => s.replace(/a/g, "á"),
+    (s) => s.replace(/([bcdfghjklmnpqrstvwxyz])([aeiou])/, "$1$1$2"),
+    (s) => s + randomChoice(["ae", "ai", "oë"]),
+    (s) => s.replace(/([aeiou])([bcdfghjklmnpqrstvwxyz])/, "$1h$2"),
+  ];
+
+  name =
+    transforms[Math.floor(Math.random() * transforms.length)](name) || name;
+
+  return {
+    ...base,
+    name,
+    archaic: true as const,
+  };
+}
+
+// Unified "varied" generator: single / compound / archaic mix
+// Now biased so most names are <= 3 syllables (Tolkien-style beats)
+function generateVariedName(options: {
+  dialect: Dialect;
+  type: NameType;
+  element: Element | null;
+  elementA: Element | null;
+  elementB: Element | null;
+}) {
+  let lastResult:
+    | ReturnType<typeof generateName>
+    | ReturnType<typeof generateCompoundName>
+    | ReturnType<typeof generateArchaicName>;
+
+  // Try a few times to get something with 3 syllables or fewer
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const roll = Math.random();
+
+    if (roll < 0.05) {
+      lastResult = generateArchaicName(options);
+    } else if (roll < 0.4) {
+      lastResult = generateCompoundName({
+        dialect: options.dialect,
+        type: options.type,
+        elementA: options.elementA,
+        elementB: options.elementB,
+      });
+    } else {
+      lastResult = generateName({
+        dialect: options.dialect,
+        type: options.type,
+        element: options.element,
+      });
+    }
+
+    const syllables = syllableCount(lastResult.name.toLowerCase());
+    if (syllables <= 3) {
+      return lastResult;
+    }
+  }
+
+  // Fallback: if we never hit <= 3 syllables, just use the last one
+  return lastResult!;
+}
+
+
+/* --- Mapping Archetype A/B → Dialect + Elements --- */
+
+function pickElementFromText(text: string): Element | null {
+  const t = text.toLowerCase();
+
+  if (/(fire|flame|ember|sun|lava|ash|phoenix|forge)/.test(t)) {
+    return ELEMENTS.FIRE;
+  }
+  if (/(water|sea|ocean|river|tide|wave|mist|rain|ice|frost)/.test(t)) {
+    return ELEMENTS.WATER;
+  }
+  if (/(earth|stone|mountain|forest|tree|wood|root|soil)/.test(t)) {
+    return ELEMENTS.EARTH;
+  }
+  if (/(air|wind|storm|sky|cloud|lightning|stormborn)/.test(t)) {
+    return ELEMENTS.AIR;
+  }
+  if (/(shadow|dark|night|void|moon|death|ghost|nether)/.test(t)) {
+    return ELEMENTS.DARK;
+  }
+
+  return null;
+}
+
+function pickDialectFromArchetypes(a: string, b: string): Dialect {
+  const t = `${a} ${b}`.toLowerCase();
+
+  if (/(elf|high|noble|star|sun|light|angel|court)/.test(t)) {
+    return DIALECTS.HIGH;
+  }
+  if (/(forest|wood|druid|ranger|grove|leaf|wild)/.test(t)) {
+    return DIALECTS.FOREST;
+  }
+  if (/(sea|ocean|tide|wave|siren|sailor|coast|harbor)/.test(t)) {
+    return DIALECTS.SEA;
+  }
+  if (/(mountain|stone|dwarf|mine|cavern|peak)/.test(t)) {
+    return DIALECTS.MOUNTAIN;
+  }
+  if (/(shadow|dark|night|void|assassin|ghost|nether|grave)/.test(t)) {
+    return DIALECTS.SHADOW;
+  }
+
+  // Fallback: random dialect
+  return randomChoice([
+    DIALECTS.HIGH,
+    DIALECTS.FOREST,
+    DIALECTS.SEA,
+    DIALECTS.MOUNTAIN,
+    DIALECTS.SHADOW,
+  ]);
+}
+function applyGenderToName(name: string, gender: Gender): string {
+  if (gender === "neutral") return name;
+
+  let s = name.toLowerCase();
+
+  if (gender === "male") {
+    // Tolkien-ish masculine: consonant / -on / -or / -ion / -ar
+    const maleEnding = randomChoice(["on", "or", "ion", "ar"]);
+    // strip trailing vowels and add ending
+    s = s.replace(/[aeiouáéíóú]+$/i, "") + maleEnding;
+  } else if (gender === "female") {
+    // Tolkien-ish feminine: -a, -ia, -iel, -wen
+    const femaleEnding = randomChoice(["a", "ia", "iel", "wen"]);
+    if (/[bcdfghjklmnpqrstvwxyz]$/i.test(s)) {
+      // ends in consonant → just append
+      s = s + femaleEnding;
+    } else {
+      // ends in vowel → trim vowel run then add ending
+      s = s.replace(/[aeiouáéíóú]+$/i, "") + femaleEnding;
+    }
+  }
+
+  // Re-capitalize first letter
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/**
+ * This replaces your old makeFantasyName, using the full language engine.
+ * Archetype A/B influence element + dialect.
+ */
+function makeFantasyName(
+  archetypeA: string,
+  archetypeB: string,
+  gender: Gender
+): string {
+  const combined = `${archetypeA} ${archetypeB}`.trim();
+  const dialect = pickDialectFromArchetypes(archetypeA, archetypeB);
+
+  const elementMain =
+    pickElementFromText(combined) ??
+    randomChoice([
+      ELEMENTS.FIRE,
+      ELEMENTS.WATER,
+      ELEMENTS.EARTH,
+      ELEMENTS.AIR,
+      ELEMENTS.DARK,
+    ]);
+
+  const elementA = pickElementFromText(archetypeA) ?? elementMain;
+  const elementB = pickElementFromText(archetypeB) ?? elementMain;
+
+  const result = generateVariedName({
+    dialect,
+    type: "personal",
+    element: elementMain,
+    elementA,
+    elementB,
+  });
+
+  // Apply gender shaping at the very end
+  return applyGenderToName(result.name, gender);
+}
+
+
+/* ===========================
+   LORE STUB (unchanged, but you can extend later)
+   =========================== */
 
 function randomItem<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function makeFantasyName(a: string, b: string): string {
-  const cleanA = a.trim().toLowerCase();
-  const cleanB = b.trim().toLowerCase();
+function makeLore(name: string, a: string, b: string): string {
+  const arcA = a || "mysterious";
+  const arcB = b || "forgotten";
 
-  // seed syllables from archetype words
-  const seeds = [
-    cleanA.slice(0, 2),
-    cleanA.slice(-2),
-    cleanB.slice(0, 2),
-    cleanB.slice(-2),
-  ].filter((s) => s.length === 2);
+  const templates = [
+    `${name} is a ${arcA.toLowerCase()} soul tied to ${arcB.toLowerCase()} powers.`,
+    `${name} once served as a ${arcA.toLowerCase()}, but carries a trace of ${arcB.toLowerCase()} destiny.`,
+    `Legends say ${name} walks the line between ${arcA.toLowerCase()} honor and ${arcB.toLowerCase()} chaos.`,
+  ];
 
-  const base = [...fantasySyllables, ...seeds];
-
-  const parts = [
-    randomItem(base),
-    randomItem(base),
-    Math.random() > 0.6 ? randomItem(base) : ""
-  ].join("");
-
-  // Capitalize nicely
-  return parts.charAt(0).toUpperCase() + parts.slice(1);
+  return randomItem(templates);
 }
 
-function generateNames() {
-  if (!archetypeA || !archetypeB) return;
+/* ===========================
+   UI COMPONENT (unchanged)
+   =========================== */
 
-  const output: string[] = [];
-  for (let i = 0; i < count; i++) {
-    output.push(makeFantasyName(archetypeA, archetypeB));
+export default function Home() {
+  const [archetypeA, setArchetypeA] = useState("");
+  const [archetypeB, setArchetypeB] = useState("");
+
+  const [gender, setGender] = useState<Gender>("neutral"); // <-- ADD THIS
+
+  const [isPremium, setIsPremium] = useState(false);
+  const [includeLore, setIncludeLore] = useState(true);
+  const [count, setCount] = useState(5);
+
+  const [results, setResults] = useState<GeneratedEntry[]>([]);
+
+  const effectiveMax = isPremium ? 50 : 5;
+
+function generateNames() {
+  // Allow archetypeA / archetypeB to be empty: empties mean randomness now.
+
+  // Guard against NaN / weird count values
+  const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
+  const cappedCount = Math.min(safeCount, effectiveMax);
+
+  const output: GeneratedEntry[] = [];
+
+  for (let i = 0; i < cappedCount; i++) {
+    const name = makeFantasyName(archetypeA, archetypeB, gender);
+    output.push({
+      name,
+      lore:
+        isPremium && includeLore
+          ? makeLore(name, archetypeA, archetypeB)
+          : undefined,
+    });
   }
+
   setResults(output);
 }
 
 
+
   return (
-    <main className="min-h-screen p-8 bg-gray-900 text-white">
-      <h1 className="text-3xl font-bold mb-6">Fantasy Name MDV Generator</h1>
+    <main className="min-h-screen p-6 md:p-10 bg-gray-900 text-white flex flex-col items-center">
+      <div className="w-full max-w-3xl space-y-6">
+        <header className="space-y-2">
+          <h1 className="text-3xl md:text-4xl font-bold">
+            Fantasy Name MDV Generator
+          </h1>
+          <p className="text-gray-300 text-sm md:text-base">
+            Mix two archetypes to generate evocative fantasy names. Free mode
+            gives you quick lists; Premium mode unlocks bulk names and mini-lore.
+          </p>
+        </header>
 
-      {/* Input Card */}
-      <div className="bg-gray-800 p-6 rounded-xl max-w-md space-y-4">
-        <div>
-          <label className="block mb-1">Archetype A</label>
-          <input
-            type="text"
-            value={archetypeA}
-            onChange={(e) => setArchetypeA(e.target.value)}
-            className="w-full p-2 rounded bg-gray-700"
-            placeholder="e.g. 'Elf', 'Knight', 'Druid'"
-          />
-        </div>
+        {/* Mode Toggle */}
+        <section className="bg-gray-800/80 border border-gray-700 rounded-xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <h2 className="font-semibold text-lg">Mode</h2>
+            <p className="text-sm text-gray-300">
+              Free: up to 5 names, no lore. Premium: up to 50 names + optional lore.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsPremium(false)}
+              className={
+                "px-3 py-2 rounded-l-lg border border-gray-600 text-sm font-medium " +
+                (!isPremium
+                  ? "bg-purple-600 border-purple-400"
+                  : "bg-gray-900")
+              }
+            >
+              Free
+            </button>
+            <button
+              onClick={() => setIsPremium(true)}
+              className={
+                "px-3 py-2 rounded-r-lg border border-gray-600 text-sm font-medium " +
+                (isPremium
+                  ? "bg-purple-600 border-purple-400"
+                  : "bg-gray-900")
+              }
+            >
+              Premium
+            </button>
+          </div>
+        </section>
 
-        <div>
-          <label className="block mb-1">Archetype B</label>
-          <input
-            type="text"
-            value={archetypeB}
-            onChange={(e) => setArchetypeB(e.target.value)}
-            className="w-full p-2 rounded bg-gray-700"
-            placeholder="e.g. 'Shadow', 'Storm', 'Flame'"
-          />
-        </div>
+        {/* Input Card */}
+        <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+<div>
+  <label className="block mb-1 text-sm font-medium">
+    Archetype A
+  </label>
+  <input
+    type="text"
+    value={archetypeA}
+    onChange={(e) => setArchetypeA(e.target.value)}
+    className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+    placeholder="e.g. Elf, Knight, Druid"
+  />
+  <p className="mt-1 text-xs text-gray-400">
+    If left empty, this archetype will be chosen at random.
+  </p>
+</div>
 
-        <div>
-          <label className="block mb-1">How many names?</label>
-          <input
-            type="number"
-            value={count}
-            min={1}
-            max={50}
-            onChange={(e) => setCount(Number(e.target.value))}
-            className="w-full p-2 rounded bg-gray-700"
-          />
-        </div>
 
-        <button
-          onClick={generateNames}
-          className="w-full bg-purple-600 hover:bg-purple-700 p-3 rounded font-semibold"
-        >
-          Generate
-        </button>
+<div>
+  <label className="block mb-1 text-sm font-medium">
+    Archetype B
+  </label>
+  <input
+    type="text"
+    value={archetypeB}
+    onChange={(e) => setArchetypeB(e.target.value)}
+    className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+    placeholder="e.g. Shadow, Storm, Flame"
+  />
+  <p className="mt-1 text-xs text-gray-400">
+    If left empty, this archetype will be chosen at random.
+  </p>
+</div>
+
+          </div>
+
+ {/* Gender dropdown – ADD THIS BLOCK */}
+          <div>
+            <label className="block mb-1 mt-2 text-sm font-medium">
+              Gender style (optional)
+            </label>
+            <select
+              value={gender}
+              onChange={(e) => setGender(e.target.value as Gender)}
+              className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="neutral">Neutral / unmarked</option>
+              <option value="male">Masculine-leaning</option>
+              <option value="female">Feminine-leaning</option>
+            </select>
+            <p className="text-xs text-gray-400 mt-1">
+              This nudges the ending of the name toward Tolkien-ish masculine
+              (-ion, -or) or feminine (-ia, -iel, -wen) patterns.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4 items-end">
+            <div>
+              <label className="block mb-1 text-sm font-medium">
+                How many names?
+              </label>
+              <input
+                type="number"
+                value={count}
+                min={1}
+                max={effectiveMax}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  const parsed = parseInt(raw, 10);
+
+    // If the field is empty or invalid, default to 1
+                  const next = Number.isNaN(parsed) ? 1 : parsed;
+                  setCount(next);
+                }}
+                className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
+                disabled={!isPremium && count > 5}
+              />
+
+              <p className="text-xs text-gray-400 mt-1">
+                {isPremium
+                  ? `Premium: up to ${effectiveMax} names at once.`
+                  : "Free: capped at 5 names per batch."}
+              </p>
+            </div>
+
+            {isPremium && (
+              <div className="flex items-center gap-2">
+                <input
+                  id="includeLore"
+                  type="checkbox"
+                  checked={includeLore}
+                  onChange={(e) => setIncludeLore(e.target.checked)}
+                  className="w-4 h-4"
+                />
+                <label htmlFor="includeLore" className="text-sm">
+                  Include 1–2 sentence micro-lore for each name
+                </label>
+              </div>
+            )}
+          </div>
+
+          <button
+            onClick={generateNames}
+            className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-lg font-semibold mt-2"
+          >
+            Generate
+          </button>
+        </section>
+
+        {/* Results */}
+        {results.length > 0 && (
+          <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-3">
+            <h2 className="text-xl font-bold">Results</h2>
+            <ul className="space-y-3">
+              {results.map((entry, i) => (
+                <li
+                  key={i}
+                  className="bg-gray-900 border border-gray-700 p-3 rounded-lg"
+                >
+                  <div className="font-semibold text-lg">{entry.name}</div>
+                  {entry.lore && (
+                    <p className="text-sm text-gray-300 mt-1">{entry.lore}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
-
-      {/* Results */}
-      {results.length > 0 && (
-        <div className="mt-8 space-y-2">
-          <h2 className="text-xl font-bold">Results</h2>
-          <ul className="space-y-1">
-            {results.map((name, i) => (
-              <li key={i} className="bg-gray-800 p-3 rounded">
-                {name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </main>
   );
 }
