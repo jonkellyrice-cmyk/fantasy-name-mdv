@@ -39,7 +39,7 @@ type ProtoRoot = {
 };
 
 const PROTO_ROOTS: ProtoRoot[] = [
-  // A. ELEMENTAL ROOTS (original 20)
+  // A. ELEMENTAL ROOTS (core)
   { key: "fire", proto: "pyran", elements: [ELEMENTS.FIRE] },
   { key: "flame", proto: "sirla", elements: [ELEMENTS.FIRE] },
   { key: "ember", proto: "kaleth", elements: [ELEMENTS.FIRE] },
@@ -61,29 +61,29 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "mountain", proto: "dunag", elements: [ELEMENTS.EARTH] },
   { key: "void", proto: "ekhar", elements: [ELEMENTS.DARK] },
 
-  // A. ELEMENTAL ROOTS (additional)
-  { key: "spark", proto: "scairn", elements: [ELEMENTS.FIRE] },
-  { key: "blaze", proto: "bravon", elements: [ELEMENTS.FIRE] },
-  { key: "coal", proto: "carun", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+  // A. ELEMENTAL ROOTS (additional, refined)
+  { key: "spark", proto: "scairen", elements: [ELEMENTS.FIRE] },
+  { key: "blaze", proto: "bravel", elements: [ELEMENTS.FIRE] },
+  { key: "coal", proto: "corun", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
   { key: "radiance", proto: "radiel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "halo", proto: "aloro", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "aurora", proto: "auren", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "ash", proto: "askel", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
   { key: "smoke", proto: "fumrel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "magma", proto: "magral", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
-  { key: "inferno", proto: "inferes", elements: [ELEMENTS.FIRE] },
+  { key: "inferno", proto: "inferan", elements: [ELEMENTS.FIRE] },
   { key: "breeze", proto: "zevar", elements: [ELEMENTS.AIR] },
   { key: "gale", proto: "galven", elements: [ELEMENTS.AIR] },
   { key: "thunder", proto: "torval", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
   { key: "lightning", proto: "fulmir", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
-  { key: "cloud", proto: "nuvol", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+  { key: "cloud", proto: "nuvar", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
   { key: "tide", proto: "maros", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
-  { key: "spring_water", proto: "fonrel", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
-  { key: "deep", proto: "profir", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "spring_water", proto: "fonir", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+  { key: "deep", proto: "proval", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
   { key: "ore", proto: "minar", elements: [ELEMENTS.EARTH] },
   { key: "chasm", proto: "cairun", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
 
-  // B. NATURE & LANDSCAPE (original 20)
+  // B. NATURE & LANDSCAPE (core)
   { key: "forest", proto: "dyal", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
   { key: "leaf", proto: "althe", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
   { key: "branch", proto: "torin", elements: [ELEMENTS.EARTH] },
@@ -105,29 +105,29 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "starfall", proto: "selkan", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
   { key: "desert", proto: "tharuk", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
 
-  // B. NATURE & LANDSCAPE (additional)
+  // B. NATURE & LANDSCAPE (additional, refined)
   { key: "grove", proto: "nemeth", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
   { key: "thicket", proto: "druval", elements: [ELEMENTS.EARTH] },
   { key: "hill", proto: "brigan", elements: [ELEMENTS.EARTH] },
-  { key: "plain", proto: "campor", elements: [ELEMENTS.EARTH] },
+  { key: "plain", proto: "kamrel", elements: [ELEMENTS.EARTH] },
   { key: "marsh", proto: "palun", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
   { key: "fen", proto: "muireth", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
   { key: "shore", proto: "lanor", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
-  { key: "island", proto: "insulae", elements: [ELEMENTS.WATER] },
+  { key: "island", proto: "islen", elements: [ELEMENTS.WATER] },
   { key: "reed", proto: "cairith", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
-  { key: "field", proto: "pratel", elements: [ELEMENTS.EARTH] },
-  { key: "grottos", proto: "grothal", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+  { key: "field", proto: "prathen", elements: [ELEMENTS.EARTH] },
+  { key: "grottos", proto: "grothun", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
   { key: "ridge", proto: "carnon", elements: [ELEMENTS.EARTH] },
   { key: "glade", proto: "lareth", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
   { key: "sunset", proto: "tramur", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "starlight", proto: "stelair", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
-  { key: "eclipse", proto: "eclyr", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+  { key: "eclipse", proto: "eklir", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
   { key: "horizon", proto: "orivon", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
   { key: "glen", proto: "glennir", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
-  { key: "harbor", proto: "porthae", elements: [ELEMENTS.WATER] },
+  { key: "harbor", proto: "porain", elements: [ELEMENTS.WATER] },
   { key: "crag", proto: "skarn", elements: [ELEMENTS.EARTH] },
 
-  // C. MOTION / DANCE (original 20)
+  // C. MOTION / DANCE (core)
   { key: "step", proto: "tiren", elements: [ELEMENTS.AIR] },
   { key: "leap", proto: "kaelu", elements: [ELEMENTS.AIR] },
   { key: "spin", proto: "viros", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
@@ -149,7 +149,7 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "scatter", proto: "velor", elements: [ELEMENTS.AIR] },
   { key: "gather", proto: "hiran", elements: [ELEMENTS.EARTH] },
 
-  // C. MOTION / DANCE (additional)
+  // C. MOTION / DANCE (additional, refined)
   { key: "tread", proto: "passil", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
   { key: "stride", proto: "gradel", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
   { key: "charge", proto: "ravan", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
@@ -161,7 +161,7 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "glimmer", proto: "glisar", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "surge", proto: "onval", elements: [ELEMENTS.WATER, ELEMENTS.FIRE] },
   { key: "flow_slow", proto: "lentar", elements: [ELEMENTS.WATER] },
-  { key: "rush_water", proto: "torrenth", elements: [ELEMENTS.WATER] },
+  { key: "rush_water", proto: "torenth", elements: [ELEMENTS.WATER] },
   { key: "hover", proto: "sosair", elements: [ELEMENTS.AIR] },
   { key: "crawl", proto: "tarthun", elements: [ELEMENTS.EARTH] },
   { key: "slide", proto: "scalun", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
@@ -171,7 +171,7 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "waltz", proto: "valsera", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
   { key: "rush_wind", proto: "galvorn", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
 
-  // D. EMOTION & SPIRIT (original 20)
+  // D. EMOTION & SPIRIT (core)
   { key: "love", proto: "amriel", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
   { key: "sorrow", proto: "melkun", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
   { key: "joy", proto: "talia", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
@@ -193,21 +193,21 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "secret", proto: "kephal", elements: [ELEMENTS.DARK] },
   { key: "will", proto: "adanir", elements: [ELEMENTS.FIRE] },
 
-  // D. EMOTION & SPIRIT (additional)
-  { key: "mercy", proto: "clementh", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  // D. EMOTION & SPIRIT (additional, refined)
+  { key: "mercy", proto: "clemar", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
   { key: "wrath", proto: "furion", elements: [ELEMENTS.FIRE] },
-  { key: "serenity", proto: "paciel", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "serenity", proto: "pasiel", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
   { key: "wonder", proto: "mirava", elements: [ELEMENTS.AIR] },
   { key: "despair", proto: "tristal", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
-  { key: "faith", proto: "credun", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
-  { key: "devotion", proto: "devorae", elements: [ELEMENTS.FIRE, ELEMENTS.WATER] },
+  { key: "faith", proto: "credhal", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "devotion", proto: "devarae", elements: [ELEMENTS.FIRE, ELEMENTS.WATER] },
   { key: "vengeance", proto: "vendrak", elements: [ELEMENTS.FIRE, ELEMENTS.DARK] },
   { key: "envy", proto: "invidar", elements: [ELEMENTS.DARK] },
-  { key: "pride", proto: "superon", elements: [ELEMENTS.FIRE] },
+  { key: "pride", proto: "suvaron", elements: [ELEMENTS.FIRE] },
   { key: "pity", proto: "miserel", elements: [ELEMENTS.WATER] },
   { key: "calm", proto: "placir", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
   { key: "zeal", proto: "ardun", elements: [ELEMENTS.FIRE] },
-  { key: "awe", proto: "stuphel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "awe", proto: "stavel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "melancholy", proto: "dolvar", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
   { key: "devotion_spirit", proto: "anamar", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "spite", proto: "acrar", elements: [ELEMENTS.DARK] },
@@ -215,7 +215,7 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "resolve", proto: "fermir", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
   { key: "inspiration", proto: "spiriel", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
 
-  // E. ANIMALS & CREATURES (original 20)
+  // E. ANIMALS & CREATURES (core)
   { key: "wolf", proto: "garuin", elements: [ELEMENTS.EARTH] },
   { key: "hawk", proto: "aerik", elements: [ELEMENTS.AIR] },
   { key: "eagle", proto: "tharun", elements: [ELEMENTS.AIR] },
@@ -237,7 +237,7 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "lizard", proto: "meruk", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
   { key: "bat", proto: "dhuair", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
 
-  // E. ANIMALS & CREATURES (additional)
+  // E. ANIMALS & CREATURES (additional, refined)
   { key: "stag", proto: "cerun", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
   { key: "falcon", proto: "falcir", elements: [ELEMENTS.AIR] },
   { key: "wolfhound", proto: "garvar", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
@@ -256,10 +256,10 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "crow_spirit", proto: "corvion", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
   { key: "songbird", proto: "aviel", elements: [ELEMENTS.AIR] },
   { key: "wolf_night", proto: "garunel", elements: [ELEMENTS.DARK, ELEMENTS.EARTH] },
-  { key: "kraken", proto: "craken", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "kraken", proto: "kraegun", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
   { key: "wyrm", proto: "wyrhal", elements: [ELEMENTS.FIRE, ELEMENTS.DARK] },
 
-  // F. CRAFT / ROLE / CULTURE (original 20)
+  // F. CRAFT / ROLE / CULTURE (core)
   { key: "smith", proto: "brakor", elements: [ELEMENTS.FIRE] },
   { key: "hunter", proto: "torvak", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
   { key: "seer", proto: "omriel", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
@@ -281,28 +281,29 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "noble", proto: "eluno", elements: [ELEMENTS.AIR] },
   { key: "guardian_spirit", proto: "dhuverin", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
 
-  // F. CRAFT / ROLE / CULTURE (additional)
+  // F. CRAFT / ROLE / CULTURE (additional, refined)
   { key: "bard", proto: "bardel", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
-  { key: "poet", proto: "versan", elements: [ELEMENTS.AIR] },
-  { key: "scribe", proto: "scrivan", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
-  { key: "captain", proto: "caprel", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
-  { key: "lord", proto: "domnar", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
-  { key: "lady", proto: "domena", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
-  { key: "herbalist", proto: "erbalon", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+  { key: "poet", proto: "verson", elements: [ELEMENTS.AIR] },
+  { key: "scribe", proto: "skriven", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+  { key: "captain", proto: "kapren", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "lord", proto: "domril", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+  { key: "lady", proto: "domira", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+  { key: "herbalist", proto: "herval", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
   { key: "mage", proto: "magiel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
-  { key: "archer", proto: "sagrit", elements: [ELEMENTS.AIR] },
-  { key: "monk", proto: "moniar", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
-  { key: "pilgrim", proto: "viatrel", elements: [ELEMENTS.AIR] },
-  { key: "champion", proto: "campion", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
-  { key: "chieftain", proto: "capthar", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
-  { key: "oracle", proto: "oracel", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
-  { key: "spy", proto: "ocultar", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
-  { key: "thief", proto: "latron", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+  { key: "archer", proto: "sarith", elements: [ELEMENTS.AIR] },
+  { key: "monk", proto: "monair", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+  { key: "pilgrim", proto: "viathel", elements: [ELEMENTS.AIR] },
+  { key: "champion", proto: "kamrion", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+  { key: "chieftain", proto: "kapthun", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "oracle", proto: "oranel", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "spy", proto: "oculthar", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+  { key: "thief", proto: "lathron", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
   { key: "smith_arcane", proto: "runakor", elements: [ELEMENTS.FIRE, ELEMENTS.DARK] },
-  { key: "sail_master", proto: "velonar", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "sail_master", proto: "velanor", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
   { key: "bannerbearer", proto: "vexilar", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
-  { key: "duelist", proto: "duellar", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "duelist", proto: "duelvar", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
 ];
+
 
 
 const AFFIX_PATTERNS: Record<
@@ -310,85 +311,197 @@ const AFFIX_PATTERNS: Record<
   { personal: string[]; place: string[]; clan: string[] }
 > = {
   [DIALECTS.HIGH]: {
+    // Noble, lyrical, vowel-heavy, “court Elvish”
     personal: [
-      "{root}ia", "{root}ea", "{root}iel", "{root}ion", "Ael{root}", "El{root}ar",
-      "{root}ielin", "{root}aris", "{root}oriel", "{root}enna", "{root}avon",
-      "Il{root}ien", "Aer{root}", "{root}alith"
+      "{root}ia",
+      "{root}ea",
+      "{root}iel",
+      "{root}ion",
+      "{root}ien",
+      "{root}elion",
+      "{root}arion",
+      "{root}alith",
+      "{root}amir",
+      "Ael{root}",
+      "El{root}ar",
+      "Il{root}ien",
+      "Aer{root}",
+      "Eir{root}ion",
     ],
     place: [
-      "{root}ara", "{root}orë", "{root}ilion", "{root}arë",
-      "{root}annon", "{root}ellor", "Tor{root}ien", "{root}amarë"
+      "{root}arë",
+      "{root}orë",
+      "{root}ilion",
+      "{root}amarë",
+      "{root}avel",
+      "{root}anor",
+      "Tor{root}ien",
+      "{root}aldor",
     ],
     clan: [
-      "An{root}", "Tel{root}", "{root}ain", "Calen{root}",
-      "Mir{root}", "Vor{root}el", "Luth{root}", "Athan{root}"
+      "An{root}",
+      "Tel{root}",
+      "Calen{root}",
+      "{root}ain",
+      "Mir{root}",
+      "Vor{root}el",
+      "Luth{root}",
+      "Athan{root}",
     ],
   },
 
   [DIALECTS.FOREST]: {
+    // Earthy, slightly Celtic: gw, br, th, -an, -eth, -wen
     personal: [
-      "{root}an", "{root}eth", "{root}ose", "{root}ach",
-      "{root}en", "{root}uin", "{root}ren", "{root}olas",
-      "Fen{root}", "Gwyn{root}", "{root}aroch", "{root}adhel"
+      "{root}an",
+      "{root}eth",
+      "{root}en",
+      "{root}ach",
+      "{root}wen",
+      "{root}aros",
+      "{root}uin",
+      "{root}ren",
+      "{root}olas",
+      "Fen{root}",
+      "Gwyn{root}",
+      "{root}adhel",
+      "{root}aroch",
     ],
     place: [
-      "{root}thir", "{root}ron", "{root}dun",
-      "{root}gwyn", "{root}breth", "{root}lanor", "Dru{root}il"
+      "{root}thir",
+      "{root}ron",
+      "{root}dun",
+      "{root}gwyn",
+      "{root}breth",
+      "{root}lanor",
+      "Dru{root}il",
+      "{root}bryn",
     ],
     clan: [
-      "Mac{root}", "Ui{root}", "{root}dhel", "Cen{root}",
-      "Brul{root}ach", "Sil{root}", "Or{root}gwyn"
+      "Mac{root}",
+      "Ui{root}",
+      "{root}dhel",
+      "Cen{root}",
+      "Brul{root}ach",
+      "Sil{root}",
+      "Or{root}gwyn",
+      "Tal{root}an",
     ],
   },
 
   [DIALECTS.SEA]: {
+    // Liquid, flowing, lots of diphthongs and soft consonants
     personal: [
-      "{root}ae", "{root}ao", "{root}uin", "{root}ia",
-      "{root}oar", "{root}elli", "{root}avae", "Sir{root}",
-      "{root}alun", "{root}eirion", "Aro{root}", "{root}ionae"
+      "{root}ae",
+      "{root}ao",
+      "{root}uin",
+      "{root}ia",
+      "{root}ionae",
+      "{root}alun",
+      "{root}eirion",
+      "{root}avel",
+      "{root}eira",
+      "{root}orin",
+      "Sir{root}",
+      "Aro{root}",
     ],
     place: [
-      "{root}aë", "{root}oae", "{root}eluin", "{root}orae",
-      "{root}thalos", "{root}mareth", "Pel{root}ae", "{root}olin"
+      "{root}aë",
+      "{root}oae",
+      "{root}eluin",
+      "{root}orae",
+      "{root}thalos",
+      "{root}mareth",
+      "Pel{root}ae",
+      "{root}olin",
     ],
     clan: [
-      "Sel{root}", "Mar{root}ae", "Pel{root}uin",
-      "Lor{root}", "Aen{root}or", "Thal{root}un"
+      "Sel{root}",
+      "Mar{root}ae",
+      "Pel{root}uin",
+      "Lor{root}",
+      "Aen{root}or",
+      "Thal{root}un",
     ],
   },
 
   [DIALECTS.MOUNTAIN]: {
+    // Heavy, compact, consonant-forward, but still pronounceable
     personal: [
-      "{root}lak", "{root}in", "{root}ol", "{root}grin",
-      "{root}rak", "{root}dorn", "{root}gar", "{root}vorn",
-      "Kar{root}in", "Bal{root}", "{root}gran", "{root}kul"
+      "{root}in",
+      "{root}rak",
+      "{root}ol",
+      "{root}grin",
+      "{root}dorn",
+      "{root}gar",
+      "{root}vorn",
+      "{root}grim",
+      "Kar{root}in",
+      "Bal{root}",
+      "{root}gran",
+      "{root}kul",
     ],
     place: [
-      "{root}kaj", "{root}drum", "{root}gowyn", "{root}dûm",
-      "{root}korin", "{root}grum", "Dur{root}ak", "{root}thol"
+      "{root}dûm",
+      "{root}drum",
+      "{root}thol",
+      "{root}korin",
+      "{root}grum",
+      "{root}kar",
+      "Dur{root}ak",
+      "{root}kaz",
     ],
     clan: [
-      "Kar{root}", "Dur{root}un", "Khaz{root}",
-      "Bram{root}", "Thur{root}", "Gor{root}un"
+      "Kar{root}",
+      "Dur{root}un",
+      "Khaz{root}",
+      "Bram{root}",
+      "Thur{root}",
+      "Gor{root}un",
+      "Stone{root}",
+      "Bar{root}in",
     ],
   },
 
   [DIALECTS.SHADOW]: {
+    // Dark vowels, gh/th, mor-/ul-/gul- vibes
     personal: [
-      "{root}úth", "{root}ghal", "{root}shai", "{root}than",
-      "{root}mur", "{root}ghel", "{root}aun", "{root}vyr",
-      "Mor{root}in", "Vel{root}", "{root}druin", "{root}zael"
+      "{root}úth",
+      "{root}ghal",
+      "{root}shai",
+      "{root}than",
+      "{root}mur",
+      "{root}ghel",
+      "{root}aun",
+      "{root}vyr",
+      "{root}druin",
+      "{root}zael",
+      "Mor{root}in",
+      "Vel{root}",
     ],
     place: [
-      "{root}gúl", "{root}daen", "{root}naúl", "{root}dûn",
-      "{root}morth", "{root}ighor", "{root}ulmar", "Dra{root}un"
+      "{root}gúl",
+      "{root}daen",
+      "{root}naúl",
+      "{root}dûn",
+      "{root}morth",
+      "{root}ighor",
+      "{root}ulmar",
+      "Dra{root}un",
     ],
     clan: [
-      "Moth{root}", "Dhul{root}", "Ghul{root}",
-      "Vor{root}", "Nal{root}un", "Ar{root}ghul"
+      "Moth{root}",
+      "Dhul{root}",
+      "Ghul{root}",
+      "Vor{root}",
+      "Nal{root}un",
+      "Ar{root}ghul",
+      "Mor{root}",
+      "Ul{root}oth",
     ],
   },
 };
+
 
 
 function randomChoice<T>(arr: T[]): T {
@@ -889,61 +1002,138 @@ function generateVariedName(options: {
       });
     }
 
-    const syllables = syllableCount(lastResult.name.toLowerCase());
-    if (syllables <= 3) {
-      return lastResult;
-    }
+          
+
   }
 
   // Fallback: if we never hit <= 3 syllables, just use the last one
   return lastResult!;
 }
+/** Turn raw archetype text into internal concept keys (matching PROTO_ROOTS.key). */
+function extractConcepts(text: string): string[] {
+  const words = text.toLowerCase().split(/[^a-z]+/).filter(Boolean);
+  const concepts = new Set<string>();
 
+  for (const w of words) {
+    const mapped = SEMANTIC_LEXICON[w];
+    if (mapped) {
+      concepts.add(mapped);
+    }
+  }
 
-/* --- Mapping Archetype A/B → Dialect + Elements --- */
+  return Array.from(concepts);
+}
+
+/** For each concept, pick a matching ProtoRoot (by key). Fallback: random root. */
+function pickRootsForConcepts(concepts: string[]): ProtoRoot[] {
+  const chosen: ProtoRoot[] = [];
+
+  for (const concept of concepts) {
+    const matches = PROTO_ROOTS.filter((r) => r.key === concept);
+    if (matches.length) {
+      chosen.push(randomChoice(matches));
+    }
+  }
+
+  // If nothing matched, fall back to at least one random proto root
+  if (!chosen.length) {
+    chosen.push(randomChoice(PROTO_ROOTS));
+  }
+
+  return chosen;
+}
+
+/* --- Mapping Archetype A/B → Elements --- */
 
 function pickElementFromText(text: string): Element | null {
   const t = text.toLowerCase();
 
-  if (/(fire|flame|ember|sun|lava|ash|phoenix|forge)/.test(t)) {
+  // FIRE-leaning words
+  if (/(fire|flame|ember|blaze|pyre|sun|solar|lava|ash|cinder|phoenix|forge|smoke|magma|inferno)/.test(t)) {
     return ELEMENTS.FIRE;
   }
-  if (/(water|sea|ocean|river|tide|wave|mist|rain|ice|frost)/.test(t)) {
+
+  // WATER-leaning words
+  if (/(water|sea|ocean|river|stream|brook|tide|wave|surf|mist|fog|rain|snow|frost|ice|deep|harbor|shore|marsh|fen)/.test(t)) {
     return ELEMENTS.WATER;
   }
-  if (/(earth|stone|mountain|forest|tree|wood|root|soil)/.test(t)) {
+
+  // EARTH-leaning words
+  if (/(earth|stone|rock|boulder|mountain|peak|summit|cliff|valley|glen|grove|forest|wood|tree|root|soil|desert|hill|field|plain|meadow|cave|cavern|crag)/.test(t)) {
     return ELEMENTS.EARTH;
   }
-  if (/(air|wind|storm|sky|cloud|lightning|stormborn)/.test(t)) {
+
+  // AIR-leaning words
+  if (/(air|wind|breeze|gale|storm|tempest|sky|cloud|lightning|thunder|whirl|gust|winged|falcon|hawk)/.test(t)) {
     return ELEMENTS.AIR;
   }
-  if (/(shadow|dark|night|void|moon|death|ghost|nether)/.test(t)) {
+
+  // DARK-leaning words
+  if (/(shadow|dark|night|midnight|void|abyss|grave|death|ghost|specter|wraith|nether|eclipse|raven|crow|spider|bat|crypt|tomb)/.test(t)) {
     return ELEMENTS.DARK;
   }
 
   return null;
 }
-
 function pickDialectFromArchetypes(a: string, b: string): Dialect {
   const t = `${a} ${b}`.toLowerCase();
 
-  if (/(elf|high|noble|star|sun|light|angel|court)/.test(t)) {
+  // Strong, explicit tags first
+
+  // High / Celestial / Courtly
+  if (/(high|noble|court|star|solar|sun|light|radiant|angel|seraph|crown|throne|royal|king|queen|prince|princess|lordly)/.test(t)) {
     return DIALECTS.HIGH;
   }
-  if (/(forest|wood|druid|ranger|grove|leaf|wild)/.test(t)) {
+
+  // Forest / Sylvan / Wild
+  if (/(forest|wood|woods|grove|thicket|sylvan|druid|ranger|leaf|root|bough|wild|antler|stag|deer)/.test(t)) {
     return DIALECTS.FOREST;
   }
-  if (/(sea|ocean|tide|wave|siren|sailor|coast|harbor)/.test(t)) {
+
+  // Sea / Maritime
+  if (/(sea|ocean|tide|wave|surf|siren|sailor|captain|ship|coast|harbor|port|marine|current)/.test(t)) {
     return DIALECTS.SEA;
   }
-  if (/(mountain|stone|dwarf|mine|cavern|peak)/.test(t)) {
+
+  // Mountain / Stone / Forge
+  if (/(mountain|stone|rock|boulder|peak|summit|dwarf|mine|cavern|forge|smith|anvil|iron|steel|hammer)/.test(t)) {
     return DIALECTS.MOUNTAIN;
   }
-  if (/(shadow|dark|night|void|assassin|ghost|nether|grave)/.test(t)) {
+
+  // Shadow / Grave / Secret
+  if (/(shadow|dark|night|void|eclipse|assassin|thief|rogue|spy|ghost|wraith|grave|crypt|tomb|nether)/.test(t)) {
     return DIALECTS.SHADOW;
   }
 
-  // Fallback: random dialect
+  // If nothing explicit, gently bias by element (via the helper above)
+  const elementHint = pickElementFromText(t);
+
+  if (elementHint === ELEMENTS.FIRE) {
+    // Fire can be High or Mountain or Shadow (war-fire, forge-fire, hell-fire)
+    return randomChoice([DIALECTS.HIGH, DIALECTS.MOUNTAIN, DIALECTS.SHADOW]);
+  }
+
+  if (elementHint === ELEMENTS.WATER) {
+    // Water leans Sea or Forest (streams & river-vales)
+    return randomChoice([DIALECTS.SEA, DIALECTS.FOREST]);
+  }
+
+  if (elementHint === ELEMENTS.EARTH) {
+    // Earth leans Mountain or Forest
+    return randomChoice([DIALECTS.MOUNTAIN, DIALECTS.FOREST]);
+  }
+
+  if (elementHint === ELEMENTS.AIR) {
+    // Air leans High or Sea (sky/sea winds)
+    return randomChoice([DIALECTS.HIGH, DIALECTS.SEA]);
+  }
+
+  if (elementHint === ELEMENTS.DARK) {
+    // Dark is usually Shadow
+    return DIALECTS.SHADOW;
+  }
+
+  // True fallback: any dialect
   return randomChoice([
     DIALECTS.HIGH,
     DIALECTS.FOREST,
@@ -952,51 +1142,574 @@ function pickDialectFromArchetypes(a: string, b: string): Dialect {
     DIALECTS.SHADOW,
   ]);
 }
-function applyGenderToName(name: string, gender: Gender): string {
-  if (gender === "neutral") return name;
+/* ===========================
+   LEVEL 3: SEMANTIC LEXICON
+   Map English-ish fantasy words -> your internal root keys
+   =========================== */
 
-  let s = name.toLowerCase();
+const SEMANTIC_LEXICON: Record<string, string> = {
+  // --- ELEMENTAL & COSMIC ---
+  fire: "fire",
+  flame: "flame",
+  ember: "ember",
+  blaze: "flame",
+  inferno: "fire",
+  sun: "sun",
+  solar: "sun",
+  star: "star",
+  starlight: "star",
+  constellation: "star",
+  light: "light",
+  radiant: "light",
+  glow: "light",
+  dawn: "dawn",
+  sunrise: "dawn",
+  dusk: "dusk",
+  twilight: "dusk",
+  night: "night",
+  midnight: "night",
+  shadow: "night",
+  darkness: "night",
+  void: "void",
+  abyss: "void",
+  moon: "moon",
+  lunar: "moon",
 
-  if (gender === "male") {
-    // masculine: consonant / -on / -or / -ion / -ar
-    const maleEnding = randomChoice(["os", "ur", "ion", "ar", "ad", "eth", "en", "or", "ach", "aed"]);
-    // strip trailing vowels and add ending
-    s = s.replace(/[aeiouáéíóú]+$/i, "") + maleEnding;
-  } else if (gender === "female") {
-    // feminine: -a, -ia, -iel, -wen
-    const femaleEnding = randomChoice(["a", "ia", "iel", "ys", "ven", "ine", "airs", "ira", "eya", "ose"]);
-    if (/[bcdfghjklmnpqrstvwxyz]$/i.test(s)) {
-      // ends in consonant → just append
-      s = s + femaleEnding;
+  storm: "storm",
+  tempest: "storm",
+  lightning: "storm",
+  thunder: "storm",
+  wind: "wind",
+  gale: "wind",
+  sky: "sky",
+  cloud: "sky",
+  air: "breath",
+  breath: "breath",
+
+  water: "water",
+  river: "river",
+  stream: "river",
+  brook: "river",
+  ocean: "ocean",
+  sea: "ocean",
+  tide: "ocean",
+  wave: "wave",
+  surf: "wave",
+  mist: "mist",
+  fog: "mist",
+  rain: "rain",
+  stormrain: "rain",
+  snow: "snow",
+  frost: "snow",
+  ice: "ice",
+
+  earth: "earth",
+  stone: "stone",
+  rock: "stone",
+  boulder: "stone",
+  mountain: "mountain",
+  peak: "peak",
+  summit: "peak",
+  cliff: "cliff",
+  valley: "valley",
+  gorge: "valley",
+  cave: "cave",
+  cavern: "cave",
+  desert: "desert",
+
+  forest: "forest",
+  wood: "forest",
+  woods: "forest",
+  grove: "forest",
+  thicket: "forest",
+  tree: "leaf",
+  leaf: "leaf",
+  branch: "branch",
+  root: "root",
+  bark: "bark",
+  meadow: "meadow",
+  field: "meadow",
+  plain: "meadow",
+
+  // --- WEAPONS / DEFENSE ---
+  sword: "cut",
+  blade: "cut",
+  dagger: "cut",
+  knife: "cut",
+  spear: "strike",
+  lance: "strike",
+  arrow: "strike",
+  bow: "archer",
+  shield: "guardian_spirit",
+  armor: "guardian_spirit",
+  helm: "noble",
+  crown: "noble",
+  throne: "noble",
+
+  // --- MOTION / BATTLE / ACTION ---
+  step: "step",
+  dance: "dancer",
+  dancer: "dancer",
+  leap: "leap",
+  jump: "leap",
+  spin: "spin",
+  whirl: "whirl",
+  glide: "glide",
+  sway: "sway",
+  twist: "twist",
+  flow: "flow",
+  fall: "fall",
+  rise: "rise",
+  charge: "rise",
+  dash: "step",
+
+  strike: "strike",
+  cut: "cut",
+  slash: "cut",
+  cleave: "cut",
+  break: "break",
+  shatter: "break",
+  crush: "break",
+  smash: "break",
+  scatter: "scatter",
+  gather: "gather",
+  echo: "echo",
+  drift: "drift",
+
+  // --- EMOTION & SPIRIT ---
+  love: "love",
+  passion: "desire",
+  desire: "desire",
+  joy: "joy",
+  bliss: "joy",
+  sorrow: "sorrow",
+  grief: "grief",
+  mourning: "grief",
+  rage: "rage",
+  anger: "anger",
+  fury: "rage",
+  courage: "courage",
+  bravery: "courage",
+  fear: "fear",
+  terror: "fear",
+  hope: "hope",
+  dream: "dream",
+  nightmare: "dream",
+  memory: "memory",
+  wisdom: "wisdom",
+  knowledge: "wisdom",
+  secret: "secret",
+  hidden: "secret",
+  fate: "fate",
+  destiny: "fate",
+  honor: "honor",
+  oath: "oath",
+  vow: "oath",
+  will: "will",
+  resolve: "will",
+  rest: "rest",
+  peace: "rest",
+  longing: "longing",
+
+  // --- CREATURES ---
+  wolf: "wolf",
+  hound: "hound",
+  dog: "hound",
+  fox: "fox",
+  bear: "bear",
+  lion: "lion",
+  hawk: "hawk",
+  eagle: "eagle",
+  raven: "raven",
+  crow: "raven",
+  owl: "owl",
+  deer: "deer",
+  stag: "deer",
+  boar: "boar",
+  boarhound: "boar",
+  serpent: "serpent",
+  snake: "serpent",
+  dragon: "dragon",
+  wyrm: "dragon",
+  lizard: "lizard",
+  spider: "spider",
+  insect: "insect",
+  beetle: "insect",
+  bat: "bat",
+  fish: "fish",
+  whale: "whale",
+  horse: "horse",
+
+  // --- ROLES / CLASSES / ARCHETYPES ---
+  smith: "smith",
+  blacksmith: "smith",
+  smithy: "smith",
+  hunter: "hunter",
+  ranger: "hunter",
+  tracker: "hunter",
+  seer: "seer",
+  oracle: "seer",
+  prophet: "seer",
+  mage: "seer",
+  wizard: "seer",
+  sorcerer: "seer",
+  sorceress: "seer",
+  warlock: "witch",
+  witch: "witch",
+  priest: "priest",
+  cleric: "priest",
+  singer: "singer",
+  bard: "singer",
+  keeper: "keeper",
+  warden: "keeper",
+  guardian: "guardian_spirit",
+  guardian_spirit: "guardian_spirit",
+  paladin: "warrior",
+  knight: "warrior",
+  warrior: "warrior",
+  fighter: "warrior",
+  soldier: "warrior",
+  champion: "warrior",
+  berserker: "rage",
+
+  rogue: "scout",
+  thief: "scout",
+  pickpocket: "scout",
+  assassin: "secret",
+  spy: "secret",
+  scout: "scout",
+  ranger_scout: "scout",
+
+  healer: "healer",
+  priestess: "healer",
+  druid: "healer",
+  trader: "trader",
+  merchant: "trader",
+  sailor: "sailor",
+  captain: "sailor",
+  farmer: "farmer",
+  peasant: "farmer",
+  storyteller: "storyteller",
+  skald: "storyteller",
+  chronicler: "storyteller",
+
+  noble: "noble",
+  lord: "noble",
+  lady: "noble",
+  king: "noble",
+  queen: "noble",
+  duke: "noble",
+  duchess: "noble",
+
+  // --- MISC / META-FANTASY ---
+  blood: "desire",
+  song: "singer",
+  music: "singer",
+  rune: "secret",
+  sigil: "secret",
+};
+/* ===========================
+   LEVEL 3: PHONETIC SKELETON
+   English-ish text -> soft Elvish-like consonant clusters
+   (Irish + Italian inspired)
+   =========================== */
+
+function mapClusterToElvish(cluster: string): string {
+  let c = cluster.toLowerCase();
+
+  // Normalize common digraphs into smoother shapes
+  c = c
+    .replace(/gh/g, "g")
+    .replace(/ph/g, "f")
+    .replace(/sh/g, "s")
+    .replace(/th/g, "t")
+    .replace(/ck/g, "c")
+    .replace(/qu/g, "kw")
+    .replace(/ch/g, "c");
+
+  // Trim very long clusters
+  if (c.length > 3) c = c.slice(0, 3);
+
+  // Single hard stop -> add a liquid for that Irish/Italian feel
+  if (c.length === 1 && /[bdgkpt]/.test(c)) {
+    const liquid = randomChoice(["l", "r"]);
+    c = c + liquid;
+  }
+
+  return c;
+}
+function makePhoneticSkeleton(text: string): string[] {
+  const cleaned = text.toLowerCase().replace(/[^a-z]/g, "");
+  if (!cleaned) return [];
+
+  const clusters: string[] = [];
+  let current = "";
+
+  for (const ch of cleaned) {
+    if (isVowel(ch)) {
+      if (current) {
+        clusters.push(current);
+        current = "";
+      }
     } else {
-      // ends in vowel → trim vowel run then add ending
-      s = s.replace(/[aeiouáéíóú]+$/i, "") + femaleEnding;
+      current += ch;
+    }
+  }
+  if (current) clusters.push(current);
+
+  // Map into Elvish-like clusters and drop empties
+  return clusters.map(mapClusterToElvish).filter(Boolean);
+}
+/* ===========================
+   LEVEL 3: SYNTHESIZE PROTO ROOT
+   (semantic anchors + phonetic skeleton -> new proto form)
+   =========================== */
+
+function synthesizeProtoRootFromArchetypes(
+  archetypeA: string,
+  archetypeB: string
+): string {
+  const text = `${archetypeA} ${archetypeB}`.trim();
+  if (!text) {
+    return randomChoice(PROTO_ROOTS).proto;
+  }
+
+  const concepts = extractConcepts(text);
+  const semanticRoots = pickRootsForConcepts(concepts);
+  const skeleton = makePhoneticSkeleton(text);
+  const vowels = ["a", "e", "i", "o", "u"];
+
+  // 1. Choose semantic base(s)
+  const headSource = (
+    semanticRoots[0] ?? randomChoice(PROTO_ROOTS)
+  ).proto.toLowerCase();
+
+  const tailSource = (
+    semanticRoots[1] ?? semanticRoots[0] ?? randomChoice(PROTO_ROOTS)
+  ).proto.toLowerCase();
+
+  // head = first 2 letters of first proto, tail = last 2 of second proto
+  const head = headSource.slice(0, 2);
+  const tail = tailSource.slice(-2);
+
+  let protoCore = head + tail;
+
+  // 2. Convert skeleton clusters into soft syllable-ish chunks
+  const syllablePieces: string[] = [];
+  for (const cluster of skeleton.slice(0, 2)) {
+    const v = randomChoice(vowels);
+    syllablePieces.push(cluster + v);
+  }
+
+  // 3. Blend: semantic core + up to two skeleton syllables
+  let proto = protoCore;
+
+  if (syllablePieces.length) {
+    if (proto.length <= 5) {
+      proto += syllablePieces[0];
+      if (syllablePieces[1] && proto.length < 8) {
+        proto += syllablePieces[1];
+      }
+    } else {
+      // if proto is already chunky, just weave in one syllable
+      proto = proto.slice(0, 3) + syllablePieces[0];
     }
   }
 
-  // Re-capitalize first letter
+  // 4. Cleanup and sanity bounds
+  proto = collapseDoubleVowels(proto);
+  proto = proto.replace(/[^a-záéíóú]/g, "");
+
+  if (proto.length < 4) {
+    proto += randomChoice(vowels) + "n";
+  }
+
+  // Keep proto itself reasonable; the final name still adds affixes + gender
+  if (proto.length > 9) {
+    proto = proto.slice(0, 9);
+  }
+
+  return proto;
+}
+
+function applyGenderToName(name: string, gender: Gender): string {
+  // Always start from a normalized lowercase base
+  let s = name.toLowerCase();
+
+  if (gender === "male") {
+    const maleEnding = randomChoice([
+      "os",
+      "ur",
+      "ion",
+      "ar",
+      "ad",
+      "eth",
+      "en",
+      "or",
+      "ach",
+      "aed",
+    ]);
+    // strip trailing vowels and add ending
+    s = s.replace(/[aeiouáéíóú]+$/i, "") + maleEnding;
+  } else if (gender === "female") {
+    const femaleEnding = randomChoice([
+      "a",
+      "ia",
+      "iel",
+      "ys",
+      "ven",
+      "ine",
+      "airs",
+      "ira",
+      "eya",
+      "ose",
+    ]);
+    if (/[bcdfghjklmnpqrstvwxyz]$/i.test(s)) {
+      s = s + femaleEnding;
+    } else {
+      s = s.replace(/[aeiouáéíóú]+$/i, "") + femaleEnding;
+    }
+  } else {
+    // neutral: leave ending as-is
+    s = name;
+  }
+
+  // Capitalize once, here
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-/**
- * This replaces your old makeFantasyName, using the full language engine.
- * Archetype A/B influence element + dialect.
- */
-function clampNameLength(name: string, maxLen = 10): string {
-  if (name.length <= maxLen) return name;
-  return name.slice(0, maxLen);
+// --- Length control types ---
+type NameLength = "short" | "medium" | "long";
+
+// --- Length presets controlled by the dropdown ---
+const LENGTH_PRESETS: Record<
+  NameLength,
+  { minSyllables: number; maxSyllables: number; maxChars: number }
+> = {
+  short: {
+    minSyllables: 1,
+    maxSyllables: 1,
+    maxChars: 6, // tight, punchy names
+  },
+  medium: {
+    minSyllables: 1,
+    maxSyllables: 2,
+    maxChars: 7, // most “normal” names land here
+  },
+  long: {
+    minSyllables: 1,
+    maxSyllables: 3,
+    maxChars: 8, // your old upper bound
+  },
+};
+
+// "Coolness" / sanity filter: shape + consonant clump check,
+// using the currently chosen length preset.
+function isCoolName(name: string, length: NameLength): boolean {
+  const { minSyllables, maxSyllables, maxChars } = LENGTH_PRESETS[length];
+  const s = name.toLowerCase();
+  const syllables = syllableCount(s);
+
+  if (syllables < minSyllables || syllables > maxSyllables) return false;
+  if (s.length > maxChars) return false;
+
+  // Avoid 4+ hard consonants in a row
+  if (/[^aeiouáéíóú]{4,}/.test(s)) return false;
+
+  return true;
 }
-// Global name length constraints
-const MAX_SYLLABLES = 3; // Vir-ien-i-on style upper bound on "sound units"
-const MAX_CHARS = 8;    // Hard cap on total characters
+
+// ===========================
+// SURNAMES: helpers
+// ===========================
+
+// Simple capitalizer for surnames (no gender logic here)
+function capitalizeName(raw: string): string {
+  const s = raw.toLowerCase();
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// Choose a surname length preset based on the actual first-name syllable count
+function pickSurnameLengthPreset(firstName: string): NameLength {
+  const s = firstName.toLowerCase();
+  const syl = syllableCount(s);
+
+  if (syl <= 1) return "long"; // short first -> longer surname
+  if (syl >= 3) return "short"; // long first -> short, punchy surname
+  return "medium"; // 2-beat first -> medium surname
+}
+
+// Dialect compliment / contrast for surnames
+function pickSurnameDialectFromFirst(baseDialect: Dialect): Dialect {
+  const optionsByDialect: Record<Dialect, Dialect[]> = {
+    [DIALECTS.HIGH]: [DIALECTS.FOREST, DIALECTS.SEA],
+    [DIALECTS.FOREST]: [DIALECTS.HIGH, DIALECTS.MOUNTAIN],
+    [DIALECTS.SEA]: [DIALECTS.HIGH, DIALECTS.FOREST],
+    [DIALECTS.MOUNTAIN]: [DIALECTS.FOREST, DIALECTS.HIGH],
+    [DIALECTS.SHADOW]: [DIALECTS.HIGH, DIALECTS.FOREST],
+  };
+
+  const opts = optionsByDialect[baseDialect] ?? [baseDialect];
+  return randomChoice(opts);
+}
+
+// Pick a proto for the surname that *isn't* just the primary first-name concept
+function buildSurnameProto(
+  semanticRoots: ProtoRoot[],
+  elementMain: Element
+): string {
+  // If we have multiple semantic roots, prefer a "secondary" one
+  if (semanticRoots.length > 1) {
+    const secondaryPool = semanticRoots.slice(1);
+    return randomChoice(secondaryPool).proto;
+  }
+
+  // If we have exactly one concept, look for a different root
+  if (semanticRoots.length === 1) {
+    const primary = semanticRoots[0];
+    const altCandidates = PROTO_ROOTS.filter(
+      (r) =>
+        r.key !== primary.key &&
+        r.elements.some((el) => primary.elements.includes(el))
+    );
+    const chosen = altCandidates.length ? randomChoice(altCandidates) : primary;
+
+    return chosen.proto;
+  }
+
+  // No semantic roots at all -> fall back to element-based root
+  return pickRootByElement(elementMain).proto;
+}
+
+/**
+ * Blend the user-derived proto with a native proto-root so that:
+ * - the archetype still leaves a clear fingerprint
+ * - each name also pulls from your established lexicon for variety
+ */
+function fuseUserAndNativeProto(userProto: string, nativeProto: string): string {
+  const u = userProto.toLowerCase();
+  const n = nativeProto.toLowerCase();
+
+  const head = compressHead(u); // user influence
+  const tail = compressTail(n); // native lexicon influence
+
+  let compound = head + tail;
+
+  if (syllableCount(compound) > 4 || compound.length > 9) {
+    const shortHead = u.slice(0, Math.min(3, u.length));
+    const shortTail = n.slice(Math.max(0, n.length - 3));
+    compound = shortHead + shortTail;
+  }
+
+  return compound;
+}
 
 function makeFantasyName(
   archetypeA: string,
   archetypeB: string,
-  gender: Gender
+  gender: Gender,
+  length: NameLength
 ): string {
-
-  // (1) Combine archetypes to decide dialect + element
   const combined = `${archetypeA} ${archetypeB}`.trim();
   const dialect = pickDialectFromArchetypes(archetypeA, archetypeB);
 
@@ -1013,14 +1726,56 @@ function makeFantasyName(
   const elementA = pickElementFromText(archetypeA) ?? elementMain;
   const elementB = pickElementFromText(archetypeB) ?? elementMain;
 
-  let lastGendered = "";
+  const { maxChars } = LENGTH_PRESETS[length];
 
-  // -------------------------------------------------------------
-  // (2) BEGIN REROLL LOOP — tries up to 10 times to get a valid name
-  // -------------------------------------------------------------
+  // --- LEVEL 3 + HYBRID PATH (archetypes provided) ---
+  if (combined.length > 0) {
+    const userProto = synthesizeProtoRootFromArchetypes(
+      archetypeA,
+      archetypeB
+    );
+    let lastBase = "";
+
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const nativeRoot = pickRootByElement(elementMain);
+      const fusedProto = fuseUserAndNativeProto(userProto, nativeRoot.proto);
+
+      const transformedRoot = transformRootForDialect(fusedProto, dialect);
+      const pattern = randomChoice(AFFIX_PATTERNS[dialect].personal);
+
+      // BASE NAME (no gender yet)
+      let base = applyPattern(pattern, transformedRoot);
+      base = cleanupForm(base, dialect);
+
+      // remember last base for fallback
+      lastBase = base;
+
+      // run the syllable/shape check on the BASE name
+      if (isCoolName(base, length)) {
+        let name = applyGenderToName(base, gender);
+
+        // final safety clamp in case gender pushes length a bit over
+        if (name.length > maxChars) {
+          name = name.slice(0, maxChars);
+        }
+
+        return name;
+      }
+    }
+
+    // Archetype fallback: genderize the last base we saw and clamp
+    const fallbackBase = lastBase || userProto || "elin";
+    let lastName = applyGenderToName(fallbackBase, gender);
+    if (lastName.length > maxChars) {
+      lastName = lastName.slice(0, maxChars);
+    }
+    return lastName;
+  }
+
+  // --- FALLBACK: RANDOM ELVISH ENGINE (no archetypes at all) ---
+  let lastBase = "";
+
   for (let attempt = 0; attempt < 10; attempt++) {
-
-    // (2a) Generate a base name from the language engine
     const result = generateVariedName({
       dialect,
       type: "personal",
@@ -1029,40 +1784,96 @@ function makeFantasyName(
       elementB,
     });
 
-    // (2b) Apply gender endings at the end of the name
-    const gendered = applyGenderToName(result.name, gender);
+    const base = result.name; // base, pre-gender
+    lastBase = base;
 
-    // (2c) Save the last generated name in case we need a fallback
-    lastGendered = gendered;
+    // Again, length/shape check BEFORE adding gender
+    if (isCoolName(base, length)) {
+      let gendered = applyGenderToName(base, gender);
 
-    // -------------------------------------------------------------
-    // (3) CHECK SYLLABLE + CHARACTER LIMITS
-    // -------------------------------------------------------------
-    const syllables = syllableCount(gendered.toLowerCase());
-    const chars = gendered.length;
+      if (gendered.length > maxChars) {
+        gendered = gendered.slice(0, maxChars);
+      }
 
-    // -------------------------------------------------------------
-    // (4) THIS IS THE ACCEPTANCE CONDITION:
-    //     If BOTH limits are satisfied, return the name immediately
-    // -------------------------------------------------------------
-    if (syllables <= MAX_SYLLABLES && chars <= MAX_CHARS) {
       return gendered;
     }
-
-    // If not accepted, the loop continues → the name is RE-ROLLED
   }
 
-  // -------------------------------------------------------------
-  // (5) FALLBACK:
-  //     If all 10 attempts failed, clamp the last generated name
-  // -------------------------------------------------------------
-  return clampNameLength(lastGendered, MAX_CHARS);
+  // Final fallback if nothing passed the filter
+  const fallbackBase = lastBase || "elin";
+  let lastName = applyGenderToName(fallbackBase, gender);
+  if (lastName.length > maxChars) {
+    lastName = lastName.slice(0, maxChars);
+  }
+  return lastName;
 }
 
+// ===========================
+// SURNAMES: generator
+// ===========================
+function makeSurname(
+  archetypeA: string,
+  archetypeB: string,
+  firstName: string
+): string {
+  const text = `${archetypeA} ${archetypeB}`.trim();
 
+  // Base dialect is what the first name would use
+  const baseDialect = pickDialectFromArchetypes(archetypeA, archetypeB);
+  const dialect = pickSurnameDialectFromFirst(baseDialect);
+
+  const elementMain =
+    pickElementFromText(text) ??
+    randomChoice([
+      ELEMENTS.FIRE,
+      ELEMENTS.WATER,
+      ELEMENTS.EARTH,
+      ELEMENTS.AIR,
+      ELEMENTS.DARK,
+    ]);
+
+  // Semantic anchors for the surname (same meaning space, different route)
+  const concepts = extractConcepts(text);
+  const semanticRoots = pickRootsForConcepts(concepts);
+  const proto = buildSurnameProto(semanticRoots, elementMain);
+
+  // Length preset is derived from the actual first name
+  const surnameLength = pickSurnameLengthPreset(firstName);
+  const { maxChars } = LENGTH_PRESETS[surnameLength];
+
+  let lastBase = proto;
+
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const transformedRoot = transformRootForDialect(proto, dialect);
+
+    // Use clan-style patterns for surnames
+    const pattern = randomChoice(AFFIX_PATTERNS[dialect].clan);
+
+    let base = applyPattern(pattern, transformedRoot);
+    base = cleanupForm(base, dialect);
+    lastBase = base;
+
+    if (isCoolName(base, surnameLength)) {
+      let finalName = capitalizeName(base);
+
+      if (finalName.length > maxChars) {
+        finalName = finalName.slice(0, maxChars);
+      }
+
+      return finalName;
+    }
+  }
+
+  // Fallback: clamp and capitalize whatever last base we saw
+  let fallback = capitalizeName(lastBase);
+  if (fallback.length > maxChars) {
+    fallback = fallback.slice(0, maxChars);
+  }
+  return fallback;
+}
 
 /* ===========================
-   LORE STUB (unchanged, but you can extend later)
+   LORE STUB
    =========================== */
 
 function randomItem<T>(arr: T[]): T {
@@ -1083,14 +1894,15 @@ function makeLore(name: string, a: string, b: string): string {
 }
 
 /* ===========================
-   UI COMPONENT (unchanged)
+   UI COMPONENT
    =========================== */
 
 export default function Home() {
   const [archetypeA, setArchetypeA] = useState("");
   const [archetypeB, setArchetypeB] = useState("");
 
-  const [gender, setGender] = useState<Gender>("neutral"); // <-- ADD THIS
+  const [gender, setGender] = useState<Gender>("neutral");
+  const [nameLength, setNameLength] = useState<NameLength>("medium");
 
   const [isPremium, setIsPremium] = useState(false);
   const [includeLore, setIncludeLore] = useState(true);
@@ -1100,30 +1912,37 @@ export default function Home() {
 
   const effectiveMax = isPremium ? 50 : 5;
 
-function generateNames() {
-  // Allow archetypeA / archetypeB to be empty: empties mean randomness now.
+  function generateNames() {
+    // Guard against NaN / weird count values
+    const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
+    const cappedCount = Math.min(safeCount, effectiveMax);
 
-  // Guard against NaN / weird count values
-  const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
-  const cappedCount = Math.min(safeCount, effectiveMax);
+    const output: GeneratedEntry[] = [];
 
-  const output: GeneratedEntry[] = [];
+    for (let i = 0; i < cappedCount; i++) {
+      // First name: full pipeline incl. gender + length
+      const first = makeFantasyName(
+        archetypeA,
+        archetypeB,
+        gender,
+        nameLength
+      );
 
-  for (let i = 0; i < cappedCount; i++) {
-    const name = makeFantasyName(archetypeA, archetypeB, gender);
-    output.push({
-      name,
-      lore:
-        isPremium && includeLore
-          ? makeLore(name, archetypeA, archetypeB)
-          : undefined,
-    });
+      // Surname: complements first name, no gender
+      const last = makeSurname(archetypeA, archetypeB, first);
+      const fullName = `${first} ${last}`;
+
+      output.push({
+        name: fullName,
+        lore:
+          isPremium && includeLore
+            ? makeLore(fullName, archetypeA, archetypeB)
+            : undefined,
+      });
+    }
+
+    setResults(output);
   }
-
-  setResults(output);
-}
-
-
 
   return (
     <main className="min-h-screen p-6 md:p-10 bg-gray-900 text-white flex flex-col items-center">
@@ -1143,7 +1962,8 @@ function generateNames() {
           <div>
             <h2 className="font-semibold text-lg">Mode</h2>
             <p className="text-sm text-gray-300">
-              Free: up to 5 names, no lore. Premium: up to 50 names + optional lore.
+              Free: up to 5 names, no lore. Premium: up to 50 names + optional
+              lore.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -1175,42 +1995,59 @@ function generateNames() {
         {/* Input Card */}
         <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
-<div>
-  <label className="block mb-1 text-sm font-medium">
-    Archetype A
-  </label>
-  <input
-    type="text"
-    value={archetypeA}
-    onChange={(e) => setArchetypeA(e.target.value)}
-    className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-    placeholder="e.g. Elf, Knight, Druid"
-  />
-  <p className="mt-1 text-xs text-gray-400">
-    If left empty, this archetype will be chosen at random.
-  </p>
-</div>
+            <div>
+              <label className="block mb-1 text-sm font-medium">
+                Archetype A
+              </label>
+              <input
+                type="text"
+                value={archetypeA}
+                onChange={(e) => setArchetypeA(e.target.value)}
+                className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="e.g. Elf, Knight, Druid"
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                If left empty, this archetype will be chosen at random.
+              </p>
+            </div>
 
-
-<div>
-  <label className="block mb-1 text-sm font-medium">
-    Archetype B
-  </label>
-  <input
-    type="text"
-    value={archetypeB}
-    onChange={(e) => setArchetypeB(e.target.value)}
-    className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-    placeholder="e.g. Shadow, Storm, Flame"
-  />
-  <p className="mt-1 text-xs text-gray-400">
-    If left empty, this archetype will be chosen at random.
-  </p>
-</div>
-
+            <div>
+              <label className="block mb-1 text-sm font-medium">
+                Archetype B
+              </label>
+              <input
+                type="text"
+                value={archetypeB}
+                onChange={(e) => setArchetypeB(e.target.value)}
+                className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="e.g. Shadow, Storm, Flame"
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                If left empty, this archetype will be chosen at random.
+              </p>
+            </div>
           </div>
 
- {/* Gender dropdown – ADD THIS BLOCK */}
+          {/* Name length dropdown */}
+          <div>
+            <label className="block mb-1 text-sm font-medium">
+              Name length
+            </label>
+            <select
+              value={nameLength}
+              onChange={(e) => setNameLength(e.target.value as NameLength)}
+              className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="short">Short</option>
+              <option value="medium">Medium</option>
+              <option value="long">Long</option>
+            </select>
+            <p className="mt-1 text-xs text-gray-400">
+              Short: punchy; Medium: typical; Long: more lyrical names.
+            </p>
+          </div>
+
+          {/* Gender dropdown */}
           <div>
             <label className="block mb-1 mt-2 text-sm font-medium">
               Gender style (optional)
@@ -1244,14 +2081,12 @@ function generateNames() {
                   const raw = e.target.value;
                   const parsed = parseInt(raw, 10);
 
-    // If the field is empty or invalid, default to 1
+                  // If the field is empty or invalid, default to 1
                   const next = Number.isNaN(parsed) ? 1 : parsed;
                   setCount(next);
                 }}
                 className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
-                disabled={!isPremium && count > 5}
               />
-
               <p className="text-xs text-gray-400 mt-1">
                 {isPremium
                   ? `Premium: up to ${effectiveMax} names at once.`
