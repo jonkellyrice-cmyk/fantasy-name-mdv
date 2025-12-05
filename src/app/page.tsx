@@ -959,12 +959,12 @@ function applyGenderToName(name: string, gender: Gender): string {
 
   if (gender === "male") {
     // masculine: consonant / -on / -or / -ion / -ar
-    const maleEnding = randomChoice(["os", "ur", "ion", "ar", "ad", "eth", "en", "or"]);
+    const maleEnding = randomChoice(["os", "ur", "ion", "ar", "ad", "eth", "en", "or", "ach", "aed"]);
     // strip trailing vowels and add ending
     s = s.replace(/[aeiouáéíóú]+$/i, "") + maleEnding;
   } else if (gender === "female") {
     // feminine: -a, -ia, -iel, -wen
-    const femaleEnding = randomChoice(["a", "ia", "iel", "ys", "ven", "Ine", "airs", "ira", "eya"]);
+    const femaleEnding = randomChoice(["a", "ia", "iel", "ys", "ven", "ine", "airs", "ira", "eya", "ose"]);
     if (/[bcdfghjklmnpqrstvwxyz]$/i.test(s)) {
       // ends in consonant → just append
       s = s + femaleEnding;
