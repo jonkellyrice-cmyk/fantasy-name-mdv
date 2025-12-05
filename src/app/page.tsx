@@ -992,7 +992,7 @@ function generateNames() {
               <option value="female">Feminine-leaning</option>
             </select>
             <p className="text-xs text-gray-400 mt-1">
-              This nudges the ending of the name toward Tolkien-ish masculine
+              This nudges the ending of the name toward masculine
               (-ion, -or) or feminine (-ia, -iel, -wen) patterns.
             </p>
           </div>
