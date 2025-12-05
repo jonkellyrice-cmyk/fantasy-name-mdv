@@ -770,13 +770,13 @@ function applyGenderToName(name: string, gender: Gender): string {
   let s = name.toLowerCase();
 
   if (gender === "male") {
-    // Tolkien-ish masculine: consonant / -on / -or / -ion / -ar
-    const maleEnding = randomChoice(["on", "or", "ion", "ar"]);
+    // masculine: consonant / -on / -or / -ion / -ar
+    const maleEnding = randomChoice(["os", "ur", "ion", "ar"]);
     // strip trailing vowels and add ending
     s = s.replace(/[aeiouáéíóú]+$/i, "") + maleEnding;
   } else if (gender === "female") {
-    // Tolkien-ish feminine: -a, -ia, -iel, -wen
-    const femaleEnding = randomChoice(["a", "ia", "iel", "wen"]);
+    // feminine: -a, -ia, -iel, -wen
+    const femaleEnding = randomChoice(["a", "ia", "iel", "ys"]);
     if (/[bcdfghjklmnpqrstvwxyz]$/i.test(s)) {
       // ends in consonant → just append
       s = s + femaleEnding;
