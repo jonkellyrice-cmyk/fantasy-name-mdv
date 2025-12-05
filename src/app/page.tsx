@@ -1895,10 +1895,9 @@ function deriveLoreProfile(
   const raw = `${archetypeA} ${archetypeB}`.trim();
   const t = raw.toLowerCase();
 
-  // Re-use existing utilities
   const element = pickElementFromText(raw);
   const dialect = pickDialectFromArchetypes(archetypeA, archetypeB);
-  const concepts = extractConcepts(raw); // internal semantic keys: "fire", "forest", "warrior", etc.
+  const concepts = extractConcepts(raw);
 
   // --- Role classification ---
   let role = "wanderer";
@@ -1949,34 +1948,74 @@ function makeLore(name: string, a: string, b: string): string {
     arcB
   );
 
-  // Small helper for concept checks (keys from SEMANTIC_LEXICON)
   const hasConcept = (key: string) => concepts.includes(key);
 
-  // Dialect-flavored Elven places
+  // Dialect-flavored places
   const placesByDialect: Record<Dialect, string[]> = {
     [DIALECTS.HIGH]: [
       "the starlit courts of the highborn",
       "silver halls where songs never truly end",
       "moonlit terraces above the First City",
+      "the silver courts of Aelyndar",
+      "the star-vaulted libraries of Calith Rel",
+      "the Dawnspire terraces above the clouds",
+      "the argent bridges of Ilmoran",
+      "the crystal sanctums of Vaelith",
+      "the rune-etched sky towers of Elthamar",
+      "the astral cloisters of Serelune",
+      "the moon-crowned halls of Eldrinor"
+
     ],
     [DIALECTS.FOREST]: [
       "a deep greenwood few mortals have seen",
       "whispering groves older than most kingdoms",
+      "the whispering groves of Thalanor",
+      "the root-bridges of Verdantfen",
+      "the feymarked glens of Amralae",
+      "the bark-spiraled sanctuaries of Greenward",
+      "the elderwood rings of Selyndar",
+      "the firefly-haunted trails of Lorawyn",
+      "the moss-draped stones of Briarhollow",
+      "the thorn-circle villages of Wrenfell",
       "the moss-lit paths beneath ancient boughs",
     ],
     [DIALECTS.SEA]: [
       "the tide-sung coasts of the western sea",
       "storm-washed cliffs where gulls cry at dusk",
+      "the tide-shattered reefs of Selukar",
+      "the pearl harbors of Brinwaste",
+      "the storm-chased piers of Marathruun",
+      "the kelp-spire monasteries of Thressa",
+      "the lighthouse coves of Vellumar",
+      "the wave-carved caverns of Oshaline",
+      "the drifting flotilla-cities of Seaspire",
+      "the deep-song markets of Siralen",
       "pearled harbors and salt-slick docks",
     ],
     [DIALECTS.MOUNTAIN]: [
       "high mountain vales touched by snow",
       "stone-walled holds carved into the cliffs",
+      "the obsidian ridges of Khar Mordain",
+      "the sky-bitten peaks of Thuldren",
+      "the anvil-sung forges of Brakor Hold",
+      "the cliff-tier villages of Orevhan",
+      "the frost-rimed caverns of Vallidrun",
+      "the lightning-split plateaus of Markhul",
+      "the iron-root warrens of Grundhammar",
+      "the high summit watchfires of Tal Karum",
       "echoing halls beneath the watchful peaks",
     ],
     [DIALECTS.SHADOW]: [
       "the veiled borderlands between realms",
       "twilight roads where most fear to walk",
+      "the dusk-veiled streets of Arvelshade",
+      "the umbral monasteries of Keth Ruun",
+      "the lantern-lit warrens of Sablemarch",
+      "the omen pools of Grimhollow",
+      "the echo-quiet tunnels of Virenfall",
+      "the mask markets of Whispergate",
+      "the threadbare scriptoriums of Nightwell",
+      "the dream-fractured chambers of Morvaen",
       "starless groves that remember every footstep",
     ],
   };
@@ -1990,19 +2029,37 @@ function makeLore(name: string, a: string, b: string): string {
   const places = placesByDialect[dialect] ?? fallbackPlaces;
   const place = randomItem(places);
 
-  // Element-flavored motifs (used as emotional / magical color)
+  // Element-flavored motifs
   const elementMotifs: string[] =
     element === ELEMENTS.FIRE || hasConcept("fire") || hasConcept("flame")
       ? [
           "villages reduced to embers",
           "flamebound oaths that still sting",
           "smoke rising from places they once called home",
+          "ember-veined scars",
+          "ritual ash markings",
+          "a forged-in-battle temper",
+          "sun-touched eyes that glow when angered",
+          "the scent of smoke that follows them",
+          "volatile courage bordering on recklessness",
+          "memories of a pyre that changed their fate",
+          "an inner heat that whispers ancient names",
+          "red horizons that never fully faded from memory",
         ]
       : element === ELEMENTS.WATER || hasConcept("ocean") || hasConcept("river")
       ? [
           "tidelocked secrets and drowned prayers",
           "names carried away by the river",
           "storms that never quite reach shore",
+          "tidal moods that shift with the moon",
+          "whisper-smooth footsteps like lapping waves",
+          "sea-salt intuition guiding their decisions",
+          "storm-born resilience hardened by loss",
+          "a habit of drifting into deep thought",
+          "the calm of a still lake before violence",
+          "a connection to drowned secrets",
+          "hearing patterns in rain others cannot",
+          "waves that sound, to them, like someone calling for help",
         ]
       : element === ELEMENTS.EARTH ||
         hasConcept("forest") ||
@@ -2010,6 +2067,15 @@ function makeLore(name: string, a: string, b: string): string {
       ? [
           "roots torn from sacred soil",
           "fallen groves and broken standing-stones",
+          "slopes choked with abandoned shrines",
+          "stone-quiet patience",
+          "hands calloused from ancient crafts",
+          "a voice like steady granite",
+          "unshakable loyalty once earned",
+          "the steadiness of rooted trees",
+          "a deep memory for old wrongs",
+          "echoing heartbeats in vault-like calm",
+          "the sense of mountains watching nearby",
           "soil that remembers every footstep",
         ]
       : element === ELEMENTS.AIR || hasConcept("wind") || hasConcept("storm")
@@ -2017,211 +2083,492 @@ function makeLore(name: string, a: string, b: string): string {
           "promises scattered on the wind",
           "storms that answered when no one else would",
           "sky-sent omens they can no longer ignore",
+          "a restless pull to distant horizons",
+          "wind-light footsteps",
+          "thoughts that race like storm gusts",
+          "the urge to intervene before others act",
+          "the ability to vanish into open spaces",
+          "voices carrying farther than they should",
+          "an uncanny talent for reading omens",
+          "a past spent chasing something unseen",
+          "winds that still carry the smell of that night",
         ]
       : element === ELEMENTS.DARK || hasConcept("night") || hasConcept("void")
       ? [
           "moonless nights and unquiet graves",
           "whispers from things that do not breathe",
           "shadows that know their true name",
+          "shadow-stitched whispers",
+          "eyes that linger too long on the unknown",
+          "soft footfalls learned from necessity",
+          "secrets kept even from themselves",
+          "strange comfort in silence",
+          "a gift for unraveling lies",
+          "a past that refuses to stay buried",
+          "faint traces of forgotten curses",
+          "starless skies that feel like a held breath",
         ]
       : [
           "half-remembered songs",
           "long roads behind them and longer still ahead",
           "memories they turn over like worn coins",
+          "quiet evenings when the past feels almost kind",
         ];
 
   const elementMotif = randomItem(elementMotifs);
 
-  // Role-flavored titles / social positions
+  // Role-flavored titles
   const roleTitles: Record<string, string[]> = {
     warrior: [
       "blade-warden",
       "oathbound knight",
       "spear-singer",
       "shield-bearer of the old wars",
+      "Blade-Warden",
+      "Sky-Cutter",
+      "First Shield",
+      "Ember Duelist",
+      "Stormspear",
+      "Oathbreaker-Hunter",
+      "Battlecaller",
+      "Warbrand of the Fallen Line",
+      "Frontline Sentinel",
+      "Champion of the Silent Ring",
+      "scar-marked veteran in all but years",
     ],
     hunter: [
       "shadow-tracker",
       "warden of hidden paths",
       "waywatcher of the wild",
       "arrow-kin of the deep woods",
+      "Moon-Tracker",
+      "Silent Arrow",
+      "Nightstalker",
+      "Beast-Binder",
+      "Fangpath Ranger",
+      "Stillwind Scout",
+      "Star-Trail Pursuer",
+      "Ghost-stride Archer",
+      "Blood-Trail Seeker",
+      "Watcher of the Green Veil",
+      "scout who rarely misses a trail",
     ],
     seer: [
       "dreambound oracle",
       "reader of star-scattered omens",
       "veil-touched seer",
       "keeper of moonlit prophecies",
+      "Dream-Binder",
+      "Runespeaker",
+      "Thread-Watcher",
+      "Omen-Tide Oracle",
+      "Starweaver",
+      "Truth-Gazer",
+      "Echo-Soul Diviner",
+      "Moon-Mirror Prophet",
+      "Fate-Touched Visionary",
+      "Chronicle-Bearer",
+      "reluctant witness to too many futures",
     ],
     healer: [
       "leaf-mender",
       "keeper of gentle hands",
       "herb-wise wanderer",
       "soul-stitcher of broken warriors",
+      "Lifewoven Adept",
+      "Spirit-Thread Binder",
+      "Remedy-Singer",
+      "Soul-Stitcher",
+      "Dawnleaf Mendicant",
+      "Warmhands Acolyte",
+      "Hearth-Bloom Curist",
+      "Mender of Broken Bonds",
+      "Grove-Heart Physician",
+      "Keeper of Gentle Rest", 
+      "tireless watcher at bedside and battlefield both",
     ],
     bard: [
       "songweaver",
       "bearer of old tales",
       "harp-kin with a restless tongue",
       "keeper of the unsung verses",
+      "Song-Carver",
+      "Tale-Warden",
+      "Wind-Verse Weaver",
+      "Echo-Runed Skald",
+      "Melody-Strider",
+      "Loreborne Singer",
+      "Harp-Fire Virtuoso",
+      "Whisper-Tune Wanderer",
+      "Words-That-Stir",
+      "Voice of the Forgotten Path",
+      "wandering collector of last words",
     ],
     shadow: [
       "veil-dancer",
       "knife in the dusk",
       "stepper-between light and dark",
       "quiet hand that ends quarrels",
+      "Duskblade",
+      "Shade-Steps",
+      "Silent Ribbon",
+      "Night-Veil Agent",
+      "Umbral Hand",
+      "Blackglass Whisper",
+      "Oath-Thin Knife",
+      "Grave-Lantern Lurker",
+      "Veins-of-Smoke Infiltrator",
+      "Shadow-Mark Operative",
+      "ghost that never quite left the living world",
     ],
     noble: [
       "scion of a fading house",
       "heir to moonlit titles",
       "child of a court that has lost its shine",
+      "Highborn of the Azure Line",
+      "Keeper of Verdant Oaths",
+      "Heir of the Moonspire",
+      "Scion of Three Crowns",
+      "Bearer of Ancestral Ink",
+      "Star-Line Aristocrat",
+      "Voice of the Inner Court",
+      "Legacy-Bound Envoy",
+      "Crown-Sharer",
+      "Silver-Line Regent",
+      "last bright ember of a nearly-cold line",
     ],
     smith: [
       "forge-singer",
       "binder of steel and starfire",
       "artisan whose work outlives empires",
+      "Forge-Singer",
+      "Anvil-Seer",
+      "Sparkwright",
+      "Runebinder",
+      "Steel-Weft Artisan",
+      "Hearthhammer Crafter",
+      "Glimmer-Forge Adept",
+      "Star-Iron Shaper",
+      "Molten-Rune Warden",
+      "Maker of Hidden Hinges",
+      "keeper of embers that never seem to die",
     ],
     wanderer: [
       "road-worn pilgrim",
       "restless wayfarer",
       "stranger at a hundred hearths",
+      "Path-Carried",
+      "Road-Kept",
+      "Wayfarer of Distant Hours",
+      "Horizon-Marked",
+      "Crosswind Traveler",
+      "Lost-Trail Listener",
+      "Mendicant Pilgrim",
+      "Star-Road Walker",
+      "Farstrayed Soul",
+      "Dust-Echo Nomad",
+      "traveler who never quite arrives",
     ],
   };
 
   const titles = roleTitles[role] ?? roleTitles["wanderer"];
   const title = randomItem(titles);
 
-  // --- Origin events (childhood / formative trauma, TTRPG-style) ---
+  // --- Element-based origins (what happened) ---
   const originFire = [
     `${name} watched their first home vanish into ${elementMotif}, the screams of kin buried under crackling beams.`,
-    `As a child, ${name} woke to smoke and steel; by dawn, only embers and silence remained.`,
+    `As a child, ${name} woke to smoke and steel; by dawn, only embers and silence remained where a village once stood.`,
+    `The night the sky turned red, ${name} learned how quickly a lifetime of plans can burn away.`,
+    "survived the burning of their childhood enclave, swearing never again to flee flames",
+    "trained under a pyromancer militia that treated fire as both teacher and punishment",
+    "lost someone dear to wildfire and has followed smoke-omens ever since",
+    "was chosen by a phoenix-order after an ember refused to burn their hand",
+    "carries the memory of a battle fought under a blazing red sky",
+    "once tended sacred forge-fires that whispered forgotten names"
+
   ];
 
   const originForest = [
     `${name} once walked a living grove now cut down for war-timber; every fallen tree still haunts their dreams.`,
-    `Hunters and loggers shattered the sacred wood that raised ${name}, leaving only stumps and ghost-birds.`,
+    `Hunters and loggers shattered the sacred wood that raised ${name}, leaving only stumps and ghost-birds behind.`,
+    "was raised by wardens who spoke with treants in the Old Tongue",
+    "learned archery by moonlight among ancient roots older than cities",
+    "helped defend a grove where spirits awaken each spring",
+    "followed a white stag deep into forbidden trees and returned changed",
+    "was named by a chorus of dryads during a solstice rite",
+    "once held vigil in silence for seven days to honor a fallen grove-guardian",
+    `They remember listening to leaves whisper of peace the very day axes first bit into the oldest trunks.`,
   ];
 
   const originSea = [
     `${name} waited on the shore for a ship that never returned, its sails swallowed by a storm with no name.`,
-    `A midnight storm took both kin and captain; ${name} still hears the drowning in their sleep.`,
+    `A midnight squall took both kin and captain; ${name} still hears the drowning in every heavy rain.`,
+    "was saved from drowning by a tide spirit who demanded a future favor",
+    "grew up among shipwreck salvagers who treated storms as omens",
+    "learned to read the currents like scripture",
+    "heard a leviathan’s distant call as a child and still dreams of it",
+    "escaped raiders across moonlit waters that forever altered them",
+    "served as lookout on a drifting city-barge where secrets traded like coin",
+    `The sea once gave them everything they loved, and then—in one crooked wave—took it all back.`,
   ];
 
   const originShadow = [
     `${name} survived a massacre no one else recalls, as if the world itself chose to forget.`,
     `One night the lanterns all went out; by morning, only ${name} remained to name the dead.`,
+    "was raised in halls where names are traded like secrets",
+    "survived by navigating crime-guild webs with quiet brilliance",
+    "was tutored by a masked stranger who vanished after one final lesson",
+    "bonded with a shadow creature during a moment of desperation",
+    "once lived in a city where the sun rarely rose, shaping their instincts",
+    "helped expose a conspiracy only to be hunted by its remnants",
+    `They were the child hiding under the table when the knives came out, learning how quiet survival can be.`,
   ];
 
   const originGeneric = [
     `${name} left a small village behind after a single night of blood and fire no bard will sing of.`,
     `Once, ${name} belonged to a quiet place with simple lives; now they carry only memories and scars.`,
+    "was the sole survivor of a razed caravan, found wandering ash-roads",
+    "trained beside mercenaries who valued coin and camaraderie equally",
+    "was mentored by a wandering hero who died before passing on their final teaching",
+    "earned early renown after defending their home from monstrous threats",
+    "grew up in a nomadic troupe that traveled from realm to realm exchanging stories",
+    "lost their homeland to political strife and has walked the world ever since",
     `${name} grew up believing in peace, until the day it was taken from them in a language of steel.`,
   ];
 
-  let originPool: string[];
+  let baseOriginPool: string[];
   if (element === ELEMENTS.FIRE || hasConcept("fire") || hasConcept("flame")) {
-    originPool = originFire;
+    baseOriginPool = originFire;
   } else if (
     element === ELEMENTS.WATER ||
     hasConcept("ocean") ||
     hasConcept("river")
   ) {
-    originPool = originSea;
+    baseOriginPool = originSea;
   } else if (
     element === ELEMENTS.EARTH ||
     hasConcept("forest") ||
     hasConcept("mountain")
   ) {
-    originPool = originForest;
+    baseOriginPool = originForest;
   } else if (tone === "shadowed" || element === ELEMENTS.DARK) {
-    originPool = originShadow;
+    baseOriginPool = originShadow;
   } else {
-    originPool = originGeneric;
+    baseOriginPool = originGeneric;
   }
 
-  const origin = randomItem(originPool);
+  const baseOrigin = randomItem(baseOriginPool);
 
-  // --- Goals / present drive (revenge, redemption, duty, truth-seeking) ---
+  // --- Role-specific origin flavor (how it hit *them*, not just the place) ---
+  const roleOrigin: Record<string, string[]> = {
+    warrior: [
+      `As a half-trained warrior, ${name} learned that drills in the yard could never prepare them for real screams.`,
+      "fought in border skirmishes before they were old enough to swear oaths",
+      "trained under a merciless swordmaster known only as 'the Gale'",
+      "defended a sacred landmark until reinforcements arrived days too late",
+      "earned their first scar in a duel meant to be ceremonial",
+      "left a warband after refusing to carry out an unjust order",
+      `They were meant to stand in the shield-wall that day, but the wall never formed and the lesson never left them.`,
+    ],
+    hunter: [
+      `While tracking deer beyond the village bounds, ${name} saw the first smoke rising and ran until their lungs burned.`,
+      "tracked a nightmare beast across three territories before landing the final shot",
+      "learned patience by shadowing prey for weeks without loosing an arrow",
+      "once freed a village plagued by unseen nocturnal creatures",
+      "bonded with a loyal animal companion after saving it from poachers",
+      "spent years mapping migratory paths of dangerous forest spirits",
+      `They returned from the wilds with fresh game and found only ruin, learning to read tracks too late to matter.`,
+    ],
+    seer: [
+      `${name} saw it all in a vision that no one believed; the guilt of being right still keeps them from easy sleep.`,
+      "received visions after nearly drowning in a sacred scrying pool",
+      "became an apprentice oracle when a prophecy spoke their name",
+      "helped avert a minor catastrophe—at great personal cost",
+      "once foresaw their own failure and has feared that day since",
+      "was raised in a temple where dreams were considered holy scripture",
+      `Their first true prophecy was not celebrated—it was ignored, and by morning the fire had proved them right.`,
+    ],
+    healer: [
+      `${name} learned the limits of healing on a night when there were far more wounds than hands.`,
+      "nursed plague victims during a winter that claimed most of their mentors",
+      "studied healing arts under a spirit-bound monk",
+      "learned to mend wounds created by unnatural forces",
+      "failed to save someone dear and now overcompensates with zeal",
+      "was chosen as keeper of a relic herb garden tended for centuries",
+      `They still remember every face they could not save, a ledger of ghosts that shapes every choice.`,
+    ],
+    bard: [
+      `Of all who lived there, ${name} remembers the details most clearly; the story will not leave them alone.`,
+      "studied under a retired adventurer who taught through story and duel",
+      "once performed a ballad so powerful it calmed a riot",
+      "traveled with a troupe that vanished under mysterious circumstances",
+      "wove magic into lullabies long before realizing they were spells",
+      "collected forbidden verses that reveal dangerous truths",
+      `They tried to sing over the sound of the flames and failed, and have been chasing the right song ever since.`,
+    ],
+    shadow: [
+      `${name} survived by staying very small and very quiet in a dark corner, a talent that never quite left them.`,
+      "grew up pulling cons to feed siblings before graduating to espionage",
+      "escaped a guild that tattoos failures onto its agents",
+      "learned stealth in a monastery that worshipped silence",
+      "once stole an artifact only to return it out of guilt",
+      "survived betrayal by their closest partner",
+      `They know some doors opened for the killers from the inside, and they will always wonder whose hand turned the latch.`,
+    ],
+    noble: [
+      `Courtiers argued while the danger grew; ${name} learned that titles mean little when the walls finally fall.`,
+      "was groomed for leadership but rejected the cold politics",
+      "led a diplomatic envoy that nearly sparked war",
+      "uncovered corruption within their own lineage",
+      "studied ancient court combat forms out of defiance",
+      "was exiled after a succession dispute turned violent",
+      `They escaped down a servant’s passage while heralds and banners burned, carrying a house-name that now tastes like ash.`,
+    ],
+    smith: [
+      `The forge where ${name} first learned their craft cracked in the heat of that night and never burned again.`,
+      "learned metallurgy from a master who crafted weapons for demigods",
+      "accidentally created a minor magical construct that follows them still",
+      "forged their first blade under a meteor shower",
+      "studied runes after discovering a half-finished golem",
+      "witnessed their village's forge collapse during an arcane malfunction",
+      `They still carry a warped blade from the ruins of their old workshop, a reminder that steel fails too.`,
+    ],
+    wanderer: [
+      `${name} had just left home when it fell, learning that wandering does not always mean you chose to leave.`,
+      "followed a vision that led them far from home",
+      "found a relic map showing impossible places",
+      "was taken in by nomads who taught the value of open paths",
+      "escaped captivity and never remained in one place again",
+      "swore to walk until they understood their recurring dreams",
+      `A single night on the road spared them; every step since has felt like borrowed time.`,
+    ],
+  };
+
+  const roleOriginPool =
+    roleOrigin[role] ?? roleOrigin["wanderer"];
+  const roleOriginLine = randomItem(roleOriginPool);
+
+  // Blend base + role origin with a bit of randomness
+  const origin =
+    Math.random() < 0.6
+      ? `${baseOrigin} ${roleOriginLine}`
+      : randomItem([baseOrigin, roleOriginLine]);
+
+  // --- Goals / present drive ---
   const revengeGoals = [
     `Now they trace old scars across the map, hunting those who lit the first flame.`,
     `Every road they walk bends, sooner or later, toward the ones who started it all.`,
+    "to hunt the foe who razed their home",
+    "to dismantle the bandit network that stole their family",
+    "to bring judgment upon a corrupt noble who betrayed them",
+    "to avenge a mentor slain by dark forces",
+    "to expose and destroy a conspiracy years in the making",
+    "to reclaim an artifact stolen by treachery",
     `They speak little of that night, but the way their hand tightens on the hilt says enough.`,
   ];
 
   const dutyGoals = [
     `Now they serve as a ${title}, determined that no one else will lose what they once did.`,
     `They stand between danger and the next village, paying forward a protection they never had.`,
+    "to uphold vows sworn before witnesses living and dead",
+    "to escort a fragile peace treaty across dangerous lands",
+    "to guard someone whose importance they don’t yet understand",
+    "to restore an order shattered by internal conflict",
+    "to serve a community that once sheltered them",
+    "to retrieve sacred knowledge lost to time",
     `Duty keeps their feet moving, even when their heart longs to rest beneath familiar trees.`,
   ];
 
   const redemptionGoals = [
     `Now they walk the long road of atonement, certain that some part of that ruin was their fault.`,
     `They take the hardest tasks without complaint, as if each might erase a fraction of the past.`,
+    "to atone for a past failure that cost innocent lives",
+    "to undo harm caused by their own misjudgment",
+    "to restore honor stripped unjustly—or justly",
+    "to repair a relationship they shattered",
+    "to cleanse a cursed bloodline",
+    "to prove they are more than their reputation",
     `Every kindness they offer is a stone laid on a path they hope leads back to themselves.`,
   ];
 
   const curiosityGoals = [
     `Now they chase rumors and half-truths, trying to understand why fate chose them to survive.`,
     `They travel with questions sharper than any blade, seeking the pattern beneath all this loss.`,
+    "to uncover the truth behind an ancient myth",
+    "to map uncharted lands whispered of by elders",
+    "to understand a strange power that awakened within them",
+    "to solve a riddle that has obsessed them for years",
+    "to study forgotten ruins that call to their dreams",
+    "to learn why they alone can see certain omens",
     `Every new land is another chance to learn what the old songs were trying to warn them about.`,
   ];
 
   let goalPool: string[];
 
   if (tone === "shadowed") {
-    // shadowed leans revenge or grim duty
     goalPool = Math.random() < 0.6 ? revengeGoals : dutyGoals;
   } else if (tone === "bright") {
-    // bright leans duty or redemption
     goalPool = Math.random() < 0.5 ? dutyGoals : redemptionGoals;
   } else {
-    // balanced can go any direction
     const pools = [revengeGoals, dutyGoals, redemptionGoals, curiosityGoals];
     goalPool = randomItem(pools);
   }
 
   const goal = randomItem(goalPool);
 
-  // --- Relationship hooks: siblings, mentors, companions (party ties) ---
-
+  // --- Relationship hooks: siblings, mentors, companions ---
   const siblingHooks: string[] = [
     `An older sibling once stood between ${name} and the flames; ${name} has been trying to live up to that courage ever since.`,
     `A younger sibling was lost that night, and every cause ${name} takes up is secretly for them.`,
+    "a sibling they must rescue from a dangerous cult",
+    "a brother lost during a raid, believed dead—but perhaps alive",
+    "a sister who resents their choices, despite loving them dearly",
+    "a twin whose fate diverged sharply from their own",
+    "a sibling who became a villain’s lieutenant",
+    "a younger kin who idolizes them and follows recklessly",
     `${name} still wears a token from a sibling left behind, a promise that this road will mean something.`,
   ];
 
   const mentorHooks: string[] = [
     `A wandering mentor found ${name} in the aftermath and taught them how to stand again, then vanished on a quest that never returned.`,
     `${name} learned blade, spell, and patience from a teacher whose lessons still echo in every choice they make.`,
+    "a mentor who vanished after uttering one final warning",
+    "a teacher who turned traitor for reasons unknown",
+    "a guardian who died protecting them from a shadowy group",
+    "a master whose unfinished lessons still guide them",
+    "a retired adventurer who entrusted them with a dangerous relic",
+    "a mystic who foresaw their destiny but refused to explain it",
     `Somewhere out there, the one who trained ${name} is still missing; every tavern and temple might hold the next clue.`,
   ];
 
   const companionHooks: string[] = [
     `They travel better in company than alone, clinging to the hope that this time they can keep others alive.`,
     `Companions walk at their side now; ${name} watches them with the wary fondness of someone who knows how quickly a table can go empty.`,
+    "a loyal companion lost under mysterious circumstances",
+    "a former traveling partner they parted with on bad terms",
+    "a childhood friend who now walks a darker path",
+    "a lover sworn to return but long overdue",
+    "a comrade imprisoned for a crime they didn’t commit",
+    "a rival adventurer who pushes them to improve",
     `Around the fire, ${name} listens more than they speak, quietly measuring which of these new friends they cannot bear to lose.`,
   ];
 
-  // Weight which relationship theme to lean into
   let relationshipPool: string[];
 
   if (tone === "shadowed") {
-    // trauma-heavy: siblings or mentor
     relationshipPool =
       Math.random() < 0.5 ? siblingHooks : mentorHooks;
   } else if (tone === "bright") {
-    // hopeful duty: mentor or companions
     relationshipPool =
       Math.random() < 0.5 ? mentorHooks : companionHooks;
   } else {
-    // balanced: any of the three
     const pools = [siblingHooks, mentorHooks, companionHooks];
     relationshipPool = randomItem(pools);
   }
 
   const relationship = randomItem(relationshipPool);
 
-  // --- Assemble final lore ---
-  // Structure: 2–3 sentences, always usable as a character hook.
+  // --- Openings / structural variation ---
   const openingOptions = [
     `${name} is a ${title} from ${place}.`,
     `Those who know ${name} from ${place} speak their name with a careful respect.`,
@@ -2231,14 +2578,17 @@ function makeLore(name: string, a: string, b: string): string {
 
   const roll = Math.random();
 
-  if (roll < 0.15) {
-    // Shorter: orientation + party tie
+  if (roll < 0.2) {
+    // Shorter: opening + relationship (good for quick scanning)
     return `${opening} ${relationship}`;
-  } else if (roll < 0.45) {
-    // Origin + relationship (good for immediate hooks)
-    return `${origin} ${relationship}`;
+  } else if (roll < 0.4) {
+    // Tagline-ish: origin only (compact backstory)
+    return origin;
+  } else if (roll < 0.6) {
+    // Origin + goal (very PC-hooky)
+    return `${origin} ${goal}`;
   } else {
-    // Full mini-arc: opening + origin + goal + relationship (3–4 sentences but still tight)
+    // Full mini-arc
     return `${opening} ${origin} ${goal} ${relationship}`;
   }
 }
