@@ -794,6 +794,11 @@ function applyGenderToName(name: string, gender: Gender): string {
  * This replaces your old makeFantasyName, using the full language engine.
  * Archetype A/B influence element + dialect.
  */
+function clampNameLength(name: string, maxLen = 10): string {
+  if (name.length <= maxLen) return name;
+  return name.slice(0, maxLen);
+}
+
 function makeFantasyName(
   archetypeA: string,
   archetypeB: string,
@@ -823,9 +828,11 @@ function makeFantasyName(
     elementB,
   });
 
-  // Apply gender shaping at the very end
-  return applyGenderToName(result.name, gender);
+  // Apply gender shaping at the very end, THEN clamp length
+  const gendered = applyGenderToName(result.name, gender);
+  return clampNameLength(gendered, 10);
 }
+
 
 
 /* ===========================
