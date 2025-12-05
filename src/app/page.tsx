@@ -39,7 +39,7 @@ type ProtoRoot = {
 };
 
 const PROTO_ROOTS: ProtoRoot[] = [
-  // A. ELEMENTAL ROOTS (20)
+  // A. ELEMENTAL ROOTS (original 20)
   { key: "fire", proto: "pyran", elements: [ELEMENTS.FIRE] },
   { key: "flame", proto: "sirla", elements: [ELEMENTS.FIRE] },
   { key: "ember", proto: "kaleth", elements: [ELEMENTS.FIRE] },
@@ -61,7 +61,29 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "mountain", proto: "dunag", elements: [ELEMENTS.EARTH] },
   { key: "void", proto: "ekhar", elements: [ELEMENTS.DARK] },
 
-  // B. NATURE & LANDSCAPE (20)
+  // A. ELEMENTAL ROOTS (additional)
+  { key: "spark", proto: "scairn", elements: [ELEMENTS.FIRE] },
+  { key: "blaze", proto: "bravon", elements: [ELEMENTS.FIRE] },
+  { key: "coal", proto: "carun", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+  { key: "radiance", proto: "radiel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "halo", proto: "aloro", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "aurora", proto: "auren", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "ash", proto: "askel", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+  { key: "smoke", proto: "fumrel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "magma", proto: "magral", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+  { key: "inferno", proto: "inferes", elements: [ELEMENTS.FIRE] },
+  { key: "breeze", proto: "zevar", elements: [ELEMENTS.AIR] },
+  { key: "gale", proto: "galven", elements: [ELEMENTS.AIR] },
+  { key: "thunder", proto: "torval", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "lightning", proto: "fulmir", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "cloud", proto: "nuvol", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+  { key: "tide", proto: "maros", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "spring_water", proto: "fonrel", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+  { key: "deep", proto: "profir", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "ore", proto: "minar", elements: [ELEMENTS.EARTH] },
+  { key: "chasm", proto: "cairun", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+
+  // B. NATURE & LANDSCAPE (original 20)
   { key: "forest", proto: "dyal", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
   { key: "leaf", proto: "althe", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
   { key: "branch", proto: "torin", elements: [ELEMENTS.EARTH] },
@@ -83,7 +105,29 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "starfall", proto: "selkan", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
   { key: "desert", proto: "tharuk", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
 
-  // C. MOTION / DANCE (20)
+  // B. NATURE & LANDSCAPE (additional)
+  { key: "grove", proto: "nemeth", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+  { key: "thicket", proto: "druval", elements: [ELEMENTS.EARTH] },
+  { key: "hill", proto: "brigan", elements: [ELEMENTS.EARTH] },
+  { key: "plain", proto: "campor", elements: [ELEMENTS.EARTH] },
+  { key: "marsh", proto: "palun", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+  { key: "fen", proto: "muireth", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+  { key: "shore", proto: "lanor", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "island", proto: "insulae", elements: [ELEMENTS.WATER] },
+  { key: "reed", proto: "cairith", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+  { key: "field", proto: "pratel", elements: [ELEMENTS.EARTH] },
+  { key: "grottos", proto: "grothal", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+  { key: "ridge", proto: "carnon", elements: [ELEMENTS.EARTH] },
+  { key: "glade", proto: "lareth", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "sunset", proto: "tramur", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "starlight", proto: "stelair", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "eclipse", proto: "eclyr", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+  { key: "horizon", proto: "orivon", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "glen", proto: "glennir", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+  { key: "harbor", proto: "porthae", elements: [ELEMENTS.WATER] },
+  { key: "crag", proto: "skarn", elements: [ELEMENTS.EARTH] },
+
+  // C. MOTION / DANCE (original 20)
   { key: "step", proto: "tiren", elements: [ELEMENTS.AIR] },
   { key: "leap", proto: "kaelu", elements: [ELEMENTS.AIR] },
   { key: "spin", proto: "viros", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
@@ -105,7 +149,29 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "scatter", proto: "velor", elements: [ELEMENTS.AIR] },
   { key: "gather", proto: "hiran", elements: [ELEMENTS.EARTH] },
 
-  // D. EMOTION & SPIRIT (20)
+  // C. MOTION / DANCE (additional)
+  { key: "tread", proto: "passil", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "stride", proto: "gradel", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "charge", proto: "ravan", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+  { key: "rush", proto: "briven", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "turn", proto: "voltir", elements: [ELEMENTS.AIR] },
+  { key: "spin_fast", proto: "spiron", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "dance", proto: "cairia", elements: [ELEMENTS.AIR] },
+  { key: "weave", proto: "tramar", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+  { key: "glimmer", proto: "glisar", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "surge", proto: "onval", elements: [ELEMENTS.WATER, ELEMENTS.FIRE] },
+  { key: "flow_slow", proto: "lentar", elements: [ELEMENTS.WATER] },
+  { key: "rush_water", proto: "torrenth", elements: [ELEMENTS.WATER] },
+  { key: "hover", proto: "sosair", elements: [ELEMENTS.AIR] },
+  { key: "crawl", proto: "tarthun", elements: [ELEMENTS.EARTH] },
+  { key: "slide", proto: "scalun", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+  { key: "coil", proto: "corvim", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+  { key: "flare", proto: "fiora", elements: [ELEMENTS.FIRE] },
+  { key: "quiver", proto: "tremel", elements: [ELEMENTS.AIR] },
+  { key: "waltz", proto: "valsera", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+  { key: "rush_wind", proto: "galvorn", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+
+  // D. EMOTION & SPIRIT (original 20)
   { key: "love", proto: "amriel", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
   { key: "sorrow", proto: "melkun", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
   { key: "joy", proto: "talia", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
@@ -127,7 +193,29 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "secret", proto: "kephal", elements: [ELEMENTS.DARK] },
   { key: "will", proto: "adanir", elements: [ELEMENTS.FIRE] },
 
-  // E. ANIMALS & CREATURES (20)
+  // D. EMOTION & SPIRIT (additional)
+  { key: "mercy", proto: "clementh", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "wrath", proto: "furion", elements: [ELEMENTS.FIRE] },
+  { key: "serenity", proto: "paciel", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "wonder", proto: "mirava", elements: [ELEMENTS.AIR] },
+  { key: "despair", proto: "tristal", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "faith", proto: "credun", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "devotion", proto: "devorae", elements: [ELEMENTS.FIRE, ELEMENTS.WATER] },
+  { key: "vengeance", proto: "vendrak", elements: [ELEMENTS.FIRE, ELEMENTS.DARK] },
+  { key: "envy", proto: "invidar", elements: [ELEMENTS.DARK] },
+  { key: "pride", proto: "superon", elements: [ELEMENTS.FIRE] },
+  { key: "pity", proto: "miserel", elements: [ELEMENTS.WATER] },
+  { key: "calm", proto: "placir", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "zeal", proto: "ardun", elements: [ELEMENTS.FIRE] },
+  { key: "awe", proto: "stuphel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "melancholy", proto: "dolvar", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
+  { key: "devotion_spirit", proto: "anamar", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "spite", proto: "acrar", elements: [ELEMENTS.DARK] },
+  { key: "tranquility", proto: "quiesan", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "resolve", proto: "fermir", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+  { key: "inspiration", proto: "spiriel", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+
+  // E. ANIMALS & CREATURES (original 20)
   { key: "wolf", proto: "garuin", elements: [ELEMENTS.EARTH] },
   { key: "hawk", proto: "aerik", elements: [ELEMENTS.AIR] },
   { key: "eagle", proto: "tharun", elements: [ELEMENTS.AIR] },
@@ -149,7 +237,29 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "lizard", proto: "meruk", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
   { key: "bat", proto: "dhuair", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
 
-  // F. CRAFT / ROLE / CULTURE (20)
+  // E. ANIMALS & CREATURES (additional)
+  { key: "stag", proto: "cerun", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "falcon", proto: "falcir", elements: [ELEMENTS.AIR] },
+  { key: "wolfhound", proto: "garvar", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+  { key: "crow", proto: "corven", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+  { key: "swan", proto: "albar", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "otter", proto: "lutrien", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+  { key: "foxfire", proto: "verial", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "lynx", proto: "lunchar", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "hare", proto: "conel", elements: [ELEMENTS.EARTH] },
+  { key: "wolf_spirit", proto: "gariel", elements: [ELEMENTS.DARK, ELEMENTS.EARTH] },
+  { key: "serpent_sea", proto: "moraiz", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
+  { key: "phoenix", proto: "fenicar", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "rat", proto: "sorvil", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+  { key: "goat", proto: "caprul", elements: [ELEMENTS.EARTH] },
+  { key: "bull", proto: "tauron", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+  { key: "crow_spirit", proto: "corvion", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+  { key: "songbird", proto: "aviel", elements: [ELEMENTS.AIR] },
+  { key: "wolf_night", proto: "garunel", elements: [ELEMENTS.DARK, ELEMENTS.EARTH] },
+  { key: "kraken", proto: "craken", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "wyrm", proto: "wyrhal", elements: [ELEMENTS.FIRE, ELEMENTS.DARK] },
+
+  // F. CRAFT / ROLE / CULTURE (original 20)
   { key: "smith", proto: "brakor", elements: [ELEMENTS.FIRE] },
   { key: "hunter", proto: "torvak", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
   { key: "seer", proto: "omriel", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
@@ -170,38 +280,116 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "sailor", proto: "merak", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
   { key: "noble", proto: "eluno", elements: [ELEMENTS.AIR] },
   { key: "guardian_spirit", proto: "dhuverin", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
+
+  // F. CRAFT / ROLE / CULTURE (additional)
+  { key: "bard", proto: "bardel", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "poet", proto: "versan", elements: [ELEMENTS.AIR] },
+  { key: "scribe", proto: "scrivan", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+  { key: "captain", proto: "caprel", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "lord", proto: "domnar", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+  { key: "lady", proto: "domena", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+  { key: "herbalist", proto: "erbalon", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+  { key: "mage", proto: "magiel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "archer", proto: "sagrit", elements: [ELEMENTS.AIR] },
+  { key: "monk", proto: "moniar", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+  { key: "pilgrim", proto: "viatrel", elements: [ELEMENTS.AIR] },
+  { key: "champion", proto: "campion", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+  { key: "chieftain", proto: "capthar", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+  { key: "oracle", proto: "oracel", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+  { key: "spy", proto: "ocultar", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+  { key: "thief", proto: "latron", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+  { key: "smith_arcane", proto: "runakor", elements: [ELEMENTS.FIRE, ELEMENTS.DARK] },
+  { key: "sail_master", proto: "velonar", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "bannerbearer", proto: "vexilar", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+  { key: "duelist", proto: "duellar", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
 ];
+
 
 const AFFIX_PATTERNS: Record<
   Dialect,
   { personal: string[]; place: string[]; clan: string[] }
 > = {
   [DIALECTS.HIGH]: {
-    personal: ["{root}ia", "{root}ea", "{root}iel", "{root}ion", "Ael{root}", "El{root}ar"],
-    place: ["{root}ara", "{root}orë", "{root}ilion", "{root}arë"],
-    clan: ["An{root}", "Tel{root}", "{root}ain", "Calen{root}"],
+    personal: [
+      "{root}ia", "{root}ea", "{root}iel", "{root}ion", "Ael{root}", "El{root}ar",
+      "{root}ielin", "{root}aris", "{root}oriel", "{root}enna", "{root}avon",
+      "Il{root}ien", "Aer{root}", "{root}alith"
+    ],
+    place: [
+      "{root}ara", "{root}orë", "{root}ilion", "{root}arë",
+      "{root}annon", "{root}ellor", "Tor{root}ien", "{root}amarë"
+    ],
+    clan: [
+      "An{root}", "Tel{root}", "{root}ain", "Calen{root}",
+      "Mir{root}", "Vor{root}el", "Luth{root}", "Athan{root}"
+    ],
   },
+
   [DIALECTS.FOREST]: {
-    personal: ["{root}an", "{root}eth", "{root}ose", "{root}ach"],
-    place: ["{root}thir", "{root}ron", "{root}dun"],
-    clan: ["Mac{root}", "Ui{root}", "{root}dhel", "Cen{root}"],
+    personal: [
+      "{root}an", "{root}eth", "{root}ose", "{root}ach",
+      "{root}en", "{root}uin", "{root}ren", "{root}olas",
+      "Fen{root}", "Gwyn{root}", "{root}aroch", "{root}adhel"
+    ],
+    place: [
+      "{root}thir", "{root}ron", "{root}dun",
+      "{root}gwyn", "{root}breth", "{root}lanor", "Dru{root}il"
+    ],
+    clan: [
+      "Mac{root}", "Ui{root}", "{root}dhel", "Cen{root}",
+      "Bro{root}ach", "Sil{root}", "Or{root}gwyn"
+    ],
   },
+
   [DIALECTS.SEA]: {
-    personal: ["{root}ae", "{root}ao", "{root}uin", "{root}ia"],
-    place: ["{root}aë", "{root}oae", "{root}eluin", "{root}orae"],
-    clan: ["Sel{root}", "Mar{root}ae", "Pel{root}uin"],
+    personal: [
+      "{root}ae", "{root}ao", "{root}uin", "{root}ia",
+      "{root}oar", "{root}elli", "{root}avae", "Sir{root}",
+      "{root}alun", "{root}eirion", "Aro{root}", "{root}ionae"
+    ],
+    place: [
+      "{root}aë", "{root}oae", "{root}eluin", "{root}orae",
+      "{root}thalos", "{root}mareth", "Pel{root}ae", "{root}olin"
+    ],
+    clan: [
+      "Sel{root}", "Mar{root}ae", "Pel{root}uin",
+      "Lor{root}", "Aen{root}or", "Thal{root}un"
+    ],
   },
+
   [DIALECTS.MOUNTAIN]: {
-    personal: ["{root}lak", "{root}in", "{root}ol", "{root}grin"],
-    place: ["{root}kaj", "{root}drum", "{root}gowyn", "{root}dûm"],
-    clan: ["Kar{root}", "Dur{root}un", "Khaz{root}"],
+    personal: [
+      "{root}lak", "{root}in", "{root}ol", "{root}grin",
+      "{root}rak", "{root}dorn", "{root}gar", "{root}vorn",
+      "Kar{root}in", "Bal{root}", "{root}gran", "{root}kul"
+    ],
+    place: [
+      "{root}kaj", "{root}drum", "{root}gowyn", "{root}dûm",
+      "{root}korin", "{root}grum", "Dur{root}ak", "{root}thol"
+    ],
+    clan: [
+      "Kar{root}", "Dur{root}un", "Khaz{root}",
+      "Bram{root}", "Thur{root}", "Gor{root}un"
+    ],
   },
+
   [DIALECTS.SHADOW]: {
-    personal: ["{root}úth", "{root}ghal", "{root}shai", "{root}than"],
-    place: ["{root}gúl", "{root}daen", "{root}naúl", "{root}dûn"],
-    clan: ["Moth{root}", "Dhul{root}", "Ghul{root}"],
+    personal: [
+      "{root}úth", "{root}ghal", "{root}shai", "{root}than",
+      "{root}mur", "{root}ghel", "{root}aun", "{root}vyr",
+      "Mor{root}in", "Vel{root}", "{root}druin", "{root}zael"
+    ],
+    place: [
+      "{root}gúl", "{root}daen", "{root}naúl", "{root}dûn",
+      "{root}morth", "{root}ighor", "{root}ulmar", "Dra{root}un"
+    ],
+    clan: [
+      "Moth{root}", "Dhul{root}", "Ghul{root}",
+      "Vor{root}", "Nal{root}un", "Ar{root}ghul"
+    ],
   },
 };
+
 
 function randomChoice<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -771,12 +959,12 @@ function applyGenderToName(name: string, gender: Gender): string {
 
   if (gender === "male") {
     // masculine: consonant / -on / -or / -ion / -ar
-    const maleEnding = randomChoice(["os", "ur", "ion", "ar"]);
+    const maleEnding = randomChoice(["os", "ur", "ion", "ar", "ad", "eth", "en", "or"]);
     // strip trailing vowels and add ending
     s = s.replace(/[aeiouáéíóú]+$/i, "") + maleEnding;
   } else if (gender === "female") {
     // feminine: -a, -ia, -iel, -wen
-    const femaleEnding = randomChoice(["a", "ia", "iel", "ys"]);
+    const femaleEnding = randomChoice(["a", "ia", "iel", "ys", "ven", "Ine", "airs", "ira", "eya"]);
     if (/[bcdfghjklmnpqrstvwxyz]$/i.test(s)) {
       // ends in consonant → just append
       s = s + femaleEnding;
