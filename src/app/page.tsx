@@ -1859,6 +1859,301 @@ const SEMANTIC_LEXICON: Record<string, string> = {
   rune: "secret",
   sigil: "secret",
 };
+
+// ===========================
+// FORM SHAPE SYSTEM
+// ===========================
+
+// How we describe the "silhouette" of a name
+type ShapeLengthBucket = "tiny" | "short" | "medium" | "longish";
+
+type EndingType = "vowel" | "softConsonant" | "hardConsonant";
+
+type ShapeSignature = {
+  syllables: number;
+  lengthBucket: ShapeLengthBucket;
+  endingType: EndingType;
+  dialect: Dialect;
+};
+
+// Batch-level shape statistics
+type ShapeStats = Map<string, number>;
+
+/** Helper: pack a ShapeSignature into a string key for the map */
+function shapeKey(sig: ShapeSignature): string {
+  return [
+    sig.dialect,
+    sig.syllables,
+    sig.lengthBucket,
+    sig.endingType,
+  ].join("|");
+}
+
+function incrementShape(stats: ShapeStats, sig: ShapeSignature): void {
+  const key = shapeKey(sig);
+  const current = stats.get(key) ?? 0;
+  stats.set(key, current + 1);
+}
+
+function shapeFrequency(stats: ShapeStats, sig: ShapeSignature): number {
+  const key = shapeKey(sig);
+  return stats.get(key) ?? 0;
+}
+
+/** Classify how long this name is relative to its length preset. */
+function getLengthBucket(
+  name: string,
+  lengthPreset: NameLength
+): ShapeLengthBucket {
+  const len = name.length;
+  const { maxChars } = LENGTH_PRESETS[lengthPreset];
+
+  const ratio = len / maxChars;
+
+  if (ratio <= 0.35) return "tiny";    // e.g. "Vel", "Sarv"
+  if (ratio <= 0.65) return "short";   // compact but not super tiny
+  if (ratio <= 0.9) return "medium";   // comfortably using the preset
+  return "longish";                    // near the upper bound
+}
+
+/** Classify the ending type by final character(s). */
+function getEndingType(name: string): EndingType {
+  const s = name.toLowerCase().replace(/[^a-záéíóú]/g, "");
+  if (!s) return "vowel";
+
+  const last = s[s.length - 1];
+
+  if (/[aeiouáéíóú]/.test(last)) {
+    return "vowel";
+  }
+
+  // "Soft" consonants feel elvish and flowing
+  if (/[lnrmys]/.test(last)) {
+    return "softConsonant";
+  }
+
+  // Everything else counts as a "hard" stop (k, t, d, g, b, p, etc.)
+  return "hardConsonant";
+}
+
+/**
+ * Compute a ShapeSignature for the *base* form (pre-gender).
+ * We pass in the length preset so the lengthBucket is relative to that.
+ */
+function getShapeSignature(
+  base: string,
+  dialect: Dialect,
+  lengthPreset: NameLength
+): ShapeSignature {
+  const s = base.toLowerCase();
+  const syllables = syllableCount(s);
+  const lengthBucket = getLengthBucket(s, lengthPreset);
+  const endingType = getEndingType(s);
+
+  return {
+    syllables,
+    lengthBucket,
+    endingType,
+    dialect,
+  };
+}
+
+/**
+ * Lightly vary the base form to get a slightly different shape:
+ * - maybe trim a trailing syllable if it's long
+ * - maybe swap / tweak a vowel
+ * - maybe add a soft consonant or vowel at the end
+ *
+ * Always runs cleanupForm + isCoolName again.
+ */
+function varyFormForShape(
+  base: string,
+  dialect: Dialect,
+  lengthPreset: NameLength
+): string {
+  let s = base.toLowerCase();
+
+  // Decide randomly which micro-variation to try
+  const roll = Math.random();
+
+  // 1) If it's on the longer side, try trimming at the last vowel
+  if (roll < 0.33 && s.length >= 5) {
+    const lastVowelIndex = s.search(/[aeiouáéíóú][^aeiouáéíóú]*$/);
+    if (lastVowelIndex > 0) {
+      s = s.slice(0, lastVowelIndex);
+    }
+  }
+  // 2) Slight vowel flourish: a -> ae, o -> oa, e -> ei, etc.
+  else if (roll < 0.66) {
+    s = s.replace(
+      /[aeiouáéíóú](?!.*[aeiouáéíóú].*$)/, // last vowel in the string
+      (v) => {
+        switch (v) {
+          case "a":
+            return randomChoice(["a", "ae"]);
+          case "e":
+            return randomChoice(["e", "ei"]);
+          case "o":
+            return randomChoice(["o", "oa"]);
+          case "i":
+            return randomChoice(["i", "ia"]);
+          case "u":
+            return randomChoice(["u", "ui"]);
+          default:
+            return v;
+        }
+      }
+    );
+  }
+  // 3) Adjust ending openness: sometimes add/remove a soft consonant / vowel
+  else {
+    const endingType = getEndingType(s);
+
+    if (endingType === "vowel") {
+      // Close it softly: add l / n / r sometimes
+      if (s.length > 2 && Math.random() < 0.7) {
+        s = s + randomChoice(["l", "n", "r"]);
+      }
+    } else {
+      // Open it: add a vowel that fits elvish feel
+      if (Math.random() < 0.7) {
+        s = s + randomChoice(["a", "e", "o"]);
+      }
+    }
+  }
+
+  // Cleanup + sanity check
+  s = cleanupForm(s, dialect);
+
+  if (!isCoolName(s, lengthPreset)) {
+    // If we broke it, just fall back to the original base
+    return base;
+  }
+
+  return s;
+}
+
+// AFFIX pattern type alias for clarity
+type Pattern = string;
+
+/**
+ * Infer the *ending type* a pattern tends to produce,
+ * based on the characters AFTER {root}.
+ *
+ * Example:
+ * - "{root}ia"   -> last literal char "a"   -> vowel
+ * - "{root}el"   -> last literal char "l"   -> softConsonant
+ * - "Kar{root}"  -> no suffix, prefix only  -> we treat as "any"
+ */
+function getEndingTypeFromPattern(pattern: Pattern): EndingType | "any" {
+  // Strip out the {root} placeholder and non-letters
+  const suffix = pattern.replace("{root}", "");
+  const letters = suffix.replace(/[^a-záéíóú]/gi, "");
+
+  if (!letters) {
+    // pure root or prefix-only; could end however the root ends
+    return "any";
+  }
+
+  const last = letters[letters.length - 1].toLowerCase();
+
+  if (/[aeiouáéíóú]/.test(last)) {
+    return "vowel";
+  }
+
+  if (/[lnrmys]/.test(last)) {
+    return "softConsonant";
+  }
+
+  return "hardConsonant";
+}
+
+/**
+ * Aggregate how many times each endingType has appeared so far
+ * for a given dialect across this batch.
+ */
+function getEndingTypeUsageForDialect(
+  stats: ShapeStats,
+  dialect: Dialect
+): Record<EndingType, number> {
+  const counts: Record<EndingType, number> = {
+    vowel: 0,
+    softConsonant: 0,
+    hardConsonant: 0,
+  };
+
+  for (const [key, value] of stats.entries()) {
+    // key structure: dialect|syllables|lengthBucket|endingType
+    const [keyDialect, , , endingTypeStr] = key.split("|");
+    if (keyDialect !== dialect) continue;
+
+    if (
+      endingTypeStr === "vowel" ||
+      endingTypeStr === "softConsonant" ||
+      endingTypeStr === "hardConsonant"
+    ) {
+      counts[endingTypeStr] += value;
+    }
+  }
+
+  return counts;
+}
+/**
+ * Choose a pattern for this dialect, nudging toward underused ending types
+ * within the current batch.
+ *
+ * - If no shapeStats are provided, falls back to pure randomChoice.
+ * - If provided, tries to diversify endings (vowel vs soft vs hard).
+ */
+function pickPatternWithShapeBias(
+  dialect: Dialect,
+  desiredLength: NameLength, // currently unused, but kept for future tuning
+  shapeStats?: ShapeStats
+): Pattern {
+  const patterns = AFFIX_PATTERNS[dialect].personal;
+
+  // No stats? Just pick randomly as before.
+  if (!shapeStats || patterns.length <= 1) {
+    return randomChoice(patterns);
+  }
+
+  const endingUsage = getEndingTypeUsageForDialect(shapeStats, dialect);
+
+  // For each pattern, estimate its endingType and assign a "load" score
+  const candidates = patterns.map((p) => {
+    const endingType = getEndingTypeFromPattern(p);
+    let load = 0;
+
+    if (endingType === "any") {
+      // neutral patterns: treat as mildly under-used
+      load = Math.min(
+        endingUsage.vowel,
+        endingUsage.softConsonant,
+        endingUsage.hardConsonant
+      );
+    } else {
+      load = endingUsage[endingType];
+    }
+
+    return { pattern: p, endingType, load };
+  });
+
+  // Find minimal load among used ending types
+  let minLoad = Infinity;
+  for (const c of candidates) {
+    if (c.load < minLoad) {
+      minLoad = c.load;
+    }
+  }
+
+  // Filter to patterns with the smallest "load"
+  const leastUsed = candidates.filter((c) => c.load === minLoad);
+
+  // Random among least-used shapes to keep things organic
+  const chosen = randomChoice(leastUsed);
+  return chosen.pattern;
+}
+
 /* ===========================
    LEVEL 3: PHONETIC SKELETON
    English-ish text -> soft Elvish-like consonant clusters
@@ -2336,8 +2631,10 @@ function makeFantasyName(
   archetypeA: string,
   archetypeB: string,
   gender: Gender,
-  length: NameLength
+  length: NameLength,
+  shapeStats?: ShapeStats   // optional, for batch-level variety
 ): string {
+
   const combined = `${archetypeA} ${archetypeB}`.trim();
   const dialect = pickDialectFromArchetypes(archetypeA, archetypeB);
 
@@ -2369,7 +2666,8 @@ function makeFantasyName(
       const fusedProto = fuseUserAndNativeProto(userProto, nativeRoot.proto);
 
       const transformedRoot = transformRootForDialect(fusedProto, dialect);
-      const pattern = randomChoice(AFFIX_PATTERNS[dialect].personal);
+      const pattern = pickPatternWithShapeBias(dialect, length, shapeStats);
+
 
       // BASE NAME (no gender yet)
       let base = applyPattern(pattern, transformedRoot);
@@ -2378,8 +2676,40 @@ function makeFantasyName(
       // remember last base for fallback
       lastBase = base;
 
+      // --- NEW: shape-awareness ---
+      if (shapeStats) {
+        const sig = getShapeSignature(base, dialect, length);
+        const freq = shapeFrequency(shapeStats, sig);
+
+        // Heuristic: if we've already used this shape 3+ times, try to vary it
+        if (freq >= 3) {
+          const varied = varyFormForShape(base, dialect, length);
+          const variedSig = getShapeSignature(varied, dialect, length);
+          const variedFreq = shapeFrequency(shapeStats, variedSig);
+
+          // If the varied form is genuinely a different / less-used shape,
+          // adopt it as our new base.
+          if (
+            (varied !== base && variedFreq < freq) ||
+            (variedFreq <= 1 && isCoolName(varied, length))
+          ) {
+            base = varied;
+          } else {
+            // Shape is too common and we couldn't rescue it -> try next attempt
+            continue;
+          }
+        }
+      }
+      // --- END shape-awareness block ---
+
       // run the syllable/shape check on the BASE name
       if (isCoolName(base, length)) {
+        // On acceptance, record the shape usage for this batch
+        if (shapeStats) {
+          const sig = getShapeSignature(base, dialect, length);
+          incrementShape(shapeStats, sig);
+        }
+
         let name = applyGenderToName(base, gender);
 
         // final safety clamp in case gender pushes length a bit over
@@ -2390,6 +2720,7 @@ function makeFantasyName(
         return name;
       }
     }
+
 
     // Archetype fallback: genderize the last base we saw and clamp
     const fallbackBase = lastBase || userProto || "elin";
@@ -3820,21 +4151,25 @@ export default function Home() {
 
   const effectiveMax = isPremium ? 50 : 5;
 
-  function generateNames() {
-    // Guard against NaN / weird count values
-    const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
-    const cappedCount = Math.min(safeCount, effectiveMax);
+function generateNames() {
+  // NEW: track name shape usage for this batch
+  const shapeStats: ShapeStats = new Map();
 
-    const output: GeneratedEntry[] = [];
+  // Guard against NaN / weird count values
+  const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
+  const cappedCount = Math.min(safeCount, effectiveMax);
 
-    for (let i = 0; i < cappedCount; i++) {
-      // First name: full pipeline incl. gender + length
-      const first = makeFantasyName(
-        archetypeA,
-        archetypeB,
-        gender,
-        nameLength
-      );
+  const output: GeneratedEntry[] = [];
+
+  for (let i = 0; i < cappedCount; i++) {
+    // First name: full pipeline incl. gender + length
+    const first = makeFantasyName(
+      archetypeA,
+      archetypeB,
+      gender,
+      nameLength,
+      shapeStats      // NEW: pass shape stats into the generator
+    );
 
       // Surname: complements first name, no gender
       const last = makeSurname(archetypeA, archetypeB, first);
