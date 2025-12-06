@@ -1430,35 +1430,53 @@ function generateVariedName(options: {
   let lastResult:
     | ReturnType<typeof generateName>
     | ReturnType<typeof generateCompoundName>
-    | ReturnType<typeof generateArchaicName>;
+    | ReturnType<typeof generateArchaicName>
+    | null = null;
 
   // Try a few times to get something with 3 syllables or fewer
   for (let attempt = 0; attempt < 6; attempt++) {
     const roll = Math.random();
 
+    let result:
+      | ReturnType<typeof generateName>
+      | ReturnType<typeof generateCompoundName>
+      | ReturnType<typeof generateArchaicName>;
+
     if (roll < 0.05) {
-      lastResult = generateArchaicName(options);
+      result = generateArchaicName(options);
     } else if (roll < 0.4) {
-      lastResult = generateCompoundName({
+      result = generateCompoundName({
         dialect: options.dialect,
         type: options.type,
         elementA: options.elementA,
         elementB: options.elementB,
       });
     } else {
-      lastResult = generateName({
+      result = generateName({
         dialect: options.dialect,
         type: options.type,
         element: options.element,
       });
     }
 
-          
+    lastResult = result;
 
+    // Prefer names with 3 syllables or fewer
+    const syl = syllableCount(result.name.toLowerCase());
+    if (syl <= 3) {
+      return result;
+    }
   }
 
-  // Fallback: if we never hit <= 3 syllables, just use the last one
-  return lastResult!;
+  // Fallback: if we never hit <= 3 syllables, just use the last one,
+  // or a plain generated name as an absolute fallback.
+  if (lastResult) return lastResult;
+
+  return generateName({
+    dialect: options.dialect,
+    type: options.type,
+    element: options.element,
+  });
 }
 /** Turn raw archetype text into internal concept keys (matching PROTO_ROOTS.key). */
 function extractConcepts(text: string): string[] {
@@ -1474,25 +1492,115 @@ function extractConcepts(text: string): string[] {
 
   return Array.from(concepts);
 }
+// ===========================
+// PROTO-ROOT DIVERSITY SYSTEM
+// ===========================
 
-/** For each concept, pick a matching ProtoRoot (by key). Fallback: random root. */
-function pickRootsForConcepts(concepts: string[]): ProtoRoot[] {
-  const chosen: ProtoRoot[] = [];
+// How often a given proto-root has been used in this batch.
+// Keyed by root.proto so different shapes under the same key diverge naturally.
+type ProtoUsageStats = Map<string, number>;
 
-  for (const concept of concepts) {
-    const matches = PROTO_ROOTS.filter((r) => r.key === concept);
-    if (matches.length) {
-      chosen.push(randomChoice(matches));
-    }
-  }
+type RootCandidate = {
+  root: ProtoRoot;
+  baseScore: number;     // semantic + element fit
+  usagePenalty: number;  // diversity penalty from ProtoUsageStats
+  finalScore: number;    // baseScore - usagePenalty
+};
 
-  // If nothing matched, fall back to at least one random proto root
-  if (!chosen.length) {
-    chosen.push(randomChoice(PROTO_ROOTS));
-  }
+// Tunable weights – you can tweak these by feel
+const SEMANTIC_STRONG_WEIGHT = 3;   // exact key match
+const SEMANTIC_FUZZY_WEIGHT = 1;    // fuzzy / substring match
+const ELEMENT_MATCH_WEIGHT = 2;     // element alignment bonus
+const DIVERSITY_PENALTY_PER_USE = 1; // how hard we push away from overused roots
 
-  return chosen;
+/** Internal helper: how we key usage for a given root. */
+function getProtoUsageKey(root: ProtoRoot): string {
+  return root.proto; // could change to root.key if you want semantic-level tracking
 }
+
+/** Read how many times a root has been used this batch. */
+function getProtoUsageCount(
+  stats: ProtoUsageStats | undefined,
+  root: ProtoRoot
+): number {
+  if (!stats) return 0;
+  const key = getProtoUsageKey(root);
+  return stats.get(key) ?? 0;
+}
+
+/** Increment usage for a root in this batch. */
+function incrementProtoUsage(
+  stats: ProtoUsageStats | undefined,
+  root: ProtoRoot
+): void {
+  if (!stats) return;
+  const key = getProtoUsageKey(root);
+  const current = stats.get(key) ?? 0;
+  stats.set(key, current + 1);
+}
+
+/**
+ * Diversity-aware proto-root picker.
+ *
+ * - Takes canonical concept keys (from SEMANTIC_LEXICON / extractConcepts)
+ * - Optionally uses element + dialect as context
+ * - Optionally uses ProtoUsageStats to discourage overusing the same roots
+ *
+ * If you call it with only `concepts`, it still works, just without
+ * element/dialect/usage information.
+ */
+function pickRootsForConcepts(
+  concepts: string[],
+  elementMain?: Element | null,
+  dialect?: Dialect,
+  usageStats?: ProtoUsageStats
+): ProtoRoot[] {
+  const safeElement = elementMain ?? null;
+  const safeDialect =
+    dialect ??
+    randomChoice([
+      DIALECTS.HIGH,
+      DIALECTS.FOREST,
+      DIALECTS.SEA,
+      DIALECTS.MOUNTAIN,
+      DIALECTS.SHADOW,
+    ]);
+
+  // Build scored candidates from concepts + element context
+  const candidates = buildRootCandidatesForConcepts(
+    concepts,
+    safeElement,
+    safeDialect,
+    usageStats
+  );
+
+  // If we couldn't score anything at all, fall back to a themed random pick
+  if (!candidates.length) {
+    const themedPool =
+      safeElement != null
+        ? PROTO_ROOTS.filter((r) => r.elements.includes(safeElement))
+        : PROTO_ROOTS;
+
+    const fallbackRoot = themedPool.length
+      ? randomChoice(themedPool)
+      : randomChoice(PROTO_ROOTS);
+
+    // We still return an array, to match the original contract
+    return [fallbackRoot];
+  }
+
+  // How many distinct roots do we want?
+  // - If there are many concepts, grab up to 3
+  // - If there are few, grab at least 1
+  const desiredCount = Math.min(
+    Math.max(concepts.length, 1),
+    3,
+    candidates.length
+  );
+
+  return pickWeightedRoots(candidates, desiredCount, usageStats);
+}
+
 
 /* --- Mapping Archetype A/B → Elements --- */
 
@@ -2370,6 +2478,110 @@ function getProtoMatchesFromCloud(
   return picked;
 }
 
+/* ==================================
+Weighted-Protoroot diversity engine helper
+================================= */
+function buildRootCandidatesForConcepts(
+  concepts: string[],
+  elementMain: Element | null,
+  dialect: Dialect,              // reserved for future tuning
+  usageStats?: ProtoUsageStats
+): RootCandidate[] {
+  // 1) Expand canonical concepts into a semantic cloud
+  const cloud = expandConceptsToSemanticCloud(concepts);
+  const cloudSet = new Set(cloud.map((c) => c.toLowerCase()));
+  const hasElementMain = !!elementMain;
+
+  const candidates: RootCandidate[] = [];
+
+  for (const root of PROTO_ROOTS) {
+    let baseScore = 0;
+    const key = root.key.toLowerCase();
+
+    // Strong semantic hit: root.key is directly in the cloud
+    if (cloudSet.has(key)) {
+      baseScore += SEMANTIC_STRONG_WEIGHT;
+    } else {
+      // Fuzzy semantic: small bonus if key overlaps any cloud token
+      for (const token of cloudSet) {
+        if (key.includes(token) || token.includes(key)) {
+          baseScore += SEMANTIC_FUZZY_WEIGHT;
+          break;
+        }
+      }
+    }
+
+    // Element alignment
+    if (hasElementMain && root.elements.includes(elementMain!)) {
+      baseScore += ELEMENT_MATCH_WEIGHT;
+    }
+
+    // If it has no semantic/element connection at all, skip it
+    if (baseScore <= 0) continue;
+
+    const usageCount = getProtoUsageCount(usageStats, root);
+    const usagePenalty = usageCount * DIVERSITY_PENALTY_PER_USE;
+    const finalScore = baseScore - usagePenalty;
+
+    // We still keep low/negative scores; the picker will handle edge cases.
+    candidates.push({
+      root,
+      baseScore,
+      usagePenalty,
+      finalScore,
+    });
+  }
+
+  return candidates;
+}
+
+function pickWeightedRoots(
+  candidates: RootCandidate[],
+  count: number,
+  usageStats?: ProtoUsageStats
+): ProtoRoot[] {
+  const selected: ProtoRoot[] = [];
+  if (candidates.length === 0 || count <= 0) return selected;
+
+  // Work on a mutable copy so we don't pick the same candidate twice
+  const pool = [...candidates];
+
+  while (selected.length < count && pool.length > 0) {
+    // Prefer candidates with positive final scores; if none, use all
+    const positive = pool.filter((c) => c.finalScore > 0);
+    const activePool = positive.length ? positive : pool;
+
+    // Compute total weight; clamp very small/negative scores up to a small floor
+    const weights = activePool.map((c) => Math.max(c.finalScore, 0.1));
+    const totalWeight = weights.reduce((a, b) => a + b, 0);
+
+    let roll = Math.random() * totalWeight;
+    let chosenIndex = 0;
+
+    for (let i = 0; i < activePool.length; i++) {
+      const w = weights[i];
+      if (roll < w) {
+        chosenIndex = i;
+        break;
+      }
+      roll -= w;
+    }
+
+    const chosenCandidate = activePool[chosenIndex];
+    const root = chosenCandidate.root;
+
+    selected.push(root);
+    incrementProtoUsage(usageStats, root);
+
+    // Remove chosenCandidate from the global pool so we don't re-pick it
+    const globalIndex = pool.findIndex((c) => c.root === root);
+    if (globalIndex >= 0) {
+      pool.splice(globalIndex, 1);
+    }
+  }
+
+  return selected;
+}
 
 /* ===========================
    LEVEL 3: SYNTHESIZE PROTO ROOT
@@ -2632,9 +2844,8 @@ function makeFantasyName(
   archetypeB: string,
   gender: Gender,
   length: NameLength,
-  shapeStats?: ShapeStats   // optional, for batch-level variety
+  shapeStats?: ShapeStats // optional, for batch-level variety
 ): string {
-
   const combined = `${archetypeA} ${archetypeB}`.trim();
   const dialect = pickDialectFromArchetypes(archetypeA, archetypeB);
 
@@ -2668,7 +2879,6 @@ function makeFantasyName(
       const transformedRoot = transformRootForDialect(fusedProto, dialect);
       const pattern = pickPatternWithShapeBias(dialect, length, shapeStats);
 
-
       // BASE NAME (no gender yet)
       let base = applyPattern(pattern, transformedRoot);
       base = cleanupForm(base, dialect);
@@ -2676,26 +2886,24 @@ function makeFantasyName(
       // remember last base for fallback
       lastBase = base;
 
-      // --- NEW: shape-awareness ---
+      // --- shape-awareness ---
       if (shapeStats) {
         const sig = getShapeSignature(base, dialect, length);
         const freq = shapeFrequency(shapeStats, sig);
 
-        // Heuristic: if we've already used this shape 3+ times, try to vary it
+        // if we've already used this shape 3+ times, try to vary it
         if (freq >= 3) {
           const varied = varyFormForShape(base, dialect, length);
           const variedSig = getShapeSignature(varied, dialect, length);
           const variedFreq = shapeFrequency(shapeStats, variedSig);
 
-          // If the varied form is genuinely a different / less-used shape,
-          // adopt it as our new base.
           if (
             (varied !== base && variedFreq < freq) ||
             (variedFreq <= 1 && isCoolName(varied, length))
           ) {
             base = varied;
           } else {
-            // Shape is too common and we couldn't rescue it -> try next attempt
+            // shape is too common and we couldn't rescue it -> try next attempt
             continue;
           }
         }
@@ -2720,7 +2928,6 @@ function makeFantasyName(
         return name;
       }
     }
-
 
     // Archetype fallback: genderize the last base we saw and clamp
     const fallbackBase = lastBase || userProto || "elin";
@@ -2773,7 +2980,8 @@ function makeFantasyName(
 function makeSurname(
   archetypeA: string,
   archetypeB: string,
-  firstName: string
+  firstName: string,
+  protoUsageStats?: ProtoUsageStats   // NEW: share usage with first names
 ): string {
   const text = `${archetypeA} ${archetypeB}`.trim();
 
@@ -2792,20 +3000,15 @@ function makeSurname(
     ]);
 
   // Semantic anchors for the surname (same meaning space, different route)
-  // OLD:
-  // const concepts = extractConcepts(text);
-  // const semanticRoots = pickRootsForConcepts(concepts);
-
-  // NEW: expand with synonym concepts for more variety
-  // Semantic anchors for the surname (same meaning space, different route)
-  const baseConcepts = extractConcepts(text);
-  const cloud = expandConceptsToSemanticCloud(baseConcepts);
-
-  const elementHints: Element[] = elementMain ? [elementMain] : [];
-  const semanticRoots = getProtoMatchesFromCloud(cloud, elementHints);
+  const concepts = extractConcepts(text);
+  const semanticRoots = pickRootsForConcepts(
+    concepts,
+    elementMain,
+    dialect,
+    protoUsageStats
+  );
 
   const proto = buildSurnameProto(semanticRoots, elementMain);
-
 
   // Length preset is derived from the actual first name
   const surnameLength = pickSurnameLengthPreset(firstName);
@@ -2843,6 +3046,9 @@ function makeSurname(
 }
 
 
+//====================================================================================================================//
+//---------------------------------------------END OF CORE LOGIC, START OF LORE LOGIC---------------------------------//
+//====================================================================================================================//
 /* ===========================
    LORE SYSTEM (TTRPG-focused)
    =========================== */
@@ -4151,28 +4357,37 @@ export default function Home() {
 
   const effectiveMax = isPremium ? 50 : 5;
 
-function generateNames() {
-  // NEW: track name shape usage for this batch
-  const shapeStats: ShapeStats = new Map();
+  function generateNames() {
+    // Track name shape usage for this batch
+    const shapeStats: ShapeStats = new Map();
 
-  // Guard against NaN / weird count values
-  const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
-  const cappedCount = Math.min(safeCount, effectiveMax);
+    // Track proto-root usage for this batch (used by surnames)
+    const protoUsageStats: ProtoUsageStats = new Map();
 
-  const output: GeneratedEntry[] = [];
+    // Guard against NaN / weird count values
+    const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
+    const cappedCount = Math.min(safeCount, effectiveMax);
 
-  for (let i = 0; i < cappedCount; i++) {
-    // First name: full pipeline incl. gender + length
-    const first = makeFantasyName(
-      archetypeA,
-      archetypeB,
-      gender,
-      nameLength,
-      shapeStats      // NEW: pass shape stats into the generator
-    );
+    const output: GeneratedEntry[] = [];
 
-      // Surname: complements first name, no gender
-      const last = makeSurname(archetypeA, archetypeB, first);
+    for (let i = 0; i < cappedCount; i++) {
+      // First name: full pipeline incl. gender + length + shape diversity
+      const first = makeFantasyName(
+        archetypeA,
+        archetypeB,
+        gender,
+        nameLength,
+        shapeStats // ✅ last param
+      );
+
+      // Surname: complements first name, shares proto usage stats
+      const last = makeSurname(
+        archetypeA,
+        archetypeB,
+        first,
+        protoUsageStats
+      );
+
       let fullName = `${first} ${last}`;
 
       // Lore profile (used for both lore & epithet/nickname)
