@@ -40,48 +40,181 @@ type ProtoRoot = {
 
 const PROTO_ROOTS: ProtoRoot[] = [
   // A. ELEMENTAL ROOTS (core)
+    // --- FIRE ---
   { key: "fire", proto: "pyran", elements: [ELEMENTS.FIRE] },
   { key: "flame", proto: "sirla", elements: [ELEMENTS.FIRE] },
   { key: "ember", proto: "kaleth", elements: [ELEMENTS.FIRE] },
+  { key: "heat", proto: "ulmar", elements: [ELEMENTS.FIRE] },
+  { key: "smoke", proto: "vohran", elements: [ELEMENTS.FIRE] },
+  { key: "spark", proto: "tilos", elements: [ELEMENTS.FIRE] },
+  { key: "blaze", proto: "raevir", elements: [ELEMENTS.FIRE] },
+  { key: "ash", proto: "ulan", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+  { key: "pyre", proto: "sevrin", elements: [ELEMENTS.FIRE] },
+  { key: "char", proto: "makkur", elements: [ELEMENTS.FIRE] },
+  { key: "molten", proto: "lavren", elements: [ELEMENTS.FIRE] },
+  { key: "inferno", proto: "kaurith", elements: [ELEMENTS.FIRE] },
+
+  // --- LIGHT / CELESTIAL (fire/air hybrid) ---
   { key: "light", proto: "alir", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "gleam", proto: "solai", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "radiance", proto: "faelor", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "star", proto: "selun", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "sun", proto: "tavos", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
-  { key: "heat", proto: "ulmar", elements: [ELEMENTS.FIRE] },
-  { key: "forge", proto: "byraeg", elements: [ELEMENTS.FIRE] },
+  { key: "dawn", proto: "aureth", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "halo", proto: "liruen", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+  { key: "glow", proto: "rosyel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+
+  // --- AIR ---
   { key: "breath", proto: "aevor", elements: [ELEMENTS.AIR] },
   { key: "wind", proto: "suith", elements: [ELEMENTS.AIR] },
   { key: "storm", proto: "aekan", elements: [ELEMENTS.AIR] },
   { key: "sky", proto: "vion", elements: [ELEMENTS.AIR] },
+  { key: "gale", proto: "thraen", elements: [ELEMENTS.AIR] },
+  { key: "cloud", proto: "lorun", elements: [ELEMENTS.AIR] },
+  { key: "whirl", proto: "cyraeth", elements: [ELEMENTS.AIR] },
+  { key: "song", proto: "aeluin", elements: [ELEMENTS.AIR] }, 
+  { key: "current", proto: "vairas", elements: [ELEMENTS.AIR] },
+  { key: "zephyr", proto: "zevran", elements: [ELEMENTS.AIR] },
+
+  // --- WATER ---
   { key: "water", proto: "mirea", elements: [ELEMENTS.WATER] },
   { key: "river", proto: "gleno", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
   { key: "ocean", proto: "thalor", elements: [ELEMENTS.WATER] },
   { key: "wave", proto: "ulai", elements: [ELEMENTS.WATER] },
+  { key: "tide", proto: "maruin", elements: [ELEMENTS.WATER] },
+  { key: "mist", proto: "selmor", elements: [ELEMENTS.WATER] },
+  { key: "deep", proto: "nolath", elements: [ELEMENTS.WATER] },
+  { key: "foam", proto: "avris", elements: [ELEMENTS.WATER] },
+  { key: "rain", proto: "lirath", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+  { key: "flood", proto: "raedun", elements: [ELEMENTS.WATER] },
+  { key: "brook", proto: "cailin", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+
+  // --- EARTH ---
   { key: "earth", proto: "mosil", elements: [ELEMENTS.EARTH] },
   { key: "stone", proto: "garon", elements: [ELEMENTS.EARTH] },
   { key: "mountain", proto: "dunag", elements: [ELEMENTS.EARTH] },
-  { key: "void", proto: "ekhar", elements: [ELEMENTS.DARK] },
+  { key: "wood", proto: "talar", elements: [ELEMENTS.EARTH] },
+  { key: "root", proto: "breth", elements: [ELEMENTS.EARTH] },
+  { key: "clay", proto: "morin", elements: [ELEMENTS.EARTH] },
+  { key: "iron", proto: "ferun", elements: [ELEMENTS.EARTH] },
+  { key: "soil", proto: "loeth", elements: [ELEMENTS.EARTH] },
+  { key: "peak", proto: "kavor", elements: [ELEMENTS.EARTH] },
+  { key: "vale", proto: "serin", elements: [ELEMENTS.EARTH] },
 
-  // A. ELEMENTAL ROOTS (additional, refined)
-  { key: "spark", proto: "scairen", elements: [ELEMENTS.FIRE] },
-  { key: "blaze", proto: "bravel", elements: [ELEMENTS.FIRE] },
-  { key: "coal", proto: "corun", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
-  { key: "radiance", proto: "radiel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
-  { key: "halo", proto: "aloro", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
-  { key: "aurora", proto: "auren", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
-  { key: "ash", proto: "askel", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
-  { key: "smoke", proto: "fumrel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
-  { key: "magma", proto: "magral", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
-  { key: "inferno", proto: "inferan", elements: [ELEMENTS.FIRE] },
-  { key: "breeze", proto: "zevar", elements: [ELEMENTS.AIR] },
-  { key: "gale", proto: "galven", elements: [ELEMENTS.AIR] },
-  { key: "thunder", proto: "torval", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
-  { key: "lightning", proto: "fulmir", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
-  { key: "cloud", proto: "nuvar", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
-  { key: "tide", proto: "maros", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
-  { key: "spring_water", proto: "fonir", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
-  { key: "deep", proto: "proval", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
-  { key: "ore", proto: "minar", elements: [ELEMENTS.EARTH] },
-  { key: "chasm", proto: "cairun", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+  // --- VOID / DARKNESS ---
+  { key: "void", proto: "ekhar", elements: [ELEMENTS.DARK] },
+  { key: "night", proto: "uol", elements: [ELEMENTS.DARK] },
+  { key: "shadow", proto: "velun", elements: [ELEMENTS.DARK] },
+  { key: "gloom", proto: "draven", elements: [ELEMENTS.DARK] },
+  { key: "pale", proto: "saevor", elements: [ELEMENTS.DARK] },
+  { key: "hollow", proto: "nullar", elements: [ELEMENTS.DARK] },
+  { key: "smother", proto: "murith", elements: [ELEMENTS.DARK] },
+  { key: "whisper", proto: "silun", elements: [ELEMENTS.DARK] },
+  { key: "grave", proto: "dolmar", elements: [ELEMENTS.DARK, ELEMENTS.EARTH] },
+  { key: "dread", proto: "kaorin", elements: [ELEMENTS.DARK] },
+
+// A. ELEMENTAL ROOTS (additional, extended)
+// FIRE-leaning
+{ key: "spark", proto: "scaelor", elements: [ELEMENTS.FIRE] },
+{ key: "spark", proto: "iscarel", elements: [ELEMENTS.FIRE] },
+{ key: "spark", proto: "skarun", elements: [ELEMENTS.FIRE] },
+{ key: "blaze", proto: "braevun", elements: [ELEMENTS.FIRE] },
+{ key: "blaze", proto: "blaeron", elements: [ELEMENTS.FIRE] },
+{ key: "blaze", proto: "braviel", elements: [ELEMENTS.FIRE] },
+{ key: "coal", proto: "corain", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "coal", proto: "colemar", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "coal", proto: "kalbor", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "radiance", proto: "relith", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "radiance", proto: "radion", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "radiance", proto: "rielas", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "halo", proto: "aloren", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "halo", proto: "halion", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "halo", proto: "olavel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "aurora", proto: "aurilai", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "aurora", proto: "aurisel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "aurora", proto: "orivaen", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "ash", proto: "askaen", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "ash", proto: "asvel", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "ash", proto: "eskar", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "smoke", proto: "fumair", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "smoke", proto: "fumarel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "smoke", proto: "smorain", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "magma", proto: "magrion", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "magma", proto: "magren", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "magma", proto: "lavorn", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "inferno", proto: "invarae", elements: [ELEMENTS.FIRE] },
+{ key: "inferno", proto: "infernul", elements: [ELEMENTS.FIRE] },
+{ key: "inferno", proto: "velkar", elements: [ELEMENTS.FIRE] },
+{ key: "ember", proto: "emberel", elements: [ELEMENTS.FIRE] },
+{ key: "ember", proto: "emvorn", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "ember", proto: "imbrial", elements: [ELEMENTS.FIRE] },
+{ key: "cinder", proto: "cindrel", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "cinder", proto: "cindrae", elements: [ELEMENTS.FIRE] },
+{ key: "cinder", proto: "cindar", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+
+// AIR-leaning
+{ key: "breeze", proto: "zevail", elements: [ELEMENTS.AIR] },
+{ key: "breeze", proto: "brethel", elements: [ELEMENTS.AIR] },
+{ key: "breeze", proto: "aervas", elements: [ELEMENTS.AIR] },
+{ key: "gale", proto: "galruin", elements: [ELEMENTS.AIR] },
+{ key: "gale", proto: "gaelun", elements: [ELEMENTS.AIR] },
+{ key: "gale", proto: "galeth", elements: [ELEMENTS.AIR] },
+{ key: "thunder", proto: "torveln", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "thunder", proto: "torvash", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "thunder", proto: "thonrak", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "lightning", proto: "fulmaris", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "lightning", proto: "fulraan", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "lightning", proto: "lirveth", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "cloud", proto: "nuveir", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+{ key: "cloud", proto: "nuvarel", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+{ key: "cloud", proto: "claumar", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+{ key: "gust", proto: "gusrael", elements: [ELEMENTS.AIR] },
+{ key: "gust", proto: "guraen", elements: [ELEMENTS.AIR] },
+{ key: "whirl", proto: "virlen", elements: [ELEMENTS.AIR] },
+{ key: "whirl", proto: "valcir", elements: [ELEMENTS.AIR] },
+
+// WATER-leaning
+{ key: "tide", proto: "marain", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "tide", proto: "tivar", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "tide", proto: "maroth", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "spring_water", proto: "foneth", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+{ key: "spring_water", proto: "fontira", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+{ key: "spring_water", proto: "brialun", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+{ key: "deep", proto: "proverin", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+{ key: "deep", proto: "dovrel", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+{ key: "deep", proto: "morvain", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+{ key: "foam", proto: "espiral", elements: [ELEMENTS.WATER] },
+{ key: "foam", proto: "fulain", elements: [ELEMENTS.WATER] },
+{ key: "mist", proto: "mireth", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "mist", proto: "nisrael", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "rain", proto: "pluvain", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "rain", proto: "renvar", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+
+// EARTH-leaning
+{ key: "ore", proto: "mineth", elements: [ELEMENTS.EARTH] },
+{ key: "ore", proto: "orvain", elements: [ELEMENTS.EARTH] },
+{ key: "ore", proto: "dural", elements: [ELEMENTS.EARTH] },
+{ key: "chasm", proto: "cairuth", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "chasm", proto: "cavrel", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "chasm", proto: "vallun", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "clay", proto: "argelan", elements: [ELEMENTS.EARTH] },
+{ key: "clay", proto: "glevar", elements: [ELEMENTS.EARTH] },
+{ key: "root", proto: "radren", elements: [ELEMENTS.EARTH] },
+{ key: "root", proto: "raveln", elements: [ELEMENTS.EARTH] },
+{ key: "soil", proto: "teroul", elements: [ELEMENTS.EARTH] },
+{ key: "soil", proto: "lumdar", elements: [ELEMENTS.EARTH] },
+{ key: "shale", proto: "scalen", elements: [ELEMENTS.EARTH] },
+{ key: "shale", proto: "shalvar", elements: [ELEMENTS.EARTH] },
+
+// DARK / LIMINAL
+{ key: "eclipse", proto: "ekliven", elements: [ELEMENTS.DARK, ELEMENTS.FIRE] },
+{ key: "eclipse", proto: "murhel", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+{ key: "gloom", proto: "glomir", elements: [ELEMENTS.DARK] },
+{ key: "gloom", proto: "mordrel", elements: [ELEMENTS.DARK] },
+{ key: "shadow", proto: "umbral", elements: [ELEMENTS.DARK] },
+{ key: "shadow", proto: "tenavel", elements: [ELEMENTS.DARK] },
+{ key: "hollow", proto: "cavial", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "hollow", proto: "hollun", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
 
   // B. NATURE & LANDSCAPE (core)
   { key: "forest", proto: "dyal", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
@@ -126,6 +259,61 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "glen", proto: "glennir", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
   { key: "harbor", proto: "porain", elements: [ELEMENTS.WATER] },
   { key: "crag", proto: "skarn", elements: [ELEMENTS.EARTH] },
+  // Groves / Thickets / Flora
+{ key: "grove", proto: "nemorae", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+{ key: "grove", proto: "galeth", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+{ key: "thicket", proto: "tharven", elements: [ELEMENTS.EARTH] },
+{ key: "brush", proto: "brusil", elements: [ELEMENTS.EARTH] },
+
+{ key: "vine", proto: "virel", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+{ key: "willow", proto: "salaen", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+{ key: "thorns", proto: "driscar", elements: [ELEMENTS.EARTH] },
+{ key: "briarwood", proto: "briavel", elements: [ELEMENTS.EARTH] },
+
+// Landforms
+{ key: "hill", proto: "hollan", elements: [ELEMENTS.EARTH] },
+{ key: "hill", proto: "briscaen", elements: [ELEMENTS.EARTH] },
+{ key: "plain", proto: "vellor", elements: [ELEMENTS.EARTH] },
+{ key: "plateau", proto: "talven", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+
+{ key: "ridge", proto: "karith", elements: [ELEMENTS.EARTH] },
+{ key: "ridge", proto: "cravern", elements: [ELEMENTS.EARTH] },
+{ key: "crag", proto: "skarnel", elements: [ELEMENTS.EARTH] },
+{ key: "crag", proto: "karusk", elements: [ELEMENTS.EARTH] },
+
+{ key: "canyon", proto: "canrel", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "ravine", proto: "ravos", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "grotto", proto: "grothain", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "sinkhole", proto: "dolairn", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+
+// Waterways / Wetlands
+{ key: "marsh", proto: "paleth", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+{ key: "marsh", proto: "morain", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+{ key: "fen", proto: "fennor", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+{ key: "fen", proto: "muiral", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+
+{ key: "lagoon", proto: "lagrel", elements: [ELEMENTS.WATER] },
+{ key: "shore", proto: "shalor", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "shore", proto: "maralin", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "island", proto: "yslar", elements: [ELEMENTS.WATER] },
+
+{ key: "bog", proto: "brunal", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+{ key: "delta", proto: "deltir", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+
+// Light / Sky / Phenomena
+{ key: "sunset", proto: "selmarun", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "sunset", proto: "tramiel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "horizon", proto: "oraelan", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "eclipse", proto: "eclorin", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+{ key: "eclipse", proto: "eklaev", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+{ key: "starlight", proto: "stelmir", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "starlight", proto: "lestar", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+
+// Misc natural concepts
+{ key: "harbor", proto: "poralen", elements: [ELEMENTS.WATER] },
+{ key: "glen", proto: "glenair", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+{ key: "glen", proto: "glavorn", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+{ key: "field", proto: "praelor", elements: [ELEMENTS.EARTH] },
 
   // C. MOTION / DANCE (core)
   { key: "step", proto: "tiren", elements: [ELEMENTS.AIR] },
@@ -148,6 +336,74 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "drift", proto: "aelun", elements: [ELEMENTS.AIR] },
   { key: "scatter", proto: "velor", elements: [ELEMENTS.AIR] },
   { key: "gather", proto: "hiran", elements: [ELEMENTS.EARTH] },
+  { key: "stride", proto: "varen", elements: [ELEMENTS.AIR] },
+{ key: "stride", proto: "strael", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+
+{ key: "rush", proto: "corai", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "rush", proto: "ravel", elements: [ELEMENTS.AIR] },
+
+{ key: "weave", proto: "thelir", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "weave", proto: "wilen", elements: [ELEMENTS.WATER] },
+
+{ key: "tread", proto: "tavour", elements: [ELEMENTS.EARTH] },
+{ key: "tread", proto: "dalren", elements: [ELEMENTS.EARTH] },
+
+{ key: "lilt", proto: "laevir", elements: [ELEMENTS.AIR] },
+{ key: "lilt", proto: "liren", elements: [ELEMENTS.AIR] },
+
+{ key: "sprint", proto: "saril", elements: [ELEMENTS.AIR] },
+{ key: "sprint", proto: "akren", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+
+{ key: "dodge", proto: "derash", elements: [ELEMENTS.AIR] },
+{ key: "dodge", proto: "doiran", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+
+{ key: "swerve", proto: "syrinel", elements: [ELEMENTS.AIR] },
+{ key: "swerve", proto: "vairum", elements: [ELEMENTS.AIR] },
+
+{ key: "pivot", proto: "peilan", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "pivot", proto: "pirun", elements: [ELEMENTS.AIR] },
+
+{ key: "tilt", proto: "talmiar", elements: [ELEMENTS.AIR] },
+{ key: "tilt", proto: "tilor", elements: [ELEMENTS.AIR] },
+
+{ key: "stamp", proto: "storgal", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+{ key: "stamp", proto: "brathen", elements: [ELEMENTS.EARTH] },
+
+{ key: "clash", proto: "karvel", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "clash", proto: "karesil", elements: [ELEMENTS.FIRE] },
+
+{ key: "shimmer", proto: "shaviel", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "shimmer", proto: "savaen", elements: [ELEMENTS.AIR] },
+
+{ key: "tumble", proto: "tavril", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+{ key: "tumble", proto: "turlen", elements: [ELEMENTS.AIR] },
+
+{ key: "cascade", proto: "casenil", elements: [ELEMENTS.WATER] },
+{ key: "cascade", proto: "fallaren", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+
+{ key: "flutter", proto: "felerin", elements: [ELEMENTS.AIR] },
+{ key: "flutter", proto: "falunai", elements: [ELEMENTS.AIR] },
+
+{ key: "charge", proto: "charon", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "charge", proto: "velkan", elements: [ELEMENTS.FIRE] },
+
+{ key: "thrum", proto: "thumrel", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+{ key: "thrum", proto: "dravel", elements: [ELEMENTS.EARTH] },
+
+{ key: "oscillate", proto: "osiren", elements: [ELEMENTS.AIR] },
+{ key: "oscillate", proto: "osval", elements: [ELEMENTS.AIR] },
+
+{ key: "spiral", proto: "spiraen", elements: [ELEMENTS.AIR] },
+{ key: "spiral", proto: "spirunel", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+
+{ key: "quicken", proto: "quirael", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "quicken", proto: "kiren", elements: [ELEMENTS.AIR] },
+
+{ key: "linger", proto: "linvel", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "linger", proto: "solin", elements: [ELEMENTS.WATER] },
+
+{ key: "collapse", proto: "kolvar", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "collapse", proto: "druvan", elements: [ELEMENTS.EARTH] },
 
   // C. MOTION / DANCE (additional, refined)
   { key: "tread", proto: "passil", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
@@ -170,6 +426,60 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "quiver", proto: "tremel", elements: [ELEMENTS.AIR] },
   { key: "waltz", proto: "valsera", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
   { key: "rush_wind", proto: "galvorn", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "glissade", proto: "glissair", elements: [ELEMENTS.AIR] },
+{ key: "flutter_step", proto: "flureth", elements: [ELEMENTS.AIR] },
+{ key: "pivot_soft", proto: "pirolen", elements: [ELEMENTS.AIR] },
+{ key: "dip", proto: "dovain", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+{ key: "stretch", proto: "stirael", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+
+// rhythmic, ritual motion
+{ key: "chant_step", proto: "manarel", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+{ key: "ritual_circle", proto: "cerain", elements: [ELEMENTS.AIR] },
+{ key: "echo_step", proto: "echorin", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+{ key: "pulsebeat", proto: "pulsair", elements: [ELEMENTS.FIRE] },
+{ key: "stamp_soft", proto: "brumel", elements: [ELEMENTS.EARTH] },
+
+// agile combat movement
+{ key: "vault", proto: "vaelkan", elements: [ELEMENTS.AIR] },
+{ key: "lunge", proto: "luneth", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "parry", proto: "parun", elements: [ELEMENTS.AIR] },
+{ key: "retreat", proto: "revalen", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "advance", proto: "avornel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+
+// flowing / watery movement
+{ key: "eddy", proto: "edrel", elements: [ELEMENTS.WATER] },
+{ key: "spiral_water", proto: "spiralai", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "wave_dance", proto: "valmira", elements: [ELEMENTS.WATER] },
+{ key: "cascade_fast", proto: "cavril", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "tide_turn", proto: "tidron", elements: [ELEMENTS.WATER] },
+
+// airy / weightless motion
+{ key: "lift", proto: "levinor", elements: [ELEMENTS.AIR] },
+{ key: "rise_soft", proto: "aelorin", elements: [ELEMENTS.AIR] },
+{ key: "spiral_up", proto: "koiral", elements: [ELEMENTS.AIR] },
+{ key: "soar_low", proto: "solven", elements: [ELEMENTS.AIR] },
+{ key: "rush_updraft", proto: "udvaran", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+
+// percussive / grounded steps
+{ key: "pound", proto: "dromal", elements: [ELEMENTS.EARTH] },
+{ key: "thud", proto: "thuran", elements: [ELEMENTS.EARTH] },
+{ key: "march", proto: "maruth", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+{ key: "tamp", proto: "tavelk", elements: [ELEMENTS.EARTH] },
+{ key: "grind", proto: "gralen", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+
+// chaotic or magical motion
+{ key: "burst_move", proto: "breskai", elements: [ELEMENTS.FIRE] },
+{ key: "flicker_step", proto: "fliskel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "warp_twist", proto: "varunai", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+{ key: "shiver", proto: "shival", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+{ key: "rift_step", proto: "rivelon", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+
+// soft micro-movements (good for stealth, rogues, shadow types)
+{ key: "tiptoe", proto: "tivrel", elements: [ELEMENTS.AIR] },
+{ key: "creep", proto: "cravin", elements: [ELEMENTS.DARK, ELEMENTS.EARTH] },
+{ key: "slide_soft", proto: "silvain", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "edge_move", proto: "escaro", elements: [ELEMENTS.EARTH] },
+{ key: "stalk", proto: "stelmar", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
 
   // D. EMOTION & SPIRIT (core)
   { key: "love", proto: "amriel", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
@@ -214,6 +524,53 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "tranquility", proto: "quiesan", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
   { key: "resolve", proto: "fermir", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
   { key: "inspiration", proto: "spiriel", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "compassion", proto: "coravaen", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "kindness", proto: "amrilor", elements: [ELEMENTS.WATER] },
+{ key: "patience", proto: "volenai", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+{ key: "loyalty", proto: "devran", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+{ key: "humility", proto: "umarel", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+
+{ key: "jealousy", proto: "zelvar", elements: [ELEMENTS.DARK] },
+{ key: "rage_inner", proto: "ferunai", elements: [ELEMENTS.FIRE] },
+{ key: "yearning", proto: "laerun", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "solace", proto: "solmarin", elements: [ELEMENTS.WATER] },
+{ key: "comfort", proto: "calvor", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+
+{ key: "ambition", proto: "ambrel", elements: [ELEMENTS.FIRE] },
+{ key: "clarity", proto: "clarien", elements: [ELEMENTS.AIR] },
+{ key: "cunning", proto: "cunrel", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+{ key: "malice", proto: "malvar", elements: [ELEMENTS.DARK, ELEMENTS.FIRE] },
+{ key: "gentleness", proto: "lenair", elements: [ELEMENTS.WATER] },
+
+{ key: "terror", proto: "tervain", elements: [ELEMENTS.DARK] },
+{ key: "panic", proto: "panrel", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+{ key: "shock", proto: "skarien", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "grit", proto: "graven", elements: [ELEMENTS.EARTH] },
+{ key: "boldness", proto: "valerin", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+
+{ key: "bliss", proto: "blisar", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+{ key: "ecstasy", proto: "ekstiel", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "sacred", proto: "sanorim", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "blessing", proto: "beneir", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "grace", proto: "graciel", elements: [ELEMENTS.AIR] },
+
+{ key: "bitterness", proto: "amarun", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
+{ key: "remorse", proto: "penvar", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+{ key: "forgiveness", proto: "perdonai", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "torment", proto: "torvul", elements: [ELEMENTS.DARK] },
+{ key: "doubt", proto: "dovrel", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+
+{ key: "elation", proto: "elaevin", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "affection", proto: "affriel", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "praise", proto: "laudar", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "shame", proto: "vergil", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
+{ key: "regret", proto: "reminar", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+
+{ key: "aether_spirit", proto: "aeralun", elements: [ELEMENTS.AIR] },
+{ key: "shadow_spirit", proto: "umraval", elements: [ELEMENTS.DARK] },
+{ key: "inner_balance", proto: "equilar", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "inner_fire", proto: "ignarel", elements: [ELEMENTS.FIRE] },
+{ key: "soul_strength", proto: "fortiel", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
 
   // E. ANIMALS & CREATURES (core)
   { key: "wolf", proto: "garuin", elements: [ELEMENTS.EARTH] },
@@ -236,6 +593,53 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "dragon", proto: "kalduin", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
   { key: "lizard", proto: "meruk", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
   { key: "bat", proto: "dhuair", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+{ key: "stag", proto: "threnil", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+{ key: "falcon", proto: "arveth", elements: [ELEMENTS.AIR] },
+{ key: "lynx", proto: "vesiran", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+{ key: "panther", proto: "melkara", elements: [ELEMENTS.DARK] },
+{ key: "staghound", proto: "bravuil", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+
+{ key: "otter", proto: "lunren", elements: [ELEMENTS.WATER] },
+{ key: "seal", proto: "morilan", elements: [ELEMENTS.WATER] },
+{ key: "shark", proto: "varusk", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+{ key: "jellyfish", proto: "nuvrea", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "sea_serpent", proto: "thalusk", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+
+{ key: "stagbeetle", proto: "karveth", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "firefly", proto: "lumera", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "moth_spirit", proto: "mavriel", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+{ key: "hornet", proto: "zarunel", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "antelope", proto: "rimeath", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+
+{ key: "goat", proto: "cairun", elements: [ELEMENTS.EARTH] },
+{ key: "ram", proto: "dorvach", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+{ key: "yak", proto: "marvun", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+{ key: "camel", proto: "saref", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+{ key: "ox", proto: "thural", elements: [ELEMENTS.EARTH] },
+
+{ key: "dolphin", proto: "silarae", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
+{ key: "squid", proto: "kravien", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+{ key: "eel", proto: "zeluin", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+{ key: "coral_spirit", proto: "corvel", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+{ key: "sea_turtle", proto: "morakuin", elements: [ELEMENTS.WATER, ELEMENTS.EARTH] },
+
+{ key: "wildcat", proto: "felorin", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+{ key: "hyena", proto: "yrakar", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "jackal", proto: "sharuen", elements: [ELEMENTS.DARK, ELEMENTS.EARTH] },
+{ key: "vulture", proto: "khariel", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+{ key: "sparrow", proto: "liruen", elements: [ELEMENTS.AIR] },
+
+{ key: "boar_spirit", proto: "grathul", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+{ key: "fox_spirit", proto: "verulai", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "wolf_spirit", proto: "garvarin", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "raven_spirit", proto: "orvanel", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+{ key: "lion_spirit", proto: "karvion", elements: [ELEMENTS.FIRE] },
+
+{ key: "kelpie", proto: "mordalae", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+{ key: "griffin", proto: "grivain", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "unicorn", proto: "alunor", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+{ key: "warg", proto: "vorgral", elements: [ELEMENTS.EARTH, ELEMENTS.DARK] },
+{ key: "wyrmling", proto: "kaldrei", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
 
   // E. ANIMALS & CREATURES (additional, refined)
   { key: "stag", proto: "cerun", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
@@ -280,6 +684,53 @@ const PROTO_ROOTS: ProtoRoot[] = [
   { key: "sailor", proto: "merak", elements: [ELEMENTS.WATER, ELEMENTS.AIR] },
   { key: "noble", proto: "eluno", elements: [ELEMENTS.AIR] },
   { key: "guardian_spirit", proto: "dhuverin", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
+{ key: "artisan", proto: "calivar", elements: [ELEMENTS.EARTH, ELEMENTS.FIRE] },
+{ key: "scribe", proto: "larethon", elements: [ELEMENTS.AIR] },
+{ key: "scholar", proto: "meridan", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+{ key: "poet", proto: "rialen", elements: [ELEMENTS.AIR] },
+{ key: "weaver", proto: "thalira", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+
+{ key: "herbalist", proto: "muirel", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+{ key: "alchemist", proto: "solvren", elements: [ELEMENTS.FIRE, ELEMENTS.WATER] },
+{ key: "scribe_mage", proto: "arcthel", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+{ key: "geomancer", proto: "durvok", elements: [ELEMENTS.EARTH] },
+{ key: "pyromancer", proto: "sirvakor", elements: [ELEMENTS.FIRE] },
+
+{ key: "champion", proto: "varion", elements: [ELEMENTS.FIRE, ELEMENTS.AIR] },
+{ key: "duelist", proto: "virel", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "warden", proto: "carneth", elements: [ELEMENTS.EARTH] },
+{ key: "ranger", proto: "talvren", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+{ key: "beast_tamer", proto: "korilan", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+
+{ key: "cook", proto: "merlian", elements: [ELEMENTS.FIRE, ELEMENTS.WATER] },
+{ key: "brewer", proto: "braviel", elements: [ELEMENTS.EARTH, ELEMENTS.WATER] },
+{ key: "bard", proto: "sorelin", elements: [ELEMENTS.AIR] },
+{ key: "actor", proto: "dramion", elements: [ELEMENTS.AIR] },
+{ key: "maskmaker", proto: "volren", elements: [ELEMENTS.AIR, ELEMENTS.DARK] },
+
+{ key: "oracle", proto: "sevrial", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+{ key: "medium", proto: "anelun", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+{ key: "prophet", proto: "evarun", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
+{ key: "dreamwalker", proto: "oneirosa", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+{ key: "spiritcaller", proto: "dhuvara", elements: [ELEMENTS.WATER, ELEMENTS.DARK] },
+
+{ key: "merchant", proto: "vakriel", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+{ key: "artisan_jeweler", proto: "galvia", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+{ key: "navigator", proto: "selvarn", elements: [ELEMENTS.AIR, ELEMENTS.WATER] },
+{ key: "cartographer", proto: "taviren", elements: [ELEMENTS.AIR, ELEMENTS.EARTH] },
+{ key: "scribe_cart", proto: "mirathen", elements: [ELEMENTS.AIR] },
+
+{ key: "diplomat", proto: "parion", elements: [ELEMENTS.AIR] },
+{ key: "official", proto: "verasun", elements: [ELEMENTS.EARTH] },
+{ key: "envoy", proto: "thaviel", elements: [ELEMENTS.AIR] },
+{ key: "lawkeeper", proto: "judril", elements: [ELEMENTS.EARTH, ELEMENTS.AIR] },
+{ key: "chieftain", proto: "korvan", elements: [ELEMENTS.FIRE, ELEMENTS.EARTH] },
+
+{ key: "sentry", proto: "darvor", elements: [ELEMENTS.EARTH] },
+{ key: "spy", proto: "velith", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+{ key: "thief", proto: "crevan", elements: [ELEMENTS.DARK] },
+{ key: "assassin", proto: "silvrek", elements: [ELEMENTS.DARK, ELEMENTS.AIR] },
+{ key: "smuggler", proto: "barvith", elements: [ELEMENTS.DARK, ELEMENTS.WATER] },
 
   // F. CRAFT / ROLE / CULTURE (additional, refined)
   { key: "bard", proto: "bardel", elements: [ELEMENTS.AIR, ELEMENTS.FIRE] },
@@ -1461,6 +1912,171 @@ function makePhoneticSkeleton(text: string): string[] {
   return clusters.map(mapClusterToElvish).filter(Boolean);
 }
 /* ===========================
+   SEMANTIC CLOUD LAYER
+   (canonical concept -> related concepts)
+   =========================== */
+
+/**
+ * IMPORTANT:
+ * Keys here are your *internal* concept keys
+ * (values from SEMANTIC_LEXICON, e.g. "scout", "night", "warrior"),
+ * not the raw English words the user types.
+ *
+ * Every synonym should also be a concept key that either:
+ * - appears as a value in SEMANTIC_LEXICON, and/or
+ * - appears as a PROTO_ROOTS.key
+ */
+const SEMANTIC_CLOUD_MAP: Record<string, string[]> = {
+  // Sneaky / shadowy archetypes
+  scout: ["secret", "night", "fox", "step", "drift", "echo"],
+  secret: ["night", "dream", "memory", "shadow", "void"],
+  night: ["void", "raven", "fear", "sorrow", "dream"],
+
+  // Martial / physical
+  warrior: ["courage", "rage", "strike", "cut", "storm"],
+  hunter: ["forest", "wolf", "fox", "step", "drift"],
+  smith: ["fire", "stone", "mountain"],
+
+  // Mystic / spiritual
+  seer: ["dream", "wisdom", "secret", "star", "moon"],
+  healer: ["rest", "love", "water", "river"],
+  priest: ["light", "sun", "oath", "honor"],
+
+  // Elemental anchors
+  fire: ["flame", "ember", "sun", "light", "rage"],
+  water: ["river", "ocean", "wave", "mist", "snow"],
+  earth: ["stone", "mountain", "root", "forest"],
+  air: ["wind", "storm", "breath", "sky"],
+
+  forest: ["leaf", "meadow", "root", "hunter"],
+  ocean: ["wave", "mist", "whale", "river"],
+  mountain: ["stone", "peak", "cliff", "earth"],
+
+  // Emotional tones
+  grief: ["sorrow", "night", "rain"],
+  hope: ["dawn", "light", "sun"],
+  rage: ["storm", "fire", "desire"],
+
+  // Creatures / totems
+  wolf: ["hound", "hunter", "forest"],
+  raven: ["night", "storm", "secret"],
+  serpent: ["dragon", "void", "secret"],
+};
+
+/**
+ * Take canonical concept keys (from extractConcepts/SEMANTIC_LEXICON)
+ * and expand into a small semantic cloud of related concept keys.
+ *
+ * This is our "semantic cloud" for a single name generation pass.
+ */
+function expandConceptsToSemanticCloud(
+  concepts: string[],
+  maxSize: number = 24
+): string[] {
+  const set = new Set<string>();
+
+  for (const c of concepts) {
+    const key = c.toLowerCase();
+    if (!key) continue;
+
+    // always keep the base concept
+    set.add(key);
+
+    const syns = SEMANTIC_CLOUD_MAP[key];
+    if (syns && syns.length) {
+      for (const s of syns) {
+        set.add(s.toLowerCase());
+      }
+    }
+  }
+
+  const all = Array.from(set);
+
+  if (all.length <= maxSize) {
+    return all;
+  }
+
+  // If cloud is large, randomly sample a stable-size subset
+  const trimmed: string[] = [];
+  const pool = [...all];
+
+  while (trimmed.length < maxSize && pool.length > 0) {
+    const idx = Math.floor(Math.random() * pool.length);
+    trimmed.push(pool[idx]);
+    pool.splice(idx, 1);
+  }
+
+  return trimmed;
+}
+
+/**
+ * Given a semantic cloud, pick ProtoRoots that fit that cloud,
+ * with a soft preference for matching concept keys.
+ *
+ * This is the more "intelligent" replacement for pickRootsForConcepts.
+ */
+function getProtoMatchesFromCloud(
+  cloud: string[],
+  elementHints: Element[]
+): ProtoRoot[] {
+  const cloudSet = new Set(cloud.map((c) => c.toLowerCase()));
+  const hasElementHints = elementHints && elementHints.length > 0;
+
+  type Scored = { root: ProtoRoot; score: number };
+  const scored: Scored[] = [];
+
+  for (const root of PROTO_ROOTS) {
+    let score = 0;
+    const key = root.key.toLowerCase();
+
+    // Direct concept hit
+    if (cloudSet.has(key)) {
+      score += 3;
+    } else {
+      // Light fuzzy: overlap between key and any cloud token
+      for (const token of cloudSet) {
+        if (key.includes(token) || token.includes(key)) {
+          score += 1;
+          break;
+        }
+      }
+    }
+
+    // Element alignment bonus
+    if (hasElementHints && root.elements.some((e) => elementHints.includes(e))) {
+      score += 2;
+    }
+
+    if (score > 0) {
+      scored.push({ root, score });
+    }
+  }
+
+  if (scored.length) {
+    scored.sort((a, b) => b.score - a.score);
+    return scored.map((s) => s.root);
+  }
+
+  // Fallback: if nothing matched, build a themed subset or just sample
+  const themedPool = hasElementHints
+    ? PROTO_ROOTS.filter((r) => r.elements.some((e) => elementHints.includes(e)))
+    : PROTO_ROOTS;
+
+  const maxFallback = 24;
+  const picked: ProtoRoot[] = [];
+  const pool = [...themedPool];
+
+  while (picked.length < maxFallback && pool.length > 0) {
+    const idx = Math.floor(Math.random() * pool.length);
+    picked.push(pool[idx]);
+    pool.splice(idx, 1);
+  }
+
+  return picked;
+}
+
+
+/* ===========================
    LEVEL 3: SYNTHESIZE PROTO ROOT
    (semantic anchors + phonetic skeleton -> new proto form)
    =========================== */
@@ -1474,12 +2090,23 @@ function synthesizeProtoRootFromArchetypes(
     return randomChoice(PROTO_ROOTS).proto;
   }
 
-  const concepts = extractConcepts(text);
-  const semanticRoots = pickRootsForConcepts(concepts);
+  // 1) Extract canonical concepts from the archetype text
+  const baseConcepts = extractConcepts(text);
+
+  // 2) Expand them into a semantic cloud
+  const cloud = expandConceptsToSemanticCloud(baseConcepts);
+
+  // 3) Use element hints (if any) to bias proto-root selection
+  const elementHint = pickElementFromText(text);
+  const elementHints: Element[] = elementHint ? [elementHint] : [];
+
+  // 4) Get candidate proto-roots that fit this cloud
+  const semanticRoots = getProtoMatchesFromCloud(cloud, elementHints);
+
   const skeleton = makePhoneticSkeleton(text);
   const vowels = ["a", "e", "i", "o", "u"];
 
-  // 1. Choose semantic base(s)
+  // 5. Choose semantic base(s) from the cloud-weighted roots
   const headSource = (
     semanticRoots[0] ?? randomChoice(PROTO_ROOTS)
   ).proto.toLowerCase();
@@ -1531,6 +2158,7 @@ function synthesizeProtoRootFromArchetypes(
 
   return proto;
 }
+
 
 function applyGenderToName(name: string, gender: Gender): string {
   // Always start from a normalized lowercase base
@@ -1833,9 +2461,20 @@ function makeSurname(
     ]);
 
   // Semantic anchors for the surname (same meaning space, different route)
-  const concepts = extractConcepts(text);
-  const semanticRoots = pickRootsForConcepts(concepts);
+  // OLD:
+  // const concepts = extractConcepts(text);
+  // const semanticRoots = pickRootsForConcepts(concepts);
+
+  // NEW: expand with synonym concepts for more variety
+  // Semantic anchors for the surname (same meaning space, different route)
+  const baseConcepts = extractConcepts(text);
+  const cloud = expandConceptsToSemanticCloud(baseConcepts);
+
+  const elementHints: Element[] = elementMain ? [elementMain] : [];
+  const semanticRoots = getProtoMatchesFromCloud(cloud, elementHints);
+
   const proto = buildSurnameProto(semanticRoots, elementMain);
+
 
   // Length preset is derived from the actual first name
   const surnameLength = pickSurnameLengthPreset(firstName);
@@ -1871,6 +2510,7 @@ function makeSurname(
   }
   return fallback;
 }
+
 
 /* ===========================
    LORE SYSTEM (TTRPG-focused)
