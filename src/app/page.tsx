@@ -4731,6 +4731,46 @@ function exportResultsAsText(results: GeneratedEntry[]) {
   URL.revokeObjectURL(url);
 }
 
+//--------------------batch copy helper-------------/
+async function copyResultsToClipboard(results: GeneratedEntry[]) {
+  if (!results || results.length === 0) return;
+
+  const content = buildTextExport(results);
+  if (!content) return;
+
+  // Modern clipboard API
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(content);
+      // Optional: toast/snackbar instead of alert in a later version
+      alert("All generated names have been copied to your clipboard.");
+      return;
+    } catch (err) {
+      console.error("Clipboard copy failed, falling back to legacy method.", err);
+    }
+  }
+
+  // Fallback: temporary textarea for older browsers
+  const textarea = document.createElement("textarea");
+  textarea.value = content;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  textarea.style.left = "-9999px";
+
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+
+  try {
+    document.execCommand("copy");
+    alert("All generated names have been copied to your clipboard.");
+  } catch (err) {
+    console.error("Legacy clipboard copy failed.", err);
+  } finally {
+    document.body.removeChild(textarea);
+  }
+}
+
 
 /* ===========================
    UI COMPONENT
@@ -5022,14 +5062,22 @@ function generateNames() {
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
       <h2 className="text-xl font-bold">Results</h2>
 
-      {/* Premium-only export button */}
+      {/* Premium-only export + copy buttons */}
       {isPremium && (
-        <button
-          onClick={() => exportResultsAsText(results)}
-          className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
-        >
-          Export as .txt
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => copyResultsToClipboard(results)}
+            className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
+          >
+            Copy all
+          </button>
+          <button
+            onClick={() => exportResultsAsText(results)}
+            className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
+          >
+            Export as .txt
+          </button>
+        </div>
       )}
     </div>
 
