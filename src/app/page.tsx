@@ -3843,6 +3843,21 @@ const ROLE_EPITHETS: Record<string, string[]> = {
     "the Clash-Born",
     "the Blooded Sentinel",
     "the Last to Fall",
+      "the Iron Gale",
+   "the Battle-Forged",
+   "the Spear-Marshaled",
+    "the Vow Unbroken",
+   "the Hammer of Dawn",
+   "the Storm-Ranked",
+   "the Brass Vanguard",
+   "the Warlit Strider",
+   "the Breaker of Lines",
+   "the Oath-forged Blade",
+   "the Rampart-Keeper",
+   "the Shield-in-Shadow",
+    "the Ember-Sworn",
+    "the Sword-Warden",
+    "the Stone-Line Sentinel",
     "the Wall of Spears",
   ],
   hunter: [
@@ -3860,6 +3875,21 @@ const ROLE_EPITHETS: Record<string, string[]> = {
     "the Snarewise",
     "the Path-Finder",
     "the Wild-Eyed",
+      "the Arrow-in-Mist",
+  "the Beast-Treader",
+  "the Silent Range-Walker",
+  "the Grove-Stalker",
+  "the Sky-Scent Tracker",
+  "the Lone-Path Wanderer",
+  "the Brushborn",
+  "the Farsight Hunter",
+  "the Deep-Trail Walker",
+  "the Briar-Hawk",
+  "the Track-Cunning",
+  "the Quarry-Keeper",
+  "the Wildmark Scout",
+  "the Mossfoot",
+  "the Night-Forager",
     "the Green-Sentinel",
   ],
   seer: [
@@ -3877,6 +3907,21 @@ const ROLE_EPITHETS: Record<string, string[]> = {
     "the Night-Listener",
     "the Prophecy-Scarred",
     "the Veil-Torn",
+      "the Time-Weaver",
+  "the Dawn-Watcher",
+  "the Star-Whisperer",
+  "the Truth-Unbound",
+  "the Mind-in-Shadow",
+  "the Tides of Knowing",
+  "the Lantern of Visions",
+  "the Memory-Caller",
+  "the Pale Foretelling",
+  "the Gazer Beyond",
+  "the Waking Oracle",
+  "the Silent Propheteer",
+  "the Cloud-Seer",
+  "the Thread-Binder",
+  "the Horizon-Touched",
     "the Future-Mark",
   ],
   healer: [
@@ -3894,6 +3939,21 @@ const ROLE_EPITHETS: Record<string, string[]> = {
     "the Fever-Breaker",
     "the Lantern of Sickbeds",
     "the Last Comfort",
+      "the Hope-Raiser",
+  "the Balm-Bringer",
+  "the Ashen Healer",
+  "the Breath-Restorer",
+  "the Hearth-Mender",
+  "the Sorrow-Soother",
+  "the Pulse-Keeper",
+  "the Willow-Tender",
+  "the Night-Warmth",
+  "the Thorn-Gentler",
+  "the Quiet Poultice",
+  "the Root-Mender",
+  "the Touch-of-Dawn",
+  "the Hearth-Guardian",
+  "the Weary-Watcher",
     "the White-Leaf",
   ],
   bard: [
@@ -3911,6 +3971,21 @@ const ROLE_EPITHETS: Record<string, string[]> = {
     "the Melody-Bearer",
     "the Wordsmith",
     "the Rhythm-Caller",
+      "the Lyric-Shaper",
+  "the Dream-Chanter",
+  "the Harp-Touched",
+  "the Tune-Wright",
+  "the Ballad-Spun",
+  "the Jest-Weaver",
+  "the Stanza-Bound",
+  "the Tale-forged",
+  "the Voice-in-Dusk",
+  "the Cadence-Keeper",
+  "the Story-Threader",
+  "the Flame-of-Fables",
+  "the Road-Singer",
+  "the Silver Quill",
+  "the Wander-Song",
     "the Legend-Maker",
   ],
   shadow: [
@@ -3928,6 +4003,21 @@ const ROLE_EPITHETS: Record<string, string[]> = {
     "the Mask-Bound",
     "the Hooded Silence",
     "the Last Shadow",
+      "the Fog-Cloaked",
+  "the Gutter-Ghost",
+  "the Underlight Walker",
+  "the Ash-Tread",
+  "the Moth-in-Lantern-Glow",
+  "the Back-Alley Murmur",
+  "the Ink-Stained Step",
+  "the Dim-Threaded",
+  "the Gloom-Bound",
+  "the Whisper-in-Doors",
+  "the Night-Sigil",
+  "the Silhouette-Stray",
+  "the Soot-Footed",
+  "the Twilight Rasp",
+  "the Lantern-Bleed",
     "the Dusk-Slip",
   ],
   noble: [
@@ -3945,6 +4035,21 @@ const ROLE_EPITHETS: Record<string, string[]> = {
     "the Gilded Heir",
     "the Blue-Blooded",
     "the House-Unbroken",
+      "the Lineage-True",
+  "the Diadem-Bound",
+  "the Heralded Child",
+  "the Crown-in-Waiting",
+  "the Noble-Stone",
+  "the Scepter-Kin",
+  "the House-Bright",
+  "the Ancient Blood",
+  "the Thronehold",
+  "the Mantle-Bearer",
+  "the Jewel-of-Court",
+  "the Last Heirloom",
+  "the Banner-Lit",
+  "the Court-Shadowed",
+  "the Gold-Veined",
     "the Quiet Regent",
   ],
   smith: [
@@ -3962,6 +4067,21 @@ const ROLE_EPITHETS: Record<string, string[]> = {
     "the Iron-Hand",
     "the Furnace-Watcher",
     "the Tempered Maker",
+      "the Molten-Blooded",
+  "the Heat-Tamer",
+  "the Ore-Reader",
+  "the Hearth-Anointed",
+  "the Bellows-Borne",
+  "the Flame-Chanter",
+  "the Ash-Clad",
+  "the Crucible-Souled",
+  "the Iron-Warden",
+  "the Spark-Walker",
+  "the Hammer-Shadow",
+  "the Forge-Keeper",
+  "the Ember-Mason",
+  "the Brass-Threader",
+  "the Alloy-Dreamer",
     "the Smoke-Crowned",
   ],
   wanderer: [
@@ -3979,6 +4099,21 @@ const ROLE_EPITHETS: Record<string, string[]> = {
     "the Path-Unending",
     "the Mapless",
     "the Mile-Drinker",
+      "the Twilit Rambler",
+  "Step-Followed",
+  "the Track-Farer",
+  "the Wind-Carried",
+  "the Noonday Walker",
+  "the Campfire-Kin",
+  "Trail-Bound",
+  "the Dust-Threader",
+  "the Far-Sailor",
+  "the Road-Mender",
+  "Sky-Drifter",
+  "the Crest-Walker",
+  "the Lantern-Rover",
+  "Cloud-Wandered",
+  "the Compass-Lost",
     "the Long-Stride",
   ],
 };
@@ -3996,6 +4131,18 @@ const ELEMENT_EPITHETS: Partial<Record<Element, string[]>> = {
     "the Coal-Souled",
     "the Wildspark",
     "the Scorch-Blooded",
+      "the Ember-Ward",
+  "the Forge-Kindled",
+  "the Fire-Treader",
+  "Soot-Marked",
+  "the Furnace-Breath",
+  "the Ember-Veined",
+  "the Flame-Keeper",
+  "the Char-Shadowed",
+  "the Inferno-Bound",
+  "the Kindle-Sworn",
+  "the Spark-Warden",
+  "the Ash-Forger",
     "the Torch-in-Storm",
   ],
   [ELEMENTS.WATER]: [
@@ -4010,6 +4157,18 @@ const ELEMENT_EPITHETS: Partial<Record<Element, string[]>> = {
     "the Drift-Soul",
     "the Foam-Born",
     "the Harbor-Warden",
+      "the Current-Bound",
+  "the Brine-Threaded",
+  "the Frostwater Veil",
+  "the Storm-Drifter",
+  "the Kelprooted",
+  "the River-Singer",
+  "the Spray-Crowned",
+  "the Moon-Tide",
+  "the Undertow-Kin",
+  "the Marsh-Walker",
+  "the Shallow-Breath",
+  "the Sea-Murmured",
     "the Flood-Marked",
   ],
   [ELEMENTS.EARTH]: [
@@ -4025,6 +4184,18 @@ const ELEMENT_EPITHETS: Partial<Record<Element, string[]>> = {
     "the Barrow-Kin",
     "the Hill-Keeper",
     "the Soil-Bound",
+      "the Moss-Cloaked",
+  "the Burrow-Wise",
+  "the Lichen-Bound",
+  "the Deep-Delver",
+  "the Thorn-Helmed",
+  "the Root-Entwined",
+  "the Earthwake",
+  "the Loam-Favored",
+  "the Stone-Bloom",
+  "the Bark-Hewn",
+  "the Mud-Oathed",
+  "the Cavern-Soul"
   ],
   [ELEMENTS.AIR]: [
     "Wind-Touched",
@@ -4039,6 +4210,18 @@ const ELEMENT_EPITHETS: Partial<Record<Element, string[]>> = {
     "the High-Current",
     "the Thunder-Taken",
     "the Horizon-Eyed",
+      "the Windborne",
+  "Cloud-Walker",
+  "the Whisper-in-Air",
+  "the Skyborne Veil",
+  "the Storm-Harrowed",
+  "the Down-Feathered",
+  "the Breaker-of-Fog",
+  "the Wind-Rider",
+  "the Tempest-Kissed",
+  "the Far-Seeing",
+  "the Updraft-Soul",
+  "the Storm-Threaded"
   ],
   [ELEMENTS.DARK]: [
     "the Dreadmarked",
@@ -4053,6 +4236,18 @@ const ELEMENT_EPITHETS: Partial<Record<Element, string[]>> = {
     "the Cold-Gaze",
     "the Last Gloaming",
     "the Veil-Torn Soul",
+      "the Shadow-Rooted",
+  "the Void-Wrought",
+  "the Bleak-Bound",
+  "Grave-Eyed",
+  "the Nether-Touched",
+  "the Night-Fallen",
+  "the Death-Pledged",
+  "the Ashen Veil",
+  "the Silent Dirge",
+  "Woe-Bearer",
+  "the Last Lament",
+  "the Blackened Hollow"
   ],
 };
 
@@ -4070,6 +4265,18 @@ const DIALECT_EPITHETS: Record<Dialect, string[]> = {
     "the Starlace",
     "the High Speaker",
     "the Argent Veil",
+      "the Gilded Voice",
+  "the Sunlit Mantle",
+  "the Celestial-Bound",
+  "the Ivory Crest",
+  "the Dawn-Anointed",
+  "the Crown-of-Winds",
+  "the Light-Preserved",
+  "the Oath-of-Stars",
+  "the Prism-Seer",
+  "the Lark-of-Courts",
+  "the High-Chronicler",
+  "the Cerulean Grace"
   ],
   [DIALECTS.FOREST]: [
     "Greenwalker",
@@ -4084,6 +4291,18 @@ const DIALECT_EPITHETS: Record<Dialect, string[]> = {
     "the Fox-Shadow",
     "the Dew-Warden",
     "the Thorn-Bound",
+      "the Moss-Foot",
+  "the Hollow-Whisper",
+  "the Bark-Warden",
+  "the Shade-in-Boughs",
+  "the Fawn-Caller",
+  "the Lichen-Born",
+  "the Glade-Keeper",
+  "the Pine-Sigh",
+  "the Briar-Mantled",
+  "the Elm-Taken",
+  "the Quiet Underleaf",
+  "the Wildroot Sentinel"
   ],
   [DIALECTS.SEA]: [
     "Wave-Turned",
@@ -4098,6 +4317,18 @@ const DIALECT_EPITHETS: Record<Dialect, string[]> = {
     "the Seafoam Step",
     "the Lantern-at-Port",
     "the Keel-Friend",
+      "the Tide-Listener",
+  "Spray-Bound",
+  "the Driftwood Soul",
+  "the Shoal-Wanderer",
+  "the Wave-Lantern",
+  "the Gale-Watcher",
+  "the Surf-Born",
+  "the Compass-Lost",
+  "the Harbor-Shadow",
+  "the Rope-and-Reed",
+  "the Salt-Haloed",
+  "the Star-on-Waves"
   ],
   [DIALECTS.MOUNTAIN]: [
     "Stonefoot",
@@ -4112,6 +4343,18 @@ const DIALECT_EPITHETS: Record<Dialect, string[]> = {
     "the Ice-Ridge",
     "the Granite-Souled",
     "the Thunder-Downhill",
+      "the Snowbound",
+  "the Highcliff Watch",
+  "the Glacier-Step",
+  "Rime-Carved",
+  "the Hollow-March",
+  "the Avalanche’s Whisper",
+  "the Deepstone Echo",
+  "the Windswept Crest",
+  "Cairn-Binder",
+  "the Frost-Hewn",
+  "the Summit-Kin",
+  "the Iron-Wind Touched"
   ],
   [DIALECTS.SHADOW]: [
     "the Veil-Bound",
@@ -4126,6 +4369,18 @@ const DIALECT_EPITHETS: Record<Dialect, string[]> = {
     "the Night-Breath",
     "the Ashen Silhouette",
     "the Hollow-Eyed",
+      "the Smoke-Drift",
+  "Soot-Wanderer",
+  "the Gutter-Ghost",
+  "the Moonless Trace",
+  "the Whisper-in-Black",
+  "the Dimming Walk",
+  "the Pall of Corners",
+  "the Shade-Threaded",
+  "the Murmuring Veil",
+  "the Half-Lit Shape",
+  "the Drift-in-Doorways",
+  "the Unlit Passage"
   ],
 };
 
@@ -4357,7 +4612,19 @@ function applyEpithetOrNickname(
   const maxAttempts = 8;
   let best = base;
 
-  // If no usage stats provided, fall back to simple behavior
+  // Helper to insert nickname between first & last
+  function insertNickname(full: string, nick: string): string {
+    const parts = full.split(" ");
+    if (parts.length < 2) {
+      // in case something weird happens: default to end placement
+      return `${full} "${nick}"`;
+    }
+    const first = parts[0];
+    const last = parts.slice(1).join(" ");
+    return `${first} "${nick}" ${last}`;
+  }
+
+  // If we aren't tracking usage (simple fallback)
   if (!usage) {
     if (mode === "epithet") {
       const tag = makeEpithet(profile);
@@ -4365,21 +4632,21 @@ function applyEpithetOrNickname(
     }
     if (mode === "nickname") {
       const tag = makeNickname(profile);
-      return tag ? `${base} "${tag}"` : base;
+      return tag ? insertNickname(base, tag) : base;
     }
     if (mode === "either") {
-      const useEpithet = Math.random() < 0.5;
-      const tag = useEpithet ? makeEpithet(profile) : makeNickname(profile);
-      return tag
-        ? useEpithet
-          ? `${base} ${tag}`
-          : `${base} "${tag}"`
-        : base;
+      if (Math.random() < 0.5) {
+        const tag = makeEpithet(profile);
+        return tag ? `${base} ${tag}` : base;
+      } else {
+        const tag = makeNickname(profile);
+        return tag ? insertNickname(base, tag) : base;
+      }
     }
     return base;
   }
 
-  // Weighted selection loop
+  // Weighted selection path
   for (let i = 0; i < maxAttempts; i++) {
     let tag: string | null = null;
     let tagKey = "";
@@ -4393,7 +4660,7 @@ function applyEpithetOrNickname(
       tag = makeNickname(profile);
       if (!tag) continue;
       tagKey = `N:${tag}`;
-      best = `${base} "${tag}"`;
+      best = insertNickname(base, tag);
     } else if (mode === "either") {
       const useEpithet = Math.random() < 0.5;
       if (useEpithet) {
@@ -4405,29 +4672,64 @@ function applyEpithetOrNickname(
         tag = makeNickname(profile);
         if (!tag) continue;
         tagKey = `N:${tag}`;
-        best = `${base} "${tag}"`;
+        best = insertNickname(base, tag);
       }
     } else {
-      // mode "none"
       return base;
     }
 
-    // Weighted acceptance based on how often this tag was used
     const currentCount = getEpithetUsage(usage, tagKey);
-    const acceptChance = 1 / (1 + currentCount); // 1, 1/2, 1/3, ...
+    const acceptChance = 1 / (1 + currentCount);
 
     if (Math.random() < acceptChance) {
       incrementEpithetUsage(usage, tagKey);
       return best;
     }
-
-    // Otherwise retry with a different random tag
   }
 
-  // If all attempts fail, accept the last one
   return best;
 }
 
+
+
+//=========================================//
+//------------Premium-Only Function Helpers--//
+//========================================//
+
+//-----------------Download txt helpers----------//
+function buildTextExport(results: GeneratedEntry[]): string {
+  if (!results || results.length === 0) return "";
+
+  return results
+    .map((entry, idx) => {
+      if (entry.lore) {
+        return `${idx + 1}. ${entry.name}\n${entry.lore}`;
+      }
+      return `${idx + 1}. ${entry.name}`;
+    })
+    .join("\n\n");
+}
+
+function exportResultsAsText(results: GeneratedEntry[]) {
+  if (!results || results.length === 0) return;
+
+  const content = buildTextExport(results);
+  const blob = new Blob([content], {
+    type: "text/plain;charset=utf-8",
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  const timestamp = new Date().toISOString().slice(0, 10); // e.g. 2025-12-07
+  link.href = url;
+  link.download = `elven-names-${timestamp}.txt`;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 
 /* ===========================
@@ -4716,25 +5018,39 @@ function generateNames() {
 
         {/* Results */}
         {results.length > 0 && (
-          <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-3">
-            <h2 className="text-xl font-bold">Results</h2>
-            <ul className="space-y-3">
-              {results.map((entry, i) => (
-                <li
-                  key={i}
-                  className="bg-gray-900 border border-gray-700 p-3 rounded-lg"
-                >
-                  <div className="font-semibold text-lg">{entry.name}</div>
-                  {entry.lore && (
-                    <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
-                      {entry.lore}
-                    </p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+  <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-3">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <h2 className="text-xl font-bold">Results</h2>
+
+      {/* Premium-only export button */}
+      {isPremium && (
+        <button
+          onClick={() => exportResultsAsText(results)}
+          className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
+        >
+          Export as .txt
+        </button>
+      )}
+    </div>
+
+    <ul className="space-y-3">
+      {results.map((entry, i) => (
+        <li
+          key={i}
+          className="bg-gray-900 border border-gray-700 p-3 rounded-lg"
+        >
+          <div className="font-semibold text-lg">{entry.name}</div>
+          {entry.lore && (
+            <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
+              {entry.lore}
+            </p>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
       </div>
     </main>
   );
