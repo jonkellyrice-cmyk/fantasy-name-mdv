@@ -2754,6 +2754,25 @@ function isCoolName(name: string, length: NameLength): boolean {
   return true;
 }
 
+//====================
+//---------small usage type for nicknames and epithets-----
+//=============================
+// Track how often each epithet/nickname is used in a single Generate click
+type EpithetUsageStats = Map<string, number>;
+/** Retrieve usage count safely */
+function getEpithetUsage(usage: EpithetUsageStats | undefined, key: string): number {
+  if (!usage) return 0;
+  return usage.get(key) ?? 0;
+}
+
+/** Increment usage count safely */
+function incrementEpithetUsage(usage: EpithetUsageStats | undefined, key: string) {
+  if (!usage) return;
+  usage.set(key, (usage.get(key) ?? 0) + 1);
+}
+
+
+
 // ===========================
 // SURNAMES: helpers
 // ===========================
@@ -4321,45 +4340,95 @@ function makeNickname(profile: LoreProfile): string | null {
  * Apply an epithet or nickname to the full name.
  * - "epithet":  Elarion Vaeth, the Emberborn
  * - "nickname": Elarion "Ash" Vaeth
+ *
+ * Weighted so repeated tags become less likely:
+ *  1st use → 100%
+ *  2nd use → 50%
+ *  3rd use → 33%
+ *  4th use → 25%
  */
 function applyEpithetOrNickname(
   fullName: string,
   profile: LoreProfile,
-  mode: EpithetMode
+  mode: EpithetMode,
+  usage?: EpithetUsageStats
 ): string {
-  if (mode === "none") return fullName;
+  const base = fullName;
+  const maxAttempts = 8;
+  let best = base;
 
-  const parts = fullName.trim().split(/\s+/);
-  if (parts.length === 0) return fullName;
-
-  const firstName = parts[0];
-  const surname = parts.slice(1).join(" ");
-
-  // Handle "either" by converting it into a random mode
-  if (mode === "either") {
-    mode = Math.random() < 0.5 ? "epithet" : "nickname";
+  // If no usage stats provided, fall back to simple behavior
+  if (!usage) {
+    if (mode === "epithet") {
+      const tag = makeEpithet(profile);
+      return tag ? `${base} ${tag}` : base;
+    }
+    if (mode === "nickname") {
+      const tag = makeNickname(profile);
+      return tag ? `${base} "${tag}"` : base;
+    }
+    if (mode === "either") {
+      const useEpithet = Math.random() < 0.5;
+      const tag = useEpithet ? makeEpithet(profile) : makeNickname(profile);
+      return tag
+        ? useEpithet
+          ? `${base} ${tag}`
+          : `${base} "${tag}"`
+        : base;
+    }
+    return base;
   }
 
-  if (mode === "epithet") {
-    const epithet = makeEpithet(profile);
-    if (!epithet) return fullName;
+  // Weighted selection loop
+  for (let i = 0; i < maxAttempts; i++) {
+    let tag: string | null = null;
+    let tagKey = "";
 
-    return surname
-      ? `${fullName}, ${epithet}`
-      : `${firstName}, ${epithet}`;
+    if (mode === "epithet") {
+      tag = makeEpithet(profile);
+      if (!tag) continue;
+      tagKey = `E:${tag}`;
+      best = `${base} ${tag}`;
+    } else if (mode === "nickname") {
+      tag = makeNickname(profile);
+      if (!tag) continue;
+      tagKey = `N:${tag}`;
+      best = `${base} "${tag}"`;
+    } else if (mode === "either") {
+      const useEpithet = Math.random() < 0.5;
+      if (useEpithet) {
+        tag = makeEpithet(profile);
+        if (!tag) continue;
+        tagKey = `E:${tag}`;
+        best = `${base} ${tag}`;
+      } else {
+        tag = makeNickname(profile);
+        if (!tag) continue;
+        tagKey = `N:${tag}`;
+        best = `${base} "${tag}"`;
+      }
+    } else {
+      // mode "none"
+      return base;
+    }
+
+    // Weighted acceptance based on how often this tag was used
+    const currentCount = getEpithetUsage(usage, tagKey);
+    const acceptChance = 1 / (1 + currentCount); // 1, 1/2, 1/3, ...
+
+    if (Math.random() < acceptChance) {
+      incrementEpithetUsage(usage, tagKey);
+      return best;
+    }
+
+    // Otherwise retry with a different random tag
   }
 
-  if (mode === "nickname") {
-    const nickname = makeNickname(profile);
-    if (!nickname) return fullName;
-
-    return surname
-      ? `${firstName} "${nickname}" ${surname}`
-      : `${firstName} "${nickname}"`;
-  }
-
-  return fullName;
+  // If all attempts fail, accept the last one
+  return best;
 }
+
+
 
 /* ===========================
    UI COMPONENT
@@ -4382,60 +4451,71 @@ export default function Home() {
 
   const effectiveMax = isPremium ? 50 : 5;
 
-  function generateNames() {
-    // Track name shape usage for this batch
-    const shapeStats: ShapeStats = new Map();
+//=================================//
+//----------------Generate Names---//
+//=================================//
+function generateNames() {
+  // Track name shape usage for this batch
+  const shapeStats: ShapeStats = new Map();
 
-    // Track proto-root usage for this batch (used by surnames)
-    const protoUsageStats: ProtoUsageStats = new Map();
+  // Track nickname/epithet usage for this batch
+  const epithetUsage: EpithetUsageStats = new Map();
 
-    // Guard against NaN / weird count values
-    const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
-    const cappedCount = Math.min(safeCount, effectiveMax);
+  // Track proto-root usage for this batch (used by both first + surname)
+  const protoUsageStats: ProtoUsageStats = new Map();
 
-    const output: GeneratedEntry[] = [];
+  // Guard against NaN / weird count values
+  const safeCount = Number.isFinite(count) && count > 0 ? count : 1;
+  const cappedCount = Math.min(safeCount, effectiveMax);
 
-    for (let i = 0; i < cappedCount; i++) {
-      // First name: full pipeline incl. gender + length + shape diversity
+  const output: GeneratedEntry[] = [];
+
+  for (let i = 0; i < cappedCount; i++) {
+    // First name: full pipeline incl. gender + length + shape diversity
     const first = makeFantasyName(
       archetypeA,
       archetypeB,
       gender,
       nameLength,
       shapeStats,      // shape stats for this batch
-      protoUsageStats  // NEW: diversity-aware proto usage for first names
+      protoUsageStats  // diversity-aware proto usage for first names
     );
 
+    // Surname: complements first name, shares proto usage stats
+    const last = makeSurname(
+      archetypeA,
+      archetypeB,
+      first,
+      protoUsageStats
+    );
 
-      // Surname: complements first name, shares proto usage stats
-      const last = makeSurname(
-        archetypeA,
-        archetypeB,
-        first,
-        protoUsageStats
+    let fullName = `${first} ${last}`;
+
+    // Lore profile (used for both lore & epithet/nickname)
+    const profile = deriveLoreProfile(archetypeA, archetypeB);
+
+    // Apply epithet / nickname only in Premium mode
+    if (isPremium && epithetMode !== "none") {
+      fullName = applyEpithetOrNickname(
+        fullName,
+        profile,
+        epithetMode,
+        epithetUsage        // ⬅️ pass the batch usage map in
       );
-
-      let fullName = `${first} ${last}`;
-
-      // Lore profile (used for both lore & epithet/nickname)
-      const profile = deriveLoreProfile(archetypeA, archetypeB);
-
-      // Apply epithet / nickname only in Premium mode
-      if (isPremium && epithetMode !== "none") {
-        fullName = applyEpithetOrNickname(fullName, profile, epithetMode);
-      }
-
-      output.push({
-        name: fullName,
-        lore:
-          isPremium && includeLore
-            ? makeLore(fullName, archetypeA, archetypeB)
-            : undefined,
-      });
     }
 
-    setResults(output);
+    output.push({
+      name: fullName,
+      lore:
+        isPremium && includeLore
+          ? makeLore(fullName, archetypeA, archetypeB)
+          : undefined,
+    });
   }
+
+  setResults(output);
+}
+
 
   return (
     <main className="min-h-screen p-6 md:p-10 bg-gray-900 text-white flex flex-col items-center">
