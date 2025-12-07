@@ -2844,8 +2844,10 @@ function makeFantasyName(
   archetypeB: string,
   gender: Gender,
   length: NameLength,
-  shapeStats?: ShapeStats // optional, for batch-level variety
+  shapeStats?: ShapeStats,        // optional, for batch-level variety
+  protoUsageStats?: ProtoUsageStats // NEW: share diversity engine with surnames
 ): string {
+
   const combined = `${archetypeA} ${archetypeB}`.trim();
   const dialect = pickDialectFromArchetypes(archetypeA, archetypeB);
 
@@ -2872,12 +2874,34 @@ function makeFantasyName(
     );
     let lastBase = "";
 
-    for (let attempt = 0; attempt < 10; attempt++) {
-      const nativeRoot = pickRootByElement(elementMain);
-      const fusedProto = fuseUserAndNativeProto(userProto, nativeRoot.proto);
+    // NEW: semantic/diversity-aware pool of native roots for first names
+    const semanticRoots =
+      protoUsageStats
+        ? pickRootsForConcepts(
+            extractConcepts(combined),
+            elementMain,
+            dialect,
+            protoUsageStats
+          )
+        : [];
 
-      const transformedRoot = transformRootForDialect(fusedProto, dialect);
-      const pattern = pickPatternWithShapeBias(dialect, length, shapeStats);
+    for (let attempt = 0; attempt < 10; attempt++) {
+  // Prefer a root from the semantic/diversity pool; fall back to element
+  const nativeRoot =
+    semanticRoots.length > 0
+      ? randomChoice(semanticRoots)
+      : pickRootByElement(elementMain);
+
+  // NEW: sometimes use a pure native proto, sometimes the fused one.
+  // This is where we break out of the “all names share one fused spine” problem.
+  const usePureNative = Math.random() < 0.35; // ~35% pure-native, 65% fused
+  const protoForThisAttempt = usePureNative
+    ? nativeRoot.proto
+    : fuseUserAndNativeProto(userProto, nativeRoot.proto);
+
+  const transformedRoot = transformRootForDialect(protoForThisAttempt, dialect);
+  const pattern = pickPatternWithShapeBias(dialect, length, shapeStats);
+
 
       // BASE NAME (no gender yet)
       let base = applyPattern(pattern, transformedRoot);
@@ -2937,6 +2961,7 @@ function makeFantasyName(
     }
     return lastName;
   }
+
 
   // --- FALLBACK: RANDOM ELVISH ENGINE (no archetypes at all) ---
   let lastBase = "";
@@ -4372,13 +4397,15 @@ export default function Home() {
 
     for (let i = 0; i < cappedCount; i++) {
       // First name: full pipeline incl. gender + length + shape diversity
-      const first = makeFantasyName(
-        archetypeA,
-        archetypeB,
-        gender,
-        nameLength,
-        shapeStats // ✅ last param
-      );
+    const first = makeFantasyName(
+      archetypeA,
+      archetypeB,
+      gender,
+      nameLength,
+      shapeStats,      // shape stats for this batch
+      protoUsageStats  // NEW: diversity-aware proto usage for first names
+    );
+
 
       // Surname: complements first name, shares proto usage stats
       const last = makeSurname(
