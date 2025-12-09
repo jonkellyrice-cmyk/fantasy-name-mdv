@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+
 // ===========================
 // STATS: internal stat block
 // ===========================
-type StatBlock = {
+
+type NameStats = {
   // Elemental alignment (0–100)
   fire: number;
   water: number;
@@ -28,19 +30,67 @@ type StatBlock = {
   wildness: number;   // wild vs courtly/civilized
   arcane: number;     // mystical vs purely physical
   renown: number;     // how “legend-tier” they feel
+
+  // Additional tone axes (0–100)
+  toneBright: number;
+  toneShadow: number;
+  toneBalanced: number;
+  toneScore: number;
+
+  // Dialect affinities (0–100)
+  dialectHigh: number;
+  dialectForest: number;
+  dialectSea: number;
+  dialectMountain: number;
+  dialectShadow: number;
+
+  // Flavor flags
+  hasEpithet: boolean;
+  hasNickname: boolean;
+};
+
+// Keep this alias so older code that still uses StatBlock survives.
+type StatBlock = NameStats;
+
+// ===========================
+// ENCLAVE TYPES (moved up here)
+// ===========================
+
+type EnclaveId =
+  | "verdant-remnant"
+  | "astral-scribes"
+  | "thorn-circle"
+  | "windward-path"
+  | "ember-forge"
+  | "moonlit-vigil"
+  | "duskwatch"
+  | "riverbinding"
+  | "loreweave"
+  | "ironbough"
+  | "starfall-sentinels"
+  | "veilwalkers";
+
+type Enclave = {
+  id: EnclaveId;
+  name: string;
+  summary: string;
+  ttrpgTip: string;
+  score: (stats: NameStats) => number;
 };
 
 type GeneratedEntry = {
   name: string;
   lore?: string;
-  stats?: StatBlock; // <-- new optional field
+  stats?: NameStats;
+  enclave?: Enclave | null;
 };
 
-type Gender = "neutral" | "male" | "female";
 /* ===========================
    ELVISH LANGUAGE ENGINE
    (Integrated, no external imports)
    =========================== */
+
+type Gender = "neutral" | "male" | "female";
 
 const ELEMENTS = {
   FIRE: "fire",
@@ -3143,11 +3193,39 @@ function deriveLoreProfile(
   dialect: Dialect;
   concepts: string[];
 } {
-  const raw = `${archetypeA} ${archetypeB}`.trim();
+  // --- Handle empty archetypes by picking random stand-ins ---
+  let a = archetypeA.trim();
+  let b = archetypeB.trim();
+
+  const FALLBACK_ARCHETYPES = [
+    "warrior",
+    "hunter",
+    "seer",
+    "healer",
+    "bard",
+    "shadow",
+    "noble",
+    "smith",
+    "wanderer",
+    "storm",
+    "flame",
+    "frost",
+    "forest",
+    "moon",
+    "sun",
+    "spirit",
+    "blade",
+    "ember",
+  ];
+
+  if (!a) a = randomItem(FALLBACK_ARCHETYPES);
+  if (!b) b = randomItem(FALLBACK_ARCHETYPES);
+
+  const raw = `${a} ${b}`.trim();
   const t = raw.toLowerCase();
 
   const element = pickElementFromText(raw);
-  const dialect = pickDialectFromArchetypes(archetypeA, archetypeB);
+  const dialect = pickDialectFromArchetypes(a, b);
   const concepts = extractConcepts(raw);
 
   // --- Role classification ---
@@ -3189,6 +3267,7 @@ function deriveLoreProfile(
 
   return { role, tone, element, dialect, concepts };
 }
+
 
 function makeLore(name: string, a: string, b: string): string {
   const arcA = a || "mysterious";
@@ -4735,12 +4814,14 @@ function deriveStatsFromProfile(
 
   // Start everything at 0; we'll add contributions and clamp at the end.
   const stats: StatBlock = {
+    // Elements
     fire: 0,
     water: 0,
     earth: 0,
     air: 0,
     dark: 0,
 
+    // Roles
     warrior: 0,
     hunter: 0,
     seer: 0,
@@ -4751,10 +4832,28 @@ function deriveStatsFromProfile(
     smith: 0,
     wanderer: 0,
 
+    // High-level thematic axes (existing)
     luminosity: 0,
     wildness: 0,
     arcane: 0,
     renown: 0,
+
+    // NEW: tone axes
+    toneBright: 0,
+    toneShadow: 0,
+    toneBalanced: 0,
+    toneScore: 0,
+
+    // NEW: dialect affinities
+    dialectHigh: 0,
+    dialectForest: 0,
+    dialectSea: 0,
+    dialectMountain: 0,
+    dialectShadow: 0,
+
+    // NEW: flavor flags (booleans, not clamped)
+    hasEpithet: false,
+    hasNickname: false,
   };
 
   // -------------------------
@@ -4883,14 +4982,27 @@ function deriveStatsFromProfile(
     stats.luminosity += 30;
     stats.dark -= 10;
     stats.arcane += 10;
+
+    // NEW tone axes
+    stats.toneBright += 70;
+    stats.toneBalanced += 20;
   } else if (tone === "balanced") {
     stats.luminosity += 10;
     stats.wildness += 10;
+
+    // NEW tone axes
+    stats.toneBalanced += 70;
+    stats.toneBright += 20;
+    stats.toneShadow += 20;
   } else if (tone === "shadowed") {
     stats.luminosity -= 30;
     stats.dark += 30;
     stats.wildness += 15;
     stats.arcane += 10;
+
+    // NEW tone axes
+    stats.toneShadow += 70;
+    stats.toneBalanced += 20;
   }
 
   // -------------------------
@@ -4902,18 +5014,25 @@ function deriveStatsFromProfile(
       stats.arcane += 20;
       stats.renown += 20;
       stats.wildness -= 10;
+
+      // NEW: dialect affinity
+      stats.dialectHigh += 80;
       break;
 
     case DIALECTS.FOREST:
       stats.earth += 15;
       stats.wildness += 25;
       stats.luminosity += 10;
+
+      stats.dialectForest += 80;
       break;
 
     case DIALECTS.SEA:
       stats.water += 20;
       stats.wildness += 20;
       stats.luminosity += 10;
+
+      stats.dialectSea += 80;
       break;
 
     case DIALECTS.MOUNTAIN:
@@ -4921,12 +5040,16 @@ function deriveStatsFromProfile(
       stats.air += 10;
       stats.wildness += 5;
       stats.renown += 10;
+
+      stats.dialectMountain += 80;
       break;
 
     case DIALECTS.SHADOW:
       stats.dark += 25;
       stats.luminosity -= 15;
       stats.arcane += 10;
+
+      stats.dialectShadow += 80;
       break;
   }
 
@@ -4936,6 +5059,10 @@ function deriveStatsFromProfile(
   const hasEpithet = / the [A-Z]/.test(fullName);
   const hasNickname = /".+?"/.test(fullName);
 
+  // NEW: record flags on the stats object itself
+  stats.hasEpithet = hasEpithet;
+  stats.hasNickname = hasNickname;
+
   if (hasEpithet) {
     stats.renown += 15; // epithets feel legendary
   }
@@ -4944,7 +5071,17 @@ function deriveStatsFromProfile(
   }
 
   // -------------------------
-  // 6) Clamp everything into 0..100
+  // 6) Derived toneScore
+  // -------------------------
+  // Use the strongest of the three tone channels as an overall intensity
+  stats.toneScore = Math.max(
+    stats.toneBright,
+    stats.toneShadow,
+    stats.toneBalanced
+  );
+
+  // -------------------------
+  // 7) Clamp everything into 0..100
   // -------------------------
   stats.fire = clampStat(stats.fire);
   stats.water = clampStat(stats.water);
@@ -4967,18 +5104,240 @@ function deriveStatsFromProfile(
   stats.arcane = clampStat(stats.arcane);
   stats.renown = clampStat(stats.renown);
 
+  stats.toneBright = clampStat(stats.toneBright);
+  stats.toneShadow = clampStat(stats.toneShadow);
+  stats.toneBalanced = clampStat(stats.toneBalanced);
+  stats.toneScore = clampStat(stats.toneScore);
+
+  stats.dialectHigh = clampStat(stats.dialectHigh);
+  stats.dialectForest = clampStat(stats.dialectForest);
+  stats.dialectSea = clampStat(stats.dialectSea);
+  stats.dialectMountain = clampStat(stats.dialectMountain);
+  stats.dialectShadow = clampStat(stats.dialectShadow);
+
   return stats;
 }
 
-/* ===========================
-   ENCLAVES (Free Differentiating Feature)
-   Stat-derived social affinity
-   =========================== */
 
-// 👉 Define enclave types, data, and assignment function here
-// type EnclaveId = "moon-court" | "thorn-circle" | ...;
-// const ENCLAVES: EnclaveDefinition[] = [...];
-// function assignEnclave(stats: NameStats): EnclaveId { ... }
+// ===========================
+// ENCLAVES (logic + registry)
+// ===========================
+
+const avg = (...values: number[]): number =>
+  values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+
+const clampToNonNegative = (value: number): number =>
+  value > 0 ? value : 0;
+
+const ENCLAVES: Readonly<Enclave[]> = [
+  {
+    id: "verdant-remnant",
+    name: "Verdant Remnant",
+    summary:
+      "Wardens of the last great groves, tending living memories in forests that remember older ages.",
+    ttrpgTip:
+      "Great for druids, rangers, or nature-touched elves. Lean into ties to ancient trees, spirits, and forgotten wild shrines.",
+    score: (s) => {
+      const natureCore = avg(s.earth, s.water, s.dialectForest);
+      const roles = avg(s.hunter, s.healer, s.wanderer);
+      const tone = avg(s.toneBalanced, s.toneBright);
+      return clampToNonNegative(
+        natureCore * 0.4 + roles * 0.4 + tone * 0.2
+      );
+    },
+  },
+  {
+    id: "astral-scribes",
+    name: "Astral Scribes",
+    summary:
+      "Star-charting mystics who read fate in constellations and record omens in silver ink.",
+    ttrpgTip:
+      "Perfect for seers, mages, lorekeepers, and diviners. Play up visions, prophecies, and inconvenient truths.",
+    score: (s) => {
+      const mind = avg(s.arcane, s.toneBright, s.toneScore);
+      const roles = avg(s.seer, s.bard, s.noble);
+      const dialect = avg(s.dialectHigh, s.dialectSea);
+      return clampToNonNegative(
+        mind * 0.4 + roles * 0.4 + dialect * 0.2
+      );
+    },
+  },
+  {
+    id: "thorn-circle",
+    name: "Thorn Circle",
+    summary:
+      "Secretive guerilla wardens who defend the wild with briar, fang, and silent arrows.",
+    ttrpgTip:
+      "Ideal for hunters, rogues, and wild guardians. Embrace ambush, sabotage, and fiercely protected glades.",
+    score: (s) => {
+      const nature = avg(s.earth, s.dialectForest, s.wildness);
+      const roles = avg(s.hunter, s.shadow, s.warrior);
+      const tone = avg(s.toneShadow, s.toneBalanced);
+      return clampToNonNegative(
+        nature * 0.35 + roles * 0.45 + tone * 0.2
+      );
+    },
+  },
+  {
+    id: "windward-path",
+    name: "Windward Path",
+    summary:
+      "Nomadic wayfarers who follow song, storm, and wandering roads across sea and sky.",
+    ttrpgTip:
+      "Great for wanderers, scouts, sailors, and messengers. Lean into travel tales, maps, and hard-won road wisdom.",
+    score: (s) => {
+      const motion = avg(s.air, s.wildness, s.dialectSea);
+      const roles = avg(s.wanderer, s.hunter, s.bard);
+      const tone = avg(s.toneBalanced, s.toneBright);
+      return clampToNonNegative(
+        motion * 0.4 + roles * 0.4 + tone * 0.2
+      );
+    },
+  },
+  {
+    id: "ember-forge",
+    name: "Ember Forge",
+    summary:
+      "Artisans of flame and metal, binding memory into blades, mail, and masterwork relics.",
+    ttrpgTip:
+      "Perfect for smiths, warriors, and crafters. Lean into heirloom weapons, named armor, and vows sworn on steel.",
+    score: (s) => {
+      const craft = avg(s.fire, s.earth, s.smith);
+      const roles = avg(s.warrior, s.noble);
+      const dialect = avg(s.dialectMountain, s.dialectHigh);
+      return clampToNonNegative(
+        craft * 0.45 + roles * 0.35 + dialect * 0.2
+      );
+    },
+  },
+  {
+    id: "moonlit-vigil",
+    name: "Moonlit Vigil",
+    summary:
+      "Grey-cloaked sentries who keep watch where light and shadow meet, sworn to quiet oaths.",
+    ttrpgTip:
+      "Excellent for paladins, sentinels, and watchful scouts. Play with solemn vows, night patrols, and liminal places.",
+    score: (s) => {
+      const lightDarkBalance = avg(s.toneBalanced, s.luminosity, s.toneShadow);
+      const roles = avg(s.warrior, s.healer, s.noble);
+      const dialect = avg(s.dialectHigh, s.dialectShadow);
+      return clampToNonNegative(
+        lightDarkBalance * 0.4 + roles * 0.4 + dialect * 0.2
+      );
+    },
+  },
+  {
+    id: "duskwatch",
+    name: "Duskwatch",
+    summary:
+      "Shadow-wise wardens who patrol the border of safer realms and what waits beyond the treeline.",
+    ttrpgTip:
+      "Great for rangers, monster hunters, and grim scouts. Lean into tracking horrors, knowing old fears, and standing your ground.",
+    score: (s) => {
+      const darkGuard = avg(s.dark, s.toneShadow, s.dialectShadow);
+      const roles = avg(s.hunter, s.shadow, s.warrior);
+      const wild = s.wildness;
+      return clampToNonNegative(
+        darkGuard * 0.4 + roles * 0.4 + wild * 0.2
+      );
+    },
+  },
+  {
+    id: "riverbinding",
+    name: "Riverbinding",
+    summary:
+      "Keepers of crossings, ferries, and river-spirits who remember every oath sworn on their banks.",
+    ttrpgTip:
+      "Nice for healers, guides, and social characters. Emphasize deals, safe passage, and debts owed at bridges and fords.",
+    score: (s) => {
+      const waterSoul = avg(s.water, s.dialectSea, s.dialectForest);
+      const roles = avg(s.healer, s.bard, s.wanderer);
+      const tone = avg(s.toneBalanced, s.toneBright);
+      return clampToNonNegative(
+        waterSoul * 0.4 + roles * 0.4 + tone * 0.2
+      );
+    },
+  },
+  {
+    id: "loreweave",
+    name: "Loreweave",
+    summary:
+      "Story-binding scholars who knot history, magic, and song into a single living tapestry.",
+    ttrpgTip:
+      "Perfect for bards, sages, and mages. Lean into encyclopedic knowledge, old ballads, and magic that remembers your name.",
+    score: (s) => {
+      const mind = avg(s.arcane, s.renown, s.toneScore);
+      const roles = avg(s.bard, s.seer, s.noble);
+      const dialect = s.dialectHigh;
+      return clampToNonNegative(
+        mind * 0.4 + roles * 0.4 + dialect * 0.2
+      );
+    },
+  },
+  {
+    id: "ironbough",
+    name: "Ironbough",
+    summary:
+      "Stalwart line-holders who root themselves like trees and do not break when the storm comes.",
+    ttrpgTip:
+      "Excellent for front-line warriors, guardians, and stoic defenders. Emphasize endurance, oaths, and holding the line.",
+    score: (s) => {
+      const toughness = avg(s.earth, s.warrior, s.renown);
+      const dialect = avg(s.dialectMountain, s.dialectForest);
+      const wild = s.wildness;
+      return clampToNonNegative(
+        toughness * 0.45 + dialect * 0.25 + wild * 0.3
+      );
+    },
+  },
+  {
+    id: "starfall-sentinels",
+    name: "Starfall Sentinels",
+    summary:
+      "Elite guardians who stand where the sky has touched the earth, sworn to meteoric omens and fallen lights.",
+    ttrpgTip:
+      "Great for high-fantasy knights, champions, and legendary heroes. Lean into destiny, strange omens, and cosmic battles.",
+    score: (s) => {
+      const glory = avg(s.renown, s.toneBright, s.toneScore);
+      const roles = avg(s.warrior, s.noble);
+      const dialect = avg(s.dialectHigh, s.dialectMountain);
+      return clampToNonNegative(
+        glory * 0.45 + roles * 0.35 + dialect * 0.2
+      );
+    },
+  },
+  {
+    id: "veilwalkers",
+    name: "Veilwalkers",
+    summary:
+      "Those who slip between veils of dream, shadow, and half-remembered places where reality thins.",
+    ttrpgTip:
+      "Ideal for warlocks, shadow-mages, and liminal tricksters. Play with dreams, the unseen, and bargains with strange powers.",
+    score: (s) => {
+      const occult = avg(s.dark, s.arcane, s.toneShadow);
+      const roles = avg(s.shadow, s.seer, s.wanderer);
+      const dialect = s.dialectShadow;
+      return clampToNonNegative(
+        occult * 0.45 + roles * 0.35 + dialect * 0.2
+      );
+    },
+  },
+];
+
+function assignEnclave(stats: NameStats): Enclave | null {
+  let best: Enclave | null = null;
+  let bestScore = 0;
+
+  for (const enclave of ENCLAVES) {
+    const score = enclave.score(stats);
+    if (score > bestScore) {
+      bestScore = score;
+      best = enclave;
+    }
+  }
+
+  return bestScore > 0 ? best : null;
+}
 
 //=========================================//
 //------------Premium-Only Function Helpers--//
@@ -5137,8 +5496,11 @@ function generateNames() {
       );
     }
 
-    // NEW: derive stats from the final name + profile
+    // Derive stats from the final name + profile
     const stats = deriveStatsFromProfile(profile, fullName);
+
+    // NEW: assign an enclave based on the stats
+    const enclave = assignEnclave(stats);
 
     output.push({
       name: fullName,
@@ -5146,7 +5508,8 @@ function generateNames() {
         isPremium && includeLore
           ? makeLore(fullName, archetypeA, archetypeB)
           : undefined,
-      stats, // ⬅️ attach stat block here
+      stats,     // attach stat block here
+      enclave,  // ⬅️ NEW: attach enclave here
     });
   }
 
@@ -5276,97 +5639,96 @@ return (
           </p>
         </div>
 
-          {/* Premium-only extra flavor controls */}
-          {isPremium && (
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1 text-sm font-medium">
-                  Epithets / nicknames
-                </label>
-                <select
-                  value={epithetMode}
-                  onChange={(e) =>
-                    setEpithetMode(e.target.value as EpithetMode)
-                  }
-                  className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  <option value="either">Either (random blend)</option>
-                  <option value="none">None</option>
-                  <option value="epithet">
-                    Epic epithet (e.g. the Emberborn)
-                  </option>
-                  <option value="nickname">
-                    Nickname (e.g. &quot;Ash&quot;)
-                  </option>
-                </select>
-                <p className="mt-1 text-xs text-gray-400">
-                  Epithets feel legendary; nicknames feel more casual and
-                  grounded.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-4 md:mt-6">
-                <div className="flex items-center gap-2">
-                  <input
-                    id="includeLore"
-                    type="checkbox"
-                    checked={includeLore}
-                    onChange={(e) => setIncludeLore(e.target.checked)}
-                    className="w-4 h-4"
-                  />
-                  <label htmlFor="includeLore" className="text-sm">
-                    Include bullet-point lore hooks for each name
-                  </label>
-                </div>
-
-                {/* NEW: Premium-only debug stats toggle */}
-                <div className="flex items-center gap-2">
-                  <input
-                    id="showDebugStats"
-                    type="checkbox"
-                    checked={showDebugStats}
-                    onChange={(e) => setShowDebugStats(e.target.checked)}
-                    className="w-4 h-4"
-                  />
-                  <label
-                    htmlFor="showDebugStats"
-                    className="text-xs md:text-sm text-gray-300"
-                  >
-                    Show debug stats block for each result
-                  </label>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="grid md:grid-cols-2 gap-4 items-end">
+        {/* Premium-only extra flavor controls */}
+        {isPremium && (
+          <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label className="block mb-1 text-sm font-medium">
-                How many names?
+                Epithets / nicknames
               </label>
-              <input
-                type="number"
-                value={count}
-                min={1}
-                max={effectiveMax}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  const parsed = parseInt(raw, 10);
-
-                  // If the field is empty or invalid, default to 1
-                  const next = Number.isNaN(parsed) ? 1 : parsed;
-                  setCount(next);
-                }}
-                className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
-              />
-              <p className="text-xs text-gray-400 mt-1">
-                {isPremium
-                  ? `Premium: up to ${effectiveMax} names at once.`
-                  : "Free: capped at 5 names per batch."}
+              <select
+                value={epithetMode}
+                onChange={(e) =>
+                  setEpithetMode(e.target.value as EpithetMode)
+                }
+                className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="either">Either (random blend)</option>
+                <option value="none">None</option>
+                <option value="epithet">
+                  Epic epithet (e.g. the Emberborn)
+                </option>
+                <option value="nickname">
+                  Nickname (e.g. &quot;Ash&quot;)
+                </option>
+              </select>
+              <p className="mt-1 text-xs text-gray-400">
+                Epithets feel legendary; nicknames feel more casual and
+                grounded.
               </p>
             </div>
-          </div>
 
+            <div className="flex flex-col gap-2 mt-4 md:mt-6">
+              <div className="flex items-center gap-2">
+                <input
+                  id="includeLore"
+                  type="checkbox"
+                  checked={includeLore}
+                  onChange={(e) => setIncludeLore(e.target.checked)}
+                  className="w-4 h-4"
+                />
+                <label htmlFor="includeLore" className="text-sm">
+                  Include bullet-point lore hooks for each name
+                </label>
+              </div>
+
+              {/* Premium-only debug stats toggle */}
+              <div className="flex items-center gap-2">
+                <input
+                  id="showDebugStats"
+                  type="checkbox"
+                  checked={showDebugStats}
+                  onChange={(e) => setShowDebugStats(e.target.checked)}
+                  className="w-4 h-4"
+                />
+                <label
+                  htmlFor="showDebugStats"
+                  className="text-xs md:text-sm text-gray-300"
+                >
+                  Show debug stats block for each result
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="grid md:grid-cols-2 gap-4 items-end">
+          <div>
+            <label className="block mb-1 text-sm font-medium">
+              How many names?
+            </label>
+            <input
+              type="number"
+              value={count}
+              min={1}
+              max={effectiveMax}
+              onChange={(e) => {
+                const raw = e.target.value;
+                const parsed = parseInt(raw, 10);
+
+                // If the field is empty or invalid, default to 1
+                const next = Number.isNaN(parsed) ? 1 : parsed;
+                setCount(next);
+              }}
+              className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              {isPremium
+                ? `Premium: up to ${effectiveMax} names at once.`
+                : "Free: capped at 5 names per batch."}
+            </p>
+          </div>
+        </div>
 
         <button
           onClick={generateNames}
@@ -5376,67 +5738,103 @@ return (
         </button>
       </section>
 
-        {/* Results */}
-        {results.length > 0 && (
-          <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-3">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-              <h2 className="text-xl font-bold">Results</h2>
+     {/* Results */}
+{results.length > 0 && (
+  <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-3">
+    {/* Header Row */}
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      {/* Left side: Results title + global enclave tooltip */}
+      <div className="flex items-center gap-2">
+        <h2 className="text-xl font-bold">Results</h2>
 
-              {/* Premium-only export + copy buttons + stats toggle */}
-              {isPremium && (
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    onClick={() => copyResultsToClipboard(results)}
-                    className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
-                  >
-                    Copy all
-                  </button>
-                  <button
-                    onClick={() => exportResultsAsText(results)}
-                    className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
-                  >
-                    Export as .txt
-                  </button>
-                  <button
-                    onClick={() => setShowDebugStats((prev) => !prev)}
-                    className="ml-2 bg-gray-700 border border-gray-600 px-3 py-1 rounded text-xs hover:bg-gray-600"
-                  >
-                    {showDebugStats ? "Hide stats" : "Show stats"}
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <ul className="space-y-3">
-              {results.map((entry, i) => (
-                <li
-                  key={i}
-                  className="bg-gray-900 border border-gray-700 p-3 rounded-lg"
-                >
-                  <div className="font-semibold text-lg">{entry.name}</div>
-
-                  {entry.lore && (
-                    <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
-                      {entry.lore}
-                    </p>
-                  )}
-
-                  {/* 🔧 Premium-only debug statblock */}
-                  {isPremium && showDebugStats && entry.stats && (
-                    <pre className="mt-3 p-3 rounded bg-gray-800 border border-gray-700 text-xs text-gray-300 overflow-x-auto">
-                      {JSON.stringify(entry.stats, null, 2)}
-                    </pre>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        {/* 🌟 Global Enclave Explanation Tooltip */}
+        <span
+          className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-gray-500 text-[10px] cursor-help text-gray-200"
+          title={
+            "Enclaves are elven orders, clans, or factions assigned to each name based on its hidden stat profile. " +
+            "They provide roleplaying guidance—use them to inspire class, background, personality, or origin. " +
+            "Think of them as a 'best fit' cultural home for the character."
+          }
+        >
+          i
+        </span>
       </div>
-    </main>
-  );
-}
 
+      {/* Premium-only export + copy buttons + stats toggle */}
+      {isPremium && (
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => copyResultsToClipboard(results)}
+            className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
+          >
+            Copy all
+          </button>
+          <button
+            onClick={() => exportResultsAsText(results)}
+            className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
+          >
+            Export as .txt
+          </button>
+          <button
+            onClick={() => setShowDebugStats((prev) => !prev)}
+            className="ml-2 bg-gray-700 border border-gray-600 px-3 py-1 rounded text-xs hover:bg-gray-600"
+          >
+            {showDebugStats ? "Hide stats" : "Show stats"}
+          </button>
+        </div>
+      )}
+    </div>
+
+    {/* Results List */}
+    <ul className="space-y-3">
+      {results.map((entry, i) => (
+        <li
+          key={i}
+          className="bg-gray-900 border border-gray-700 p-3 rounded-lg"
+        >
+          {/* Name */}
+          <div className="font-semibold text-lg">{entry.name}</div>
+
+          {/* Enclave line directly under the name */}
+          <div className="mt-1 text-sm flex items-center gap-2">
+            <span className="text-gray-300 font-semibold">Enclave:</span>
+            <span className="text-gray-100">
+              {entry.enclave ? entry.enclave.name : "No clear enclave match"}
+            </span>
+
+            {/* Per-enclave tooltip, only if we have one */}
+            {entry.enclave && (
+              <span
+                className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-gray-500 text-[10px] cursor-help"
+                title={`${entry.enclave.name}\n${entry.enclave.summary}\nTTRPG Hook: ${entry.enclave.ttrpgTip}`}
+              >
+                i
+              </span>
+            )}
+          </div>
+
+          {/* Lore, underneath Enclave */}
+          {entry.lore && (
+            <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
+              {entry.lore}
+            </p>
+          )}
+
+          {/* 🔧 Premium-only debug statblock */}
+          {isPremium && showDebugStats && entry.stats && (
+            <pre className="mt-3 p-3 rounded bg-gray-800 border border-gray-700 text-xs text-gray-300 overflow-x-auto">
+              {JSON.stringify(entry.stats, null, 2)}
+            </pre>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+</div>
+</main>
+);
+}
 //============================================//
 //-------------------END OF CODE--------------//
 //============================================//
