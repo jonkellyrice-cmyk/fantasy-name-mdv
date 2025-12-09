@@ -1,11 +1,41 @@
 "use client";
 
 import { useState } from "react";
+// ===========================
+// STATS: internal stat block
+// ===========================
+type StatBlock = {
+  // Elemental alignment (0–100)
+  fire: number;
+  water: number;
+  earth: number;
+  air: number;
+  dark: number;
+
+  // Role influence (0–100)
+  warrior: number;
+  hunter: number;
+  seer: number;
+  healer: number;
+  bard: number;
+  shadow: number;
+  noble: number;
+  smith: number;
+  wanderer: number;
+
+  // High-level thematic axes (0–100)
+  luminosity: number; // bright vs shadowed
+  wildness: number;   // wild vs courtly/civilized
+  arcane: number;     // mystical vs purely physical
+  renown: number;     // how “legend-tier” they feel
+};
 
 type GeneratedEntry = {
   name: string;
   lore?: string;
+  stats?: StatBlock; // <-- new optional field
 };
+
 type Gender = "neutral" | "male" | "female";
 /* ===========================
    ELVISH LANGUAGE ENGINE
@@ -4690,6 +4720,255 @@ function applyEpithetOrNickname(
   return best;
 }
 
+// ===========================
+// STATS: derive from profile
+// ===========================
+function clampStat(n: number): number {
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+function deriveStatsFromProfile(
+  profile: LoreProfile,
+  fullName: string
+): StatBlock {
+  const { role, tone, element, dialect } = profile;
+
+  // Start everything at 0; we'll add contributions and clamp at the end.
+  const stats: StatBlock = {
+    fire: 0,
+    water: 0,
+    earth: 0,
+    air: 0,
+    dark: 0,
+
+    warrior: 0,
+    hunter: 0,
+    seer: 0,
+    healer: 0,
+    bard: 0,
+    shadow: 0,
+    noble: 0,
+    smith: 0,
+    wanderer: 0,
+
+    luminosity: 0,
+    wildness: 0,
+    arcane: 0,
+    renown: 0,
+  };
+
+  // -------------------------
+  // 1) Element core
+  // -------------------------
+  switch (element) {
+    case ELEMENTS.FIRE:
+      stats.fire += 75;
+      stats.air += 10;
+      stats.earth += 5;
+      break;
+    case ELEMENTS.WATER:
+      stats.water += 75;
+      stats.air += 10;
+      stats.dark += 5;
+      break;
+    case ELEMENTS.EARTH:
+      stats.earth += 75;
+      stats.fire += 5;
+      stats.water += 5;
+      break;
+    case ELEMENTS.AIR:
+      stats.air += 75;
+      stats.fire += 5;
+      stats.water += 5;
+      break;
+    case ELEMENTS.DARK:
+      stats.dark += 80;
+      stats.air += 5;
+      stats.water += 5;
+      break;
+    default:
+      // No strong element — make it more balanced
+      stats.fire += 20;
+      stats.water += 20;
+      stats.earth += 20;
+      stats.air += 20;
+      stats.dark += 10;
+      break;
+  }
+
+  // -------------------------
+  // 2) Role-based core & axes
+  // -------------------------
+  switch (role) {
+    case "warrior":
+      stats.warrior += 80;
+      stats.luminosity += 40;
+      stats.wildness += 40;
+      stats.arcane += 10;
+      stats.renown += 50;
+      break;
+
+    case "hunter":
+      stats.hunter += 80;
+      stats.earth += 10;
+      stats.air += 10;
+      stats.wildness += 60;
+      stats.renown += 30;
+      break;
+
+    case "seer":
+      stats.seer += 80;
+      stats.arcane += 70;
+      stats.luminosity += 20;
+      stats.renown += 40;
+      break;
+
+    case "healer":
+      stats.healer += 80;
+      stats.luminosity += 60;
+      stats.arcane += 40;
+      stats.renown += 30;
+      break;
+
+    case "bard":
+      stats.bard += 80;
+      stats.luminosity += 50;
+      stats.arcane += 40;
+      stats.renown += 50;
+      break;
+
+    case "shadow":
+      stats.shadow += 80;
+      stats.dark += 40;
+      stats.luminosity -= 30;
+      stats.wildness += 30;
+      stats.arcane += 20;
+      stats.renown += 20;
+      break;
+
+    case "noble":
+      stats.noble += 80;
+      stats.luminosity += 40;
+      stats.wildness -= 30;
+      stats.arcane += 20;
+      stats.renown += 70;
+      break;
+
+    case "smith":
+      stats.smith += 80;
+      stats.earth += 20;
+      stats.fire += 20;
+      stats.wildness -= 10;
+      stats.renown += 30;
+      break;
+
+    case "wanderer":
+      stats.wanderer += 80;
+      stats.wildness += 70;
+      stats.renown += 30;
+      break;
+
+    default:
+      // Unknown role: nudge toward balanced wanderer-ish vibes
+      stats.wanderer += 30;
+      stats.wildness += 30;
+      break;
+  }
+
+  // -------------------------
+  // 3) Tone-based adjustments
+  // (bright / balanced / shadowed)
+  // -------------------------
+  if (tone === "bright") {
+    stats.luminosity += 30;
+    stats.dark -= 10;
+    stats.arcane += 10;
+  } else if (tone === "balanced") {
+    stats.luminosity += 10;
+    stats.wildness += 10;
+  } else if (tone === "shadowed") {
+    stats.luminosity -= 30;
+    stats.dark += 30;
+    stats.wildness += 15;
+    stats.arcane += 10;
+  }
+
+  // -------------------------
+  // 4) Dialect-based adjustments
+  // -------------------------
+  switch (dialect) {
+    case DIALECTS.HIGH:
+      stats.luminosity += 20;
+      stats.arcane += 20;
+      stats.renown += 20;
+      stats.wildness -= 10;
+      break;
+
+    case DIALECTS.FOREST:
+      stats.earth += 15;
+      stats.wildness += 25;
+      stats.luminosity += 10;
+      break;
+
+    case DIALECTS.SEA:
+      stats.water += 20;
+      stats.wildness += 20;
+      stats.luminosity += 10;
+      break;
+
+    case DIALECTS.MOUNTAIN:
+      stats.earth += 20;
+      stats.air += 10;
+      stats.wildness += 5;
+      stats.renown += 10;
+      break;
+
+    case DIALECTS.SHADOW:
+      stats.dark += 25;
+      stats.luminosity -= 15;
+      stats.arcane += 10;
+      break;
+  }
+
+  // -------------------------
+  // 5) Name-shape: epithet / nickname presence
+  // -------------------------
+  const hasEpithet = / the [A-Z]/.test(fullName);
+  const hasNickname = /".+?"/.test(fullName);
+
+  if (hasEpithet) {
+    stats.renown += 15; // epithets feel legendary
+  }
+  if (hasNickname) {
+    stats.wildness += 10; // nicknames feel grounded / social
+  }
+
+  // -------------------------
+  // 6) Clamp everything into 0..100
+  // -------------------------
+  stats.fire = clampStat(stats.fire);
+  stats.water = clampStat(stats.water);
+  stats.earth = clampStat(stats.earth);
+  stats.air = clampStat(stats.air);
+  stats.dark = clampStat(stats.dark);
+
+  stats.warrior = clampStat(stats.warrior);
+  stats.hunter = clampStat(stats.hunter);
+  stats.seer = clampStat(stats.seer);
+  stats.healer = clampStat(stats.healer);
+  stats.bard = clampStat(stats.bard);
+  stats.shadow = clampStat(stats.shadow);
+  stats.noble = clampStat(stats.noble);
+  stats.smith = clampStat(stats.smith);
+  stats.wanderer = clampStat(stats.wanderer);
+
+  stats.luminosity = clampStat(stats.luminosity);
+  stats.wildness = clampStat(stats.wildness);
+  stats.arcane = clampStat(stats.arcane);
+  stats.renown = clampStat(stats.renown);
+
+  return stats;
+}
 
 
 //=========================================//
@@ -4791,6 +5070,9 @@ export default function Home() {
 
   const [results, setResults] = useState<GeneratedEntry[]>([]);
 
+  // NEW: debug flag to show/hide stats block
+  const [showDebugStats, setShowDebugStats] = useState(true);
+
   const effectiveMax = isPremium ? 50 : 5;
 
 //=================================//
@@ -4833,7 +5115,7 @@ function generateNames() {
 
     let fullName = `${first} ${last}`;
 
-    // Lore profile (used for both lore & epithet/nickname)
+    // Lore profile (used for lore, epithets/nicknames, and stats)
     const profile = deriveLoreProfile(archetypeA, archetypeB);
 
     // Apply epithet / nickname only in Premium mode
@@ -4846,141 +5128,144 @@ function generateNames() {
       );
     }
 
+    // NEW: derive stats from the final name + profile
+    const stats = deriveStatsFromProfile(profile, fullName);
+
     output.push({
       name: fullName,
       lore:
         isPremium && includeLore
           ? makeLore(fullName, archetypeA, archetypeB)
           : undefined,
+      stats, // ⬅️ attach stat block here
     });
   }
 
   setResults(output);
 }
 
+return (
+  <main className="min-h-screen p-6 md:p-10 bg-gray-900 text-white flex flex-col items-center">
+    <div className="w-full max-w-3xl space-y-6">
+      <header className="space-y-2">
+        <h1 className="text-3xl md:text-4xl font-bold">
+          Elven Name Generator
+        </h1>
+        <p className="text-gray-300 text-sm md:text-base">
+          Mix two archetypes to generate evocative elven names with Tolkien-inspired
+          flair. Free mode gives you quick lists; Premium mode unlocks bulk names,
+          rich lore hooks, and optional epithets or nicknames.
+        </p>
+      </header>
 
-  return (
-    <main className="min-h-screen p-6 md:p-10 bg-gray-900 text-white flex flex-col items-center">
-      <div className="w-full max-w-3xl space-y-6">
-        <header className="space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold">
-            Elven Name Generator
-          </h1>
-          <p className="text-gray-300 text-sm md:text-base">
-            Mix two archetypes to generate evocative elven names with Tolkien-inspired
-            flair. Free mode gives you quick lists; Premium mode unlocks bulk names,
-            rich lore hooks, and optional epithets or nicknames.
+      {/* Mode Toggle */}
+      <section className="bg-gray-800/80 border border-gray-700 rounded-xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <h2 className="font-semibold text-lg">Mode</h2>
+          <p className="text-sm text-gray-300">
+            Free: up to 5 names, no lore. Premium: up to 50 names, lore, and extra flavor.
           </p>
-        </header>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsPremium(false)}
+            className={
+              "px-3 py-2 rounded-l-lg border border-gray-600 text-sm font-medium " +
+              (!isPremium
+                ? "bg-purple-600 border-purple-400"
+                : "bg-gray-900")
+            }
+          >
+            Free
+          </button>
+          <button
+            onClick={() => setIsPremium(true)}
+            className={
+              "px-3 py-2 rounded-r-lg border border-gray-600 text-sm font-medium " +
+              (isPremium
+                ? "bg-purple-600 border-purple-400"
+                : "bg-gray-900")
+            }
+          >
+            Premium
+          </button>
+        </div>
+      </section>
 
-        {/* Mode Toggle */}
-        <section className="bg-gray-800/80 border border-gray-700 rounded-xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
-            <h2 className="font-semibold text-lg">Mode</h2>
-            <p className="text-sm text-gray-300">
-              Free: up to 5 names, no lore. Premium: up to 50 names, lore, and extra flavor.
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsPremium(false)}
-              className={
-                "px-3 py-2 rounded-l-lg border border-gray-600 text-sm font-medium " +
-                (!isPremium
-                  ? "bg-purple-600 border-purple-400"
-                  : "bg-gray-900")
-              }
-            >
-              Free
-            </button>
-            <button
-              onClick={() => setIsPremium(true)}
-              className={
-                "px-3 py-2 rounded-r-lg border border-gray-600 text-sm font-medium " +
-                (isPremium
-                  ? "bg-purple-600 border-purple-400"
-                  : "bg-gray-900")
-              }
-            >
-              Premium
-            </button>
-          </div>
-        </section>
-
-        {/* Input Card */}
-        <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-1 text-sm font-medium">
-                Archetype A
-              </label>
-              <input
-                type="text"
-                value={archetypeA}
-                onChange={(e) => setArchetypeA(e.target.value)}
-                className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="e.g. Elf, Knight, Druid"
-              />
-              <p className="mt-1 text-xs text-gray-400">
-                If left empty, this archetype will be chosen at random.
-              </p>
-            </div>
-
-            <div>
-              <label className="block mb-1 text-sm font-medium">
-                Archetype B
-              </label>
-              <input
-                type="text"
-                value={archetypeB}
-                onChange={(e) => setArchetypeB(e.target.value)}
-                className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="e.g. Shadow, Storm, Flame"
-              />
-              <p className="mt-1 text-xs text-gray-400">
-                If left empty, this archetype will be chosen at random.
-              </p>
-            </div>
-          </div>
-
-          {/* Name length dropdown */}
+      {/* Input Card */}
+      <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className="block mb-1 text-sm font-medium">
-              Name length
+              Archetype A
             </label>
-            <select
-              value={nameLength}
-              onChange={(e) => setNameLength(e.target.value as NameLength)}
+            <input
+              type="text"
+              value={archetypeA}
+              onChange={(e) => setArchetypeA(e.target.value)}
               className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="short">Short</option>
-              <option value="medium">Medium</option>
-              <option value="long">Long</option>
-            </select>
+              placeholder="e.g. Elf, Knight, Druid"
+            />
             <p className="mt-1 text-xs text-gray-400">
-              Short: punchy; Medium: typical; Long: more lyrical names.
+              If left empty, this archetype will be chosen at random.
             </p>
           </div>
 
-          {/* Gender dropdown */}
           <div>
-            <label className="block mb-1 mt-2 text-sm font-medium">
-              Gender style (optional)
+            <label className="block mb-1 text-sm font-medium">
+              Archetype B
             </label>
-            <select
-              value={gender}
-              onChange={(e) => setGender(e.target.value as Gender)}
+            <input
+              type="text"
+              value={archetypeB}
+              onChange={(e) => setArchetypeB(e.target.value)}
               className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="neutral">Neutral / unmarked</option>
-              <option value="male">Masculine-leaning</option>
-              <option value="female">Feminine-leaning</option>
-            </select>
-            <p className="text-xs text-gray-400 mt-1">
-              This nudges the ending of the name toward masculine
-              (-ion, -or) or feminine (-ia, -iel, -wen) patterns.
+              placeholder="e.g. Shadow, Storm, Flame"
+            />
+            <p className="mt-1 text-xs text-gray-400">
+              If left empty, this archetype will be chosen at random.
             </p>
           </div>
+        </div>
+
+        {/* Name length dropdown */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Name length
+          </label>
+          <select
+            value={nameLength}
+            onChange={(e) => setNameLength(e.target.value as NameLength)}
+            className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          >
+            <option value="short">Short</option>
+            <option value="medium">Medium</option>
+            <option value="long">Long</option>
+          </select>
+          <p className="mt-1 text-xs text-gray-400">
+            Short: punchy; Medium: typical; Long: more lyrical names.
+          </p>
+        </div>
+
+        {/* Gender dropdown */}
+        <div>
+          <label className="block mb-1 mt-2 text-sm font-medium">
+            Gender style (optional)
+          </label>
+          <select
+            value={gender}
+            onChange={(e) => setGender(e.target.value as Gender)}
+            className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          >
+            <option value="neutral">Neutral / unmarked</option>
+            <option value="male">Masculine-leaning</option>
+            <option value="female">Feminine-leaning</option>
+          </select>
+          <p className="text-xs text-gray-400 mt-1">
+            This nudges the ending of the name toward masculine
+            (-ion, -or) or feminine (-ia, -iel, -wen) patterns.
+          </p>
+        </div>
 
           {/* Premium-only extra flavor controls */}
           {isPremium && (
@@ -4991,31 +5276,56 @@ function generateNames() {
                 </label>
                 <select
                   value={epithetMode}
-                  onChange={(e) => setEpithetMode(e.target.value as EpithetMode)}
+                  onChange={(e) =>
+                    setEpithetMode(e.target.value as EpithetMode)
+                  }
                   className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="either">Either (random blend)</option>
                   <option value="none">None</option>
-                  <option value="epithet">Epic epithet (e.g. the Emberborn)</option>
-                  <option value="nickname">Nickname (e.g. "Ash")</option>
-                  
+                  <option value="epithet">
+                    Epic epithet (e.g. the Emberborn)
+                  </option>
+                  <option value="nickname">
+                    Nickname (e.g. &quot;Ash&quot;)
+                  </option>
                 </select>
                 <p className="mt-1 text-xs text-gray-400">
-                  Epithets feel legendary; nicknames feel more casual and grounded.
+                  Epithets feel legendary; nicknames feel more casual and
+                  grounded.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 mt-6 md:mt-8">
-                <input
-                  id="includeLore"
-                  type="checkbox"
-                  checked={includeLore}
-                  onChange={(e) => setIncludeLore(e.target.checked)}
-                  className="w-4 h-4"
-                />
-                <label htmlFor="includeLore" className="text-sm">
-                  Include bullet-point lore hooks for each name
-                </label>
+              <div className="flex flex-col gap-2 mt-4 md:mt-6">
+                <div className="flex items-center gap-2">
+                  <input
+                    id="includeLore"
+                    type="checkbox"
+                    checked={includeLore}
+                    onChange={(e) => setIncludeLore(e.target.checked)}
+                    className="w-4 h-4"
+                  />
+                  <label htmlFor="includeLore" className="text-sm">
+                    Include bullet-point lore hooks for each name
+                  </label>
+                </div>
+
+                {/* NEW: Premium-only debug stats toggle */}
+                <div className="flex items-center gap-2">
+                  <input
+                    id="showDebugStats"
+                    type="checkbox"
+                    checked={showDebugStats}
+                    onChange={(e) => setShowDebugStats(e.target.checked)}
+                    className="w-4 h-4"
+                  />
+                  <label
+                    htmlFor="showDebugStats"
+                    className="text-xs md:text-sm text-gray-300"
+                  >
+                    Show debug stats block for each result
+                  </label>
+                </div>
               </div>
             </div>
           )}
@@ -5048,58 +5358,76 @@ function generateNames() {
             </div>
           </div>
 
-          <button
-            onClick={generateNames}
-            className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-lg font-semibold mt-2"
-          >
-            Generate
-          </button>
-        </section>
+
+        <button
+          onClick={generateNames}
+          className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-lg font-semibold mt-2"
+        >
+          Generate
+        </button>
+      </section>
 
         {/* Results */}
         {results.length > 0 && (
-  <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-3">
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-      <h2 className="text-xl font-bold">Results</h2>
+          <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-3">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <h2 className="text-xl font-bold">Results</h2>
 
-      {/* Premium-only export + copy buttons */}
-      {isPremium && (
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => copyResultsToClipboard(results)}
-            className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
-          >
-            Copy all
-          </button>
-          <button
-            onClick={() => exportResultsAsText(results)}
-            className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
-          >
-            Export as .txt
-          </button>
-        </div>
-      )}
-    </div>
+              {/* Premium-only export + copy buttons + stats toggle */}
+              {isPremium && (
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => copyResultsToClipboard(results)}
+                    className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
+                  >
+                    Copy all
+                  </button>
+                  <button
+                    onClick={() => exportResultsAsText(results)}
+                    className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
+                  >
+                    Export as .txt
+                  </button>
+                  <button
+                    onClick={() => setShowDebugStats((prev) => !prev)}
+                    className="ml-2 bg-gray-700 border border-gray-600 px-3 py-1 rounded text-xs hover:bg-gray-600"
+                  >
+                    {showDebugStats ? "Hide stats" : "Show stats"}
+                  </button>
+                </div>
+              )}
+            </div>
 
-    <ul className="space-y-3">
-      {results.map((entry, i) => (
-        <li
-          key={i}
-          className="bg-gray-900 border border-gray-700 p-3 rounded-lg"
-        >
-          <div className="font-semibold text-lg">{entry.name}</div>
-          {entry.lore && (
-            <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
-              {entry.lore}
-            </p>
-          )}
-        </li>
-      ))}
-    </ul>
-  </section>
-)}
+            <ul className="space-y-3">
+              {results.map((entry, i) => (
+                <li
+                  key={i}
+                  className="bg-gray-900 border border-gray-700 p-3 rounded-lg"
+                >
+                  <div className="font-semibold text-lg">{entry.name}</div>
 
+                  {entry.lore && (
+                    <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
+                      {entry.lore}
+                    </p>
+                  )}
+
+                  {/* 🔧 Premium-only debug statblock */}
+                  {isPremium && showDebugStats && entry.stats && (
+                    <pre className="mt-3 p-3 rounded bg-gray-800 border border-gray-700 text-xs text-gray-300 overflow-x-auto">
+                      {JSON.stringify(entry.stats, null, 2)}
+                    </pre>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </main>
   );
 }
+
+//============================================//
+//-------------------END OF CODE--------------//
+//============================================//
