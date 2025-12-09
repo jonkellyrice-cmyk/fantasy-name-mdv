@@ -53,7 +53,7 @@ type NameStats = {
 type StatBlock = NameStats;
 
 // ===========================
-// ENCLAVE TYPES (moved up here)
+// ENCLAVE TYPES (moved up here) and spirit-bond
 // ===========================
 
 type EnclaveId =
@@ -78,12 +78,41 @@ type Enclave = {
   score: (stats: NameStats) => number;
 };
 
+// 🔮 NEW: Spirit-Bond types
+type SpiritBondId =
+  | "fleet-step"
+  | "ember-blood"
+  | "moonshadow-sight"
+  | "verdant-mend"
+  | "starbound-will"
+  | "dreamecho"
+  | "stonegrace"
+  | "tidebound-gift"
+  | "veil-touched"
+  | "battle-trance"
+  | "silver-tongue"
+  | "ancestral-ward"
+  | "runesingers-touch"
+  | "heartweaver-sense"
+  | "wildheart-pact";
+
+
+type SpiritBond = {
+  id: SpiritBondId;
+  name: string;
+  summary: string;
+  ttrpgTip: string;
+  score: (stats: NameStats) => number;
+};
+
 type GeneratedEntry = {
   name: string;
   lore?: string;
   stats?: NameStats;
   enclave?: Enclave | null;
+  spiritBond?: SpiritBond | null; // ⬅️ NEW
 };
+
 
 /* ===========================
    ELVISH LANGUAGE ENGINE
@@ -5342,6 +5371,223 @@ function assignEnclave(stats: NameStats): Enclave | null {
 //=========================================//
 //------------Premium-Only Function Helpers--//
 //========================================//
+// ===========================
+// SPIRIT-BONDS (logic + registry)
+// ===========================
+
+const SPIRIT_BONDS: Readonly<SpiritBond[]> = [
+  {
+    id: "fleet-step",
+    name: "Fleet Step",
+    summary:
+      "Your stride is light and sure; you move as if the world were built with you in mind.",
+    ttrpgTip:
+      "During character creation, emphasize quickness and mobility. Choose options that let you act first, dart out of danger, or cover surprising distances when it matters.",
+    score: (s) => {
+      const agility = avg(s.air, s.wildness, s.wanderer);
+      const clarity = avg(s.toneBright, s.toneBalanced);
+      return clampToNonNegative(agility * 0.6 + clarity * 0.4);
+    },
+  },
+  {
+    id: "ember-blood",
+    name: "Ember-Blood",
+    summary:
+      "A smoldering spark lives in your veins, lending you stubborn resilience and flashes of battle fury.",
+    ttrpgTip:
+      "Build this character as someone who hits harder when pushed. Look for traits that reward bold strikes, fiery themes, and refusing to fall even when badly hurt.",
+    score: (s) => {
+      const heat = avg(s.fire, s.shadow, s.warrior);
+      const renown = s.renown;
+      return clampToNonNegative(heat * 0.6 + renown * 0.4);
+    },
+  },
+  {
+    id: "moonshadow-sight",
+    name: "Moonshadow Sight",
+    summary:
+      "You see more clearly in half-light and notice what hides between brightness and gloom.",
+    ttrpgTip:
+      "Lean into uncanny perception. Pick abilities and backgrounds that justify noticing hidden details, spotting ambushes, and seeing through subtle deceptions or illusions.",
+    score: (s) => {
+      const night = avg(s.dark, s.toneShadow, s.dialectShadow);
+      const keen = avg(s.seer, s.hunter);
+      return clampToNonNegative(night * 0.6 + keen * 0.4);
+    },
+  },
+  {
+    id: "verdant-mend",
+    name: "Verdant Mend",
+    summary:
+      "Life clings to you; plants lean your way and wounds knit a little faster in your care.",
+    ttrpgTip:
+      "Shape this character as a quiet healer or caretaker. Favor options that let you restore others, soothe pain, or call on living things for small but meaningful aid.",
+    score: (s) => {
+      const life = avg(s.earth, s.water, s.healer);
+      const tone = avg(s.toneBright, s.toneBalanced);
+      return clampToNonNegative(life * 0.7 + tone * 0.3);
+    },
+  },
+  {
+    id: "starbound-will",
+    name: "Starbound Will",
+    summary:
+      "Some distant light has taken notice of you; your resolve hardens when others falter.",
+    ttrpgTip:
+      "Portray a character who does not break under pressure. Choose traits that reinforce inner resolve, resisting fear, and staying true to a purpose when others waver.",
+    score: (s) => {
+      const resolve = avg(s.renown, s.toneScore, s.luminosity);
+      const roles = avg(s.noble, s.seer, s.warrior);
+      return clampToNonNegative(resolve * 0.6 + roles * 0.4);
+    },
+  },
+  {
+    id: "dreamecho",
+    name: "Dreamecho",
+    summary:
+      "Dreams cling to you; sometimes they whisper secrets that later prove true.",
+    ttrpgTip:
+      "During character creation, talk with your GM about prophetic dreams or symbolic visions. Let hunches, strange symbols, and déjà vu gently steer your choices in play.",
+    score: (s) => {
+      const occult = avg(s.arcane, s.toneShadow, s.toneScore);
+      const roles = avg(s.seer, s.bard, s.shadow);
+      return clampToNonNegative(occult * 0.65 + roles * 0.35);
+    },
+  },
+  {
+    id: "stonegrace",
+    name: "Stonegrace",
+    summary:
+      "You move with surprising ease in armor or rough terrain, like a dancer balanced on stone.",
+    ttrpgTip:
+      "Imagine someone at home on cliffs, ruins, or in heavy gear. Favor options that let you stay stable, sure-footed, and graceful where others would stumble or sink.",
+    score: (s) => {
+      const weight = avg(s.earth, s.warrior, s.smith);
+      const calm = avg(s.toneBalanced, s.dialectMountain);
+      return clampToNonNegative(weight * 0.65 + calm * 0.35);
+    },
+  },
+  {
+    id: "tidebound-gift",
+    name: "Tidebound Gift",
+    summary:
+      "Currents favor you; water wraps around you like an old friend.",
+    ttrpgTip:
+      "Build toward a life tied to rivers, coasts, or storms. Choose elements that explain comfort on ships, in rain, or in deep water, and let that shape your travel and story hooks.",
+    score: (s) => {
+      const tide = avg(s.water, s.dialectSea, s.wanderer);
+      const calm = s.toneBalanced;
+      return clampToNonNegative(tide * 0.7 + calm * 0.3);
+    },
+  },
+  {
+    id: "veil-touched",
+    name: "Veil-Touched",
+    summary:
+      "You are just slightly out of step with the world, slipping past notice more easily than most.",
+    ttrpgTip:
+      "Picture a character who is hard to pin down—quiet footsteps, forgettable face, or a knack for being elsewhere at the right moment. Prioritize subtlety, secrecy, and going unseen.",
+    score: (s) => {
+      const hidden = avg(s.shadow, s.dark, s.dialectShadow);
+      const roles = avg(s.shadow, s.wanderer);
+      return clampToNonNegative(hidden * 0.6 + roles * 0.4);
+    },
+  },
+  {
+    id: "battle-trance",
+    name: "Battle Trance",
+    summary:
+      "In danger, your mind sharpens and the world slows to meet you.",
+    ttrpgTip:
+      "Design this character to come alive in crises. Choose features that highlight sharp focus, fast reactions, and a calm, almost detached state once blades are drawn.",
+    score: (s) => {
+      const focus = avg(s.warrior, s.renown, s.toneScore);
+      const wild = s.wildness;
+      return clampToNonNegative(focus * 0.65 + wild * 0.35);
+    },
+  },
+  {
+    id: "silver-tongue",
+    name: "Silver Tongue",
+    summary:
+      "Your words land softly where they must, or cut deeper than steel when needed.",
+    ttrpgTip:
+      "Lean into conversations as your battlefield. Focus on choices that give you leverage in negotiations, ease in crowds, and the power to soothe or provoke with a few well-placed words.",
+    score: (s) => {
+      const charm = avg(s.bard, s.noble, s.renown);
+      const tone = avg(s.toneBright, s.toneBalanced);
+      return clampToNonNegative(charm * 0.7 + tone * 0.3);
+    },
+  },
+  {
+    id: "ancestral-ward",
+    name: "Ancestral Ward",
+    summary:
+      "You carry unseen guardians with you; when misfortune strikes, something subtly intervenes.",
+    ttrpgTip:
+      "Frame this character as quietly protected—by ancestors, spirits, or lingering blessings. Work with your GM so that the worst outcomes sometimes bend or soften around you.",
+    score: (s) => {
+      const lineage = avg(s.renown, s.noble, s.arcane);
+      const tone = avg(s.toneBright, s.toneBalanced);
+      return clampToNonNegative(lineage * 0.6 + tone * 0.4);
+    },
+  },
+  {
+    id: "runesingers-touch",
+    name: "Runesinger’s Touch",
+    summary:
+      "Old techniques live in your hands; tools, instruments, and symbols seem eager to cooperate when you work.",
+    ttrpgTip:
+      "Build this character as a maker, performer, or scholar. During creation, lean toward options that emphasize crafted gear, ritual tools, music, or ancient lore that you somehow ‘just know’ how to work with.",
+    score: (s) => {
+      const craft = avg(s.smith, s.bard, s.arcane);
+      const refinement = avg(s.dialectHigh, s.renown);
+      return clampToNonNegative(craft * 0.65 + refinement * 0.35);
+    },
+  },
+  {
+    id: "heartweaver-sense",
+    name: "Heartweaver’s Sense",
+    summary:
+      "You feel the moods around you like changes in the weather; tension, fear, and quiet joys rarely escape your notice.",
+    ttrpgTip:
+      "Shape this character as someone who reads the room instinctively. In character creation, favor choices that support emotional insight, comforting others, diffusing conflict, or knowing when someone is hiding what they feel.",
+    score: (s) => {
+      const empathy = avg(s.bard, s.healer, s.luminosity);
+      const attunement = avg(s.toneBalanced, s.toneScore);
+      return clampToNonNegative(empathy * 0.6 + attunement * 0.4);
+    },
+  },
+  {
+    id: "wildheart-pact",
+    name: "Wildheart Pact",
+    summary:
+      "Beasts and untamed places treat you as something almost-familiar; the wild does not see you as an intruder.",
+    ttrpgTip:
+      "Think of this character as bound to living lands and their creatures. During creation, look for themes of animal friendship, wilderness survival, and a sense that roads and cities are the strange places, not the forests and hills.",
+    score: (s) => {
+      const wildCore = avg(s.hunter, s.wanderer, s.wildness);
+      const nature = avg(s.earth, s.dialectForest);
+      return clampToNonNegative(wildCore * 0.65 + nature * 0.35);
+    },
+  },
+];
+
+
+function assignSpiritBond(stats: NameStats): SpiritBond | null {
+  let best: SpiritBond | null = null;
+  let bestScore = 0;
+
+  for (const bond of SPIRIT_BONDS) {
+    const score = bond.score(stats);
+    if (score > bestScore) {
+      bestScore = score;
+      best = bond;
+    }
+  }
+
+  return bestScore > 0 ? best : null;
+}
 
 //-----------------Download txt helpers----------//
 function buildTextExport(results: GeneratedEntry[]): string {
@@ -5499,8 +5745,11 @@ function generateNames() {
     // Derive stats from the final name + profile
     const stats = deriveStatsFromProfile(profile, fullName);
 
-    // NEW: assign an enclave based on the stats
+    // Assign an enclave based on the stats
     const enclave = assignEnclave(stats);
+
+    // 🔮 Premium-only Spirit-Bond assignment
+    const spiritBond = isPremium ? assignSpiritBond(stats) : null;
 
     output.push({
       name: fullName,
@@ -5508,9 +5757,11 @@ function generateNames() {
         isPremium && includeLore
           ? makeLore(fullName, archetypeA, archetypeB)
           : undefined,
-      stats,     // attach stat block here
-      enclave,  // ⬅️ NEW: attach enclave here
+      stats,
+      enclave,
+      spiritBond,
     });
+
   }
 
   setResults(output);
@@ -5738,26 +5989,50 @@ return (
         </button>
       </section>
 
-     {/* Results */}
+{/* Results */}
 {results.length > 0 && (
   <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-3">
+    
     {/* Header Row */}
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-      {/* Left side: Results title + global enclave tooltip */}
-      <div className="flex items-center gap-2">
-        <h2 className="text-xl font-bold">Results</h2>
 
-        {/* 🌟 Global Enclave Explanation Tooltip */}
-        <span
-          className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-gray-500 text-[10px] cursor-help text-gray-200"
-          title={
-            "Enclaves are elven orders, clans, or factions assigned to each name based on its hidden stat profile. " +
-            "They provide roleplaying guidance—use them to inspire class, background, personality, or origin. " +
-            "Think of them as a 'best fit' cultural home for the character."
-          }
-        >
-          i
-        </span>
+      {/* Labels + tooltips section */}
+      <div className="flex items-center gap-4">
+
+        {/* 🌲 Enclave label + tooltip */}
+        <div className="flex items-center gap-1">
+          <span className="text-gray-200 font-semibold text-sm">
+            Enclave
+          </span>
+          <span
+            className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-gray-500 text-[10px] cursor-help text-gray-200"
+            title={
+              "Enclaves are elven cultural lineages or orders, determined automatically from each name’s hidden stat profile. " +
+              "Use them to inspire character origins, training, worldview, temperament, or narrative identity."
+            }
+          >
+            i
+          </span>
+        </div>
+
+        {/* 🔮 Spirit-Bond label + tooltip (Premium only) */}
+        {isPremium && (
+          <div className="flex items-center gap-1">
+            <span className="text-purple-200 font-semibold text-sm">
+              Spirit-Bond
+            </span>
+            <span
+              className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-purple-500 text-[10px] cursor-help text-purple-200"
+              title={
+                "Spirit-Bonds are innate elven gifts—subtle supernatural talents or extraordinary aptitudes shaped by the same hidden stat profile. " +
+                "Use them in character creation to guide small but meaningful strengths: heightened senses, grace, resolve, intuition, or protective luck."
+              }
+            >
+              i
+            </span>
+          </div>
+        )}
+
       </div>
 
       {/* Premium-only export + copy buttons + stats toggle */}
@@ -5795,14 +6070,13 @@ return (
           {/* Name */}
           <div className="font-semibold text-lg">{entry.name}</div>
 
-          {/* Enclave line directly under the name */}
+          {/* Enclave line */}
           <div className="mt-1 text-sm flex items-center gap-2">
             <span className="text-gray-300 font-semibold">Enclave:</span>
             <span className="text-gray-100">
               {entry.enclave ? entry.enclave.name : "No clear enclave match"}
             </span>
 
-            {/* Per-enclave tooltip, only if we have one */}
             {entry.enclave && (
               <span
                 className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-gray-500 text-[10px] cursor-help"
@@ -5813,14 +6087,33 @@ return (
             )}
           </div>
 
-          {/* Lore, underneath Enclave */}
+          {/* 🔮 Spirit-Bond line (Premium only) */}
+          {isPremium && entry.spiritBond && (
+            <div className="mt-1 text-sm flex items-center gap-2">
+              <span className="text-gray-300 font-semibold">
+                Spirit-Bond:
+              </span>
+              <span className="text-gray-100">
+                {entry.spiritBond.name}
+              </span>
+
+              <span
+                className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-purple-500 text-[10px] cursor-help"
+                title={`${entry.spiritBond.name}\n${entry.spiritBond.summary}\nTTRPG Hook: ${entry.spiritBond.ttrpgTip}`}
+              >
+                i
+              </span>
+            </div>
+          )}
+
+          {/* Lore */}
           {entry.lore && (
             <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
               {entry.lore}
             </p>
           )}
 
-          {/* 🔧 Premium-only debug statblock */}
+          {/* Premium-only debug stats */}
           {isPremium && showDebugStats && entry.stats && (
             <pre className="mt-3 p-3 rounded bg-gray-800 border border-gray-700 text-xs text-gray-300 overflow-x-auto">
               {JSON.stringify(entry.stats, null, 2)}
@@ -5829,12 +6122,14 @@ return (
         </li>
       ))}
     </ul>
+
   </section>
 )}
 </div>
 </main>
 );
 }
+
 //============================================//
 //-------------------END OF CODE--------------//
 //============================================//
