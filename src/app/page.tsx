@@ -4970,6 +4970,15 @@ function deriveStatsFromProfile(
   return stats;
 }
 
+/* ===========================
+   ENCLAVES (Free Differentiating Feature)
+   Stat-derived social affinity
+   =========================== */
+
+// 👉 Define enclave types, data, and assignment function here
+// type EnclaveId = "moon-court" | "thorn-circle" | ...;
+// const ENCLAVES: EnclaveDefinition[] = [...];
+// function assignEnclave(stats: NameStats): EnclaveId { ... }
 
 //=========================================//
 //------------Premium-Only Function Helpers--//
