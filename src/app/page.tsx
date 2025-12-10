@@ -5732,15 +5732,15 @@ function generateNames() {
     // Lore profile (used for lore, epithets/nicknames, and stats)
     const profile = deriveLoreProfile(archetypeA, archetypeB);
 
-    // Apply epithet / nickname only in Premium mode
-    if (isPremium && epithetMode !== "none") {
-      fullName = applyEpithetOrNickname(
-        fullName,
-        profile,
-        epithetMode,
-        epithetUsage        // ⬅️ pass the batch usage map in
-      );
-    }
+// Apply epithet / nickname for everyone if enabled
+if (epithetMode !== "none") {
+  fullName = applyEpithetOrNickname(
+    fullName,
+    profile,
+    epithetMode,
+    epithetUsage
+  );
+}
 
     // Derive stats from the final name + profile
     const stats = deriveStatsFromProfile(profile, fullName);
@@ -5890,68 +5890,76 @@ return (
           </p>
         </div>
 
-        {/* Premium-only extra flavor controls */}
-        {isPremium && (
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-1 text-sm font-medium">
-                Epithets / nicknames
-              </label>
-              <select
-                value={epithetMode}
-                onChange={(e) =>
-                  setEpithetMode(e.target.value as EpithetMode)
-                }
-                className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="either">Either (random blend)</option>
-                <option value="none">None</option>
-                <option value="epithet">
-                  Epic epithet (e.g. the Emberborn)
-                </option>
-                <option value="nickname">
-                  Nickname (e.g. &quot;Ash&quot;)
-                </option>
-              </select>
-              <p className="mt-1 text-xs text-gray-400">
-                Epithets feel legendary; nicknames feel more casual and
-                grounded.
-              </p>
-            </div>
+{/* Premium flavor controls (with progressive disclosure) */}
+<div className="grid md:grid-cols-2 gap-4">
 
-            <div className="flex flex-col gap-2 mt-4 md:mt-6">
-              <div className="flex items-center gap-2">
-                <input
-                  id="includeLore"
-                  type="checkbox"
-                  checked={includeLore}
-                  onChange={(e) => setIncludeLore(e.target.checked)}
-                  className="w-4 h-4"
-                />
-                <label htmlFor="includeLore" className="text-sm">
-                  Include bullet-point lore hooks for each name
-                </label>
-              </div>
+  {/* Epithets / Nicknames (now free for everyone) */}
+  <div>
+    <label className="block mb-1 text-sm font-medium">
+      Epithets / nicknames
+    </label>
+    <select
+      value={epithetMode}
+      onChange={(e) =>
+        setEpithetMode(e.target.value as EpithetMode)
+      }
+      className="w-full p-2 rounded bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+    >
+      <option value="either">Either (random blend)</option>
+      <option value="none">None</option>
+      <option value="epithet">
+        Epic epithet (e.g. the Emberborn)
+      </option>
+      <option value="nickname">
+        Nickname (e.g. &quot;Ash&quot;)
+      </option>
+    </select>
+    <p className="mt-1 text-xs text-gray-400">
+      Epithets feel legendary; nicknames feel more casual and grounded.
+    </p>
+  </div>
 
-              {/* Premium-only debug stats toggle */}
-              <div className="flex items-center gap-2">
-                <input
-                  id="showDebugStats"
-                  type="checkbox"
-                  checked={showDebugStats}
-                  onChange={(e) => setShowDebugStats(e.target.checked)}
-                  className="w-4 h-4"
-                />
-                <label
-                  htmlFor="showDebugStats"
-                  className="text-xs md:text-sm text-gray-300"
-                >
-                  Show debug stats block for each result
-                </label>
-              </div>
-            </div>
-          </div>
-        )}
+  {/* Lore + Debug */}
+  <div className="flex flex-col gap-2 mt-4 md:mt-6">
+    {isPremium && (
+      <>
+        <div className="flex items-center gap-2">
+          <input
+            id="includeLore"
+            type="checkbox"
+            checked={includeLore}
+            onChange={(e) => setIncludeLore(e.target.checked)}
+            className="w-4 h-4"
+          />
+          <label htmlFor="includeLore" className="text-sm">
+            Include bullet-point lore hooks for each name
+          </label>
+        </div>
+
+        {/* Premium-only debug stats toggle */}
+        <div className="flex items-center gap-2">
+          <input
+            id="showDebugStats"
+            type="checkbox"
+            checked={showDebugStats}
+            onChange={(e) => setShowDebugStats(e.target.checked)}
+            className="w-4 h-4"
+          />
+          <label
+            htmlFor="showDebugStats"
+            className="text-xs md:text-sm text-gray-300"
+          >
+            Show debug stats block for each result
+          </label>
+        </div>
+      </>
+    )}
+  </div>
+
+</div>  
+
+
+
 
         <div className="grid md:grid-cols-2 gap-4 items-end">
           <div>
@@ -5992,13 +6000,10 @@ return (
 {/* Results */}
 {results.length > 0 && (
   <section className="bg-gray-800/80 border border-gray-700 p-6 rounded-xl space-y-3">
-    
     {/* Header Row */}
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-
       {/* Labels + tooltips section */}
       <div className="flex items-center gap-4">
-
         {/* 🌲 Enclave label + tooltip */}
         <div className="flex items-center gap-1">
           <span className="text-gray-200 font-semibold text-sm">
@@ -6015,49 +6020,112 @@ return (
           </span>
         </div>
 
-        {/* 🔮 Spirit-Bond label + tooltip (Premium only) */}
-        {isPremium && (
+{/* 🔮 Spirit-Bond label + tooltip (header) */}
+<div className="flex items-center gap-1">
+  <span className="text-purple-200 font-semibold text-sm">
+    Spirit-Bond
+  </span>
+
+  {isPremium ? (
+    // Premium: info icon
+    <span
+      className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-purple-500 text-[10px] cursor-help text-purple-200"
+      title={
+        "Spirit-Bonds are innate elven gifts—subtle supernatural talents or extraordinary aptitudes shaped by the same hidden stat profile. " +
+        "Use them in character creation to guide small but meaningful strengths: heightened senses, grace, resolve, intuition, or protective luck."
+      }
+    >
+      i
+    </span>
+  ) : (
+    // Free: lock icon + premium description
+    <span
+      className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-purple-500 text-[10px] cursor-help text-purple-200"
+      title={
+        "Premium Feature: Spirit-Bonds are innate elven gifts tied to each name’s hidden stats. " +
+        "They give you subtle supernatural talents or extraordinary aptitudes you can plug directly into your character build."
+      }
+    >
+      🔒
+    </span>
+  )}
+</div>
+
+
+        {/* 📝 Lore label + tooltip (Free users only) */}
+        {!isPremium && (
           <div className="flex items-center gap-1">
-            <span className="text-purple-200 font-semibold text-sm">
-              Spirit-Bond
+            <span className="text-green-200 font-semibold text-sm">
+              Lore
             </span>
             <span
-              className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-purple-500 text-[10px] cursor-help text-purple-200"
+              className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-green-500 text-[10px] cursor-help text-green-200"
               title={
-                "Spirit-Bonds are innate elven gifts—subtle supernatural talents or extraordinary aptitudes shaped by the same hidden stat profile. " +
-                "Use them in character creation to guide small but meaningful strengths: heightened senses, grace, resolve, intuition, or protective luck."
+                "Premium Feature: Each name gains custom lore hooks: short, system-neutral prompts you can plug straight into your character’s backstory, personality, and past events."
               }
             >
-              i
+              🔒
             </span>
           </div>
         )}
-
       </div>
 
-      {/* Premium-only export + copy buttons + stats toggle */}
-      {isPremium && (
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => copyResultsToClipboard(results)}
-            className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
-          >
-            Copy all
-          </button>
-          <button
-            onClick={() => exportResultsAsText(results)}
-            className="bg-gray-900 border border-purple-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 hover:border-purple-300 transition"
-          >
-            Export as .txt
-          </button>
+      {/* Export / copy buttons + stats toggle (with progressive disclosure) */}
+      <div className="flex flex-wrap items-center gap-2">
+        {/* Copy All */}
+        <button
+          onClick={() => {
+            if (!isPremium) return;
+            copyResultsToClipboard(results);
+          }}
+          disabled={!isPremium}
+          className={
+            "bg-gray-900 border px-4 py-2 rounded-lg text-sm font-medium transition " +
+            (isPremium
+              ? "border-purple-500 hover:bg-purple-600 hover:border-purple-300"
+              : "border-gray-700 opacity-50 cursor-not-allowed")
+          }
+          title={
+            isPremium
+              ? "Copy all generated names to your clipboard."
+              : "Premium Feature: Unlock bulk copy for your generated names."
+          }
+        >
+          {isPremium ? "Copy all" : "Copy all 🔒"}
+        </button>
+
+        {/* Export as .txt */}
+        <button
+          onClick={() => {
+            if (!isPremium) return;
+            exportResultsAsText(results);
+          }}
+          disabled={!isPremium}
+          className={
+            "bg-gray-900 border px-4 py-2 rounded-lg text-sm font-medium transition " +
+            (isPremium
+              ? "border-purple-500 hover:bg-purple-600 hover:border-purple-300"
+              : "border-gray-700 opacity-50 cursor-not-allowed")
+          }
+          title={
+            isPremium
+              ? "Export your names to a .txt file."
+              : "Premium Feature: Export your generated names to a text file."
+          }
+        >
+          {isPremium ? "Export as .txt" : "Export as .txt 🔒"}
+        </button>
+
+        {/* Debug stats toggle remains Premium-only */}
+        {isPremium && (
           <button
             onClick={() => setShowDebugStats((prev) => !prev)}
             className="ml-2 bg-gray-700 border border-gray-600 px-3 py-1 rounded text-xs hover:bg-gray-600"
           >
             {showDebugStats ? "Hide stats" : "Show stats"}
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
 
     {/* Results List */}
@@ -6071,49 +6139,58 @@ return (
           <div className="font-semibold text-lg">{entry.name}</div>
 
           {/* Enclave line */}
-          <div className="mt-1 text-sm flex items-center gap-2">
-            <span className="text-gray-300 font-semibold">Enclave:</span>
+          <div className="mt-1 text-sm">
+            <span className="text-gray-300 font-semibold">Enclave: </span>
             <span className="text-gray-100">
               {entry.enclave ? entry.enclave.name : "No clear enclave match"}
             </span>
-
-            {entry.enclave && (
-              <span
-                className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-gray-500 text-[10px] cursor-help"
-                title={`${entry.enclave.name}\n${entry.enclave.summary}\nTTRPG Hook: ${entry.enclave.ttrpgTip}`}
-              >
-                i
-              </span>
-            )}
           </div>
 
-          {/* 🔮 Spirit-Bond line (Premium only) */}
-          {isPremium && entry.spiritBond && (
-            <div className="mt-1 text-sm flex items-center gap-2">
-              <span className="text-gray-300 font-semibold">
-                Spirit-Bond:
-              </span>
-              <span className="text-gray-100">
-                {entry.spiritBond.name}
-              </span>
+          {/* Enclave details as copyable bullets */}
+          {entry.enclave && (
+            <ul className="mt-1 text-xs text-gray-400 list-disc list-inside space-y-0.5">
+              <li>{entry.enclave.summary}</li>
+              <li>
+                <span className="text-purple-300">TTRPG Hook:</span>{" "}
+                {entry.enclave.ttrpgTip}
+              </li>
+            </ul>
+          )}
 
-              <span
-                className="inline-flex items-center justify-center h-5 w-5 rounded-full border border-purple-500 text-[10px] cursor-help"
-                title={`${entry.spiritBond.name}\n${entry.spiritBond.summary}\nTTRPG Hook: ${entry.spiritBond.ttrpgTip}`}
-              >
-                i
-              </span>
+          {/* 🔮 Spirit-Bond block (Premium only) */}
+          {isPremium && entry.spiritBond && (
+            <>
+              <div className="mt-2 text-sm">
+                <span className="text-gray-300 font-semibold">
+                  Spirit-Bond:{" "}
+                </span>
+                <span className="text-gray-100">
+                  {entry.spiritBond.name}
+                </span>
+              </div>
+              <ul className="mt-1 text-xs text-gray-400 list-disc list-inside space-y-0.5">
+                <li>{entry.spiritBond.summary}</li>
+                <li>
+                  <span className="text-purple-300">TTRPG Hook:</span>{" "}
+                  {entry.spiritBond.ttrpgTip}
+                </li>
+              </ul>
+            </>
+          )}
+
+          {/* Character Lore header + bullets (matches bullet styling) */}
+          {entry.lore && (
+            <div className="mt-2">
+              <div className="text-sm text-gray-300 font-semibold">
+                Character Lore:
+              </div>
+              <p className="mt-1 text-xs text-gray-400 whitespace-pre-line">
+                {entry.lore}
+              </p>
             </div>
           )}
 
-          {/* Lore */}
-          {entry.lore && (
-            <p className="text-sm text-gray-300 mt-1 whitespace-pre-line">
-              {entry.lore}
-            </p>
-          )}
-
-          {/* Premium-only debug stats */}
+          {/* Premium-only debug statblock */}
           {isPremium && showDebugStats && entry.stats && (
             <pre className="mt-3 p-3 rounded bg-gray-800 border border-gray-700 text-xs text-gray-300 overflow-x-auto">
               {JSON.stringify(entry.stats, null, 2)}
@@ -6122,9 +6199,9 @@ return (
         </li>
       ))}
     </ul>
-
   </section>
 )}
+
 </div>
 </main>
 );
