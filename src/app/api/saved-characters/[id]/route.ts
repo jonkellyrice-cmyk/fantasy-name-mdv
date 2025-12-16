@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabase } from "../../../../supabaseClient";
 
-// DELETE /api/saved-characters/:id
 export async function DELETE(
   _req: Request,
-  ctx: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  // ✅ Next.js 16: params is a Promise and must be awaited
-  const { id } = await ctx.params;
+  const { id } = await params;
 
   if (!id) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 });
