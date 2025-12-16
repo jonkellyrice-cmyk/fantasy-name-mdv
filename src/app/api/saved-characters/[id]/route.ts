@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { supabase } from "../../../../supabaseClient";
 
+// DELETE /api/saved-characters/:id
 export async function DELETE(
   _req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
+  const { id } = await context.params;
 
   if (!id) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 });
