@@ -6223,7 +6223,7 @@ return (
 <div className="text-right">
 {isPremium ? (
   <a
-    href="/Favorites"
+    href="/favorites"
     target="_blank"
     rel="noopener noreferrer"
     className="text-sm text-purple-300 hover:underline"
